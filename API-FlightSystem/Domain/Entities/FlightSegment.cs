@@ -1,0 +1,19 @@
+﻿using Domain.Common;
+
+namespace Domain.Entities
+{
+    public class FlightSegment : BaseEntity
+    {
+        public int SegmentId { get; set; }  
+        public int FlightId { get; set; }
+        public int OriginAirportId { get; set; }
+        public int DestinationAirportId { get; set; }
+        public int FlightDuration { get; set; }
+        public DateTime DepartureTime { get; set; } 
+        public DateTime ArrivalTime { get; set; }
+        public int SegmentOrder { get; set; }
+        public Flight Flight { get; set; } = null!;
+        public Airport OriginAirport { get; set; } = null!;
+        public Airport DestinationAirport { get; set; } = null!;
+    }
+}
