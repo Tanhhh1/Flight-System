@@ -14,7 +14,7 @@ namespace API_FlightBooking.Registers
 {
     public static class GeneralRegister
     {
-        private static readonly string PolicyName = "ApiFlightBooking";
+        private static readonly string PolicyName = "ApiFlightSystem";
 
         public static void RegisterGeneralServices(this IServiceCollection services, IConfiguration configuration)
         {

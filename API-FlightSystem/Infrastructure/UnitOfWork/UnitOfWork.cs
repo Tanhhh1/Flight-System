@@ -11,11 +11,14 @@ namespace Infrastructure.Uow
     {
         private readonly DatabaseContext _dbContext;
         private IDbContextTransaction? _transaction;
+        private IAirportRepository? _airportRepository;
 
         public UnitOfWork(DatabaseContext dbContext)
         {
             _dbContext = dbContext;
         }
+
+        public IAirportRepository AirportRepository => _airportRepository ??= new AirportRepository(_dbContext);
 
         public async Task BeginTransactionAsync()
         {

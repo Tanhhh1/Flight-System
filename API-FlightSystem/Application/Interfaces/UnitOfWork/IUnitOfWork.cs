@@ -8,5 +8,6 @@ namespace Application.Interfaces.UnitOfWork
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();
         Task RollbackTransactionAsync();
+        IAirportRepository AirportRepository { get; }
     }
 }

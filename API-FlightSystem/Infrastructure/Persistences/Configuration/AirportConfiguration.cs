@@ -12,7 +12,6 @@ namespace Infrastructure.Persistences.Configuration
 
             builder.Property(x => x.AirportCode)
                 .HasMaxLength(10) 
-                .IsFixedLength()   
                 .IsRequired();
 
             builder.Property(x => x.AirportName)

@@ -26,8 +26,6 @@
   <ItemGroup>
     <Folder Include="Caching\" />
     <Folder Include="Migrations\" />
-    <Folder Include="UnitOfWork\" />
-    <Folder Include="Repositories\Common\" />
   </ItemGroup>
 
 </Project>

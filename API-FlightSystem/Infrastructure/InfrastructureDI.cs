@@ -1,5 +1,7 @@
-﻿using Infrastructure.Database;
+﻿using Application.Interfaces.UnitOfWork;
+using Infrastructure.Database;
 using Infrastructure.Persistences;
+using Infrastructure.Uow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +21,8 @@ namespace Infrastructure
                     options.UseNpgsql(
                         databaseConfig.Main,
                         opt => opt.MigrationsAssembly(typeof(DatabaseContext).Assembly.FullName)));
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }
