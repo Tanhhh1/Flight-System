@@ -21,11 +21,11 @@ namespace API_FlightBooking.Controllers.V1
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResult<List<AirportDto>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResult<List<AirportDto>>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll()
+        [ProducesResponseType(typeof(ApiResult<PageList<AirportDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResult<PageList<AirportDto>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAll([FromQuery] GetAllAirportQuery query)
         {
-            var result = await _mediator.Send(new GetAllAirportQuery());
+            var result = await _mediator.Send(query);
             if (!result.Succeeded)
                 return BadRequest(result);
             return Ok(result);

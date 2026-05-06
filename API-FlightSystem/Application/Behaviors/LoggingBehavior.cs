@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Application.Common;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Shared.Logger;
 using System.Diagnostics;
@@ -17,7 +18,7 @@ namespace Application.Behaviors
         {
             var requestName = typeof(TRequest).Name;
 
-            Logging.Info("Handling {RequestName} {@Request}", requestName, request);
+            Logging.Info("Handling {RequestName}", requestName);
 
             var stopwatch = Stopwatch.StartNew();
             try
@@ -25,8 +26,9 @@ namespace Application.Behaviors
                 var response = await next();
                 stopwatch.Stop();
 
-                Logging.Info("Handled {RequestName} in {ElapsedMilliseconds}ms {@Response}",
-                    requestName, stopwatch.ElapsedMilliseconds, response);
+                var succeeded = response is ApiResult<object> result ? result.Succeeded : true;
+                Logging.Info("Handled {RequestName} in {ElapsedMilliseconds}ms - Succeeded: {Succeeded}",
+                    requestName, stopwatch.ElapsedMilliseconds, succeeded);
 
                 return response;
             }
@@ -35,7 +37,7 @@ namespace Application.Behaviors
                 stopwatch.Stop();
 
                 Logging.Error(ex, "Error handling {RequestName} in {ElapsedMilliseconds}ms",
-                    requestName, stopwatch.ElapsedMilliseconds);
+                     requestName, stopwatch.ElapsedMilliseconds);
 
                 throw;
             }
