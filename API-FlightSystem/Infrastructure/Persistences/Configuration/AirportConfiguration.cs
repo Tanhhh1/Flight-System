@@ -14,6 +14,8 @@ namespace Infrastructure.Persistences.Configuration
                 .HasMaxLength(10) 
                 .IsRequired();
 
+            builder.HasIndex(a => a.AirportCode).IsUnique();
+            
             builder.Property(x => x.AirportName)
                 .HasMaxLength(255)
                 .IsRequired();

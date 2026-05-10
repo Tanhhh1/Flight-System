@@ -18,10 +18,11 @@ namespace Application.CQRS.Airports.Commands.Create
 
         public async Task<ApiResult<AirportDto>> Handle(CreateAirportCommand request, CancellationToken cancellationToken)
         {
-            var airport = request.Adapt<Airport>();
+            // Adapt - map sau khi load data về memory
+            var airport = request.Adapt<Airport>(); // chuyển từ command -> entity
             await _unitOfWork.AirportRepository.AddAsync(airport);
             await _unitOfWork.SaveChangesAsync();
-            var airportDto = airport.Adapt<AirportDto>();
+            var airportDto = airport.Adapt<AirportDto>(); // chuyển từ entity -> Dto
             return ApiResult<AirportDto>.Success(airportDto);
         }
     }

@@ -36,7 +36,7 @@ namespace API_FlightBooking.Controllers.V1
         [ProducesResponseType(typeof(ApiResult<AirportDto>), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await _mediator.Send(new GetByIdAirportQuery { AirportId = id });
+            var result = await _mediator.Send(new GetByAirportIdQuery { AirportId = id });
             if (!result.Succeeded)
                 return NotFound(result);
             return Ok(result);
@@ -50,7 +50,7 @@ namespace API_FlightBooking.Controllers.V1
             var result = await _mediator.Send(command);
             if (!result.Succeeded)
                 return BadRequest(result);
-            return CreatedAtAction(nameof(GetById), new { id = result.Result.AirportId }, result);
+            return CreatedAtAction(nameof(GetById), new { id = result.Result!.AirportId }, result);
         }
 
         [HttpPut("{id}")]

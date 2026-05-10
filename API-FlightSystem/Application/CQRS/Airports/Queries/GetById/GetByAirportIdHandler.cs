@@ -6,21 +6,21 @@ using MediatR;
 
 namespace Application.CQRS.Airports.Queries.GetById
 {
-    public class GetByIdAirportHandler : IRequestHandler<GetByIdAirportQuery, ApiResult<AirportDto>>
+    public class GetByAirportIdHandler : IRequestHandler<GetByAirportIdQuery, ApiResult<AirportDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public GetByIdAirportHandler(IUnitOfWork unitOfWork)
+        public GetByAirportIdHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ApiResult<AirportDto>> Handle(GetByIdAirportQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResult<AirportDto>> Handle(GetByAirportIdQuery request, CancellationToken cancellationToken)
         {
             var airport = await _unitOfWork.AirportRepository.GetByIdAsync(request.AirportId);
 
             if (airport == null)
-                return ApiResult<AirportDto>.Failure(new[] { "Airport not found" });
+                return ApiResult<AirportDto>.Failure(new[] { "Sân bay không tồn tại" });
 
             var airportDto = airport.Adapt<AirportDto>();
             return ApiResult<AirportDto>.Success(airportDto);

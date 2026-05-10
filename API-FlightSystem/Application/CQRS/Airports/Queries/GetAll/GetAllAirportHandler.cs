@@ -17,23 +17,24 @@ namespace Application.CQRS.Airports.Queries.GetAll
 
         public async Task<ApiResult<PageList<AirportDto>>> Handle(GetAllAirportQuery request, CancellationToken cancellationToken)
         {
-            var query = _unitOfWork.AirportRepository.GetByCondition();
+            var airport = _unitOfWork.AirportRepository.GetByCondition();
 
             if (!string.IsNullOrEmpty(request.Search))
-                query = query.Where(a =>
+                airport = airport.Where(a =>
                     a.AirportCode.Contains(request.Search) ||
                     a.AirportName.Contains(request.Search));
 
             if (!string.IsNullOrEmpty(request.City))
-                query = query.Where(a => a.City == request.City);
+                airport = airport.Where(a => a.City == request.City);
 
             if (!string.IsNullOrEmpty(request.Country))
-                query = query.Where(a => a.Country == request.Country);
+                airport = airport.Where(a => a.Country == request.Country);
 
-            query = query.OrderBy(a => a.AirportId);
+            airport = airport.OrderBy(a => a.AirportId);
 
+            // ProjectToType - map ngay trong SQL, chưa load về memory
             var pagedList = await PageList<AirportDto>.ToPagedListAsync(
-                query.ProjectToType<AirportDto>(),
+                airport.ProjectToType<AirportDto>(), // chỉ lấy các cột trong Dto
                 request.PageIndex,
                 request.PageSize
             );

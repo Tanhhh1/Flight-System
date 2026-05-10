@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.CQRS.Airports.Queries.GetById
 {
-    public class GetByIdAirportQuery : IRequest<ApiResult<AirportDto>>
+    public class GetByAirportIdQuery : IRequest<ApiResult<AirportDto>>
     {
         public int AirportId { get; set; }
     }

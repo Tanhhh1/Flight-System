@@ -21,6 +21,9 @@ namespace Application
 
             services.AddValidatorsFromAssembly(typeof(ApplicationDI).Assembly);
 
+            var config = TypeAdapterConfig.GlobalSettings;
+            config.Scan(typeof(ApplicationDI).Assembly);
+            services.AddSingleton(config);
             services.AddMapster();
         }
     }

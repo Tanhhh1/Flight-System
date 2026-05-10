@@ -9,5 +9,8 @@ namespace Application.Interfaces.UnitOfWork
         Task CommitTransactionAsync();
         Task RollbackTransactionAsync();
         IAirportRepository AirportRepository { get; }
+        IAirlineRepository AirlineRepository { get; }
+        IPlaneRepository PlaneRepository { get; }
+        IRouteRepository RouteRepository { get; }
     }
 }

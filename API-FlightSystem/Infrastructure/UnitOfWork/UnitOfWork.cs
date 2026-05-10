@@ -12,6 +12,9 @@ namespace Infrastructure.Uow
         private readonly DatabaseContext _dbContext;
         private IDbContextTransaction? _transaction;
         private IAirportRepository? _airportRepository;
+        private IAirlineRepository? _airlineRepository;
+        private IPlaneRepository? _planeRepository;
+        private IRouteRepository? _routeRepository;
 
         public UnitOfWork(DatabaseContext dbContext)
         {
@@ -19,6 +22,9 @@ namespace Infrastructure.Uow
         }
 
         public IAirportRepository AirportRepository => _airportRepository ??= new AirportRepository(_dbContext);
+        public IAirlineRepository AirlineRepository => _airlineRepository ??= new AirlineRepository(_dbContext);
+        public IPlaneRepository PlaneRepository => _planeRepository ??= new PlaneRepository(_dbContext);
+        public IRouteRepository RouteRepository => _routeRepository ??= new RouteRepository(_dbContext);
 
         public async Task BeginTransactionAsync()
         {

@@ -1,4 +1,6 @@
-﻿namespace Application.CQRS.Airports.DTOs
+﻿using Domain.Enums;
+
+namespace Application.CQRS.Airports.DTOs
 {
     public class AirportDto
     {
@@ -7,6 +9,7 @@
         public string AirportName { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
+        public FlightStatus Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
