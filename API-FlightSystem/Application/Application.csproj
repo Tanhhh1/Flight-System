@@ -27,10 +27,6 @@
     <Folder Include="CQRS\Accounts\DTOs\" />
     <Folder Include="CQRS\Accounts\Queries\" />
     <Folder Include="CQRS\Accounts\Validators\" />
-    <Folder Include="CQRS\Airlines\Commands\" />
-    <Folder Include="CQRS\Airlines\DTOs\" />
-    <Folder Include="CQRS\Airlines\Queries\" />
-    <Folder Include="CQRS\Airlines\Validators\" />
     <Folder Include="CQRS\Bookings\Commands\" />
     <Folder Include="CQRS\Bookings\DTOs\" />
     <Folder Include="CQRS\Bookings\Queries\" />
@@ -39,23 +35,17 @@
     <Folder Include="CQRS\Flights\DTOs\" />
     <Folder Include="CQRS\Flights\Queries\" />
     <Folder Include="CQRS\Flights\Validators\" />
-    <Folder Include="CQRS\Planes\Commands\" />
-    <Folder Include="CQRS\Planes\DTOs\" />
-    <Folder Include="CQRS\Planes\Queries\" />
-    <Folder Include="CQRS\Planes\Validators\" />
+    <Folder Include="CQRS\Auth\" />
+    <Folder Include="CQRS\Supports\" />
+    <Folder Include="CQRS\Segments\" />
     <Folder Include="CQRS\Reviews\Commands\" />
     <Folder Include="CQRS\Reviews\DTOs\" />
     <Folder Include="CQRS\Reviews\Queries\" />
     <Folder Include="CQRS\Reviews\Validators\" />
-    <Folder Include="CQRS\Routes\Commands\" />
-    <Folder Include="CQRS\Routes\DTOs\" />
-    <Folder Include="CQRS\Routes\Queries\" />
-    <Folder Include="CQRS\Routes\Validators\" />
     <Folder Include="CQRS\Services\Commands\" />
     <Folder Include="CQRS\Services\DTOs\" />
     <Folder Include="CQRS\Services\Queries\" />
     <Folder Include="CQRS\Services\Validators\" />
-    <Folder Include="Mappers\" />
   </ItemGroup>
 
 </Project>
