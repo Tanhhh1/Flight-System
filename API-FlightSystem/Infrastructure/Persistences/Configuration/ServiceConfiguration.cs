@@ -21,7 +21,7 @@ namespace Infrastructure.Persistence.Configurations
                 .HasPrecision(18, 2)
                 .IsRequired();
 
-            builder.Property(x => x.IsAvailable)
+            builder.Property(x => x.IsActive)
                 .HasDefaultValue(true);
 
             builder.HasMany(x => x.FlightServices)
