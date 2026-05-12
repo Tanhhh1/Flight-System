@@ -1,6 +1,5 @@
 ﻿using Application.Common;
 using Application.CQRS.Airlines.DTOs;
-using Application.CQRS.Airports.DTOs;
 using Application.Interfaces.UnitOfWork;
 using Mapster;
 using MediatR;
@@ -20,6 +19,9 @@ namespace Application.CQRS.Airlines.Queries.GetAll
             var airline = _unitOfWork.AirlineRepository.GetByCondition();
             if (!string.IsNullOrEmpty(request.Search))
                 airline = airline.Where(a => a.AirlineName.Contains(request.Search));
+
+            if (request.Status.HasValue)
+                airline = airline.Where(a => a.Status == request.Status.Value);
 
             airline = airline.OrderBy(a => a.AirlineId);
 

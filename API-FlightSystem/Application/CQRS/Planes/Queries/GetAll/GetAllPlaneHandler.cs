@@ -20,6 +20,9 @@ namespace Application.CQRS.Planes.Queries.GetAll
             if (!string.IsNullOrEmpty(request.Search))
                 plane = plane.Where(p => p.PlaneModel.Contains(request.Search));
 
+            if (request.Status.HasValue)
+                plane = plane.Where(a => a.Status == request.Status.Value);
+
             plane = plane.OrderBy(a => a.PlaneId);
 
             var pagedList = await PageList<PlaneDto>.ToPagedListAsync(

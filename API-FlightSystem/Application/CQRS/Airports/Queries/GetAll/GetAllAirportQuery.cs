@@ -1,5 +1,6 @@
 ﻿using Application.Common;
 using Application.CQRS.Airports.DTOs;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.CQRS.Airports.Queries.GetAll
@@ -11,5 +12,6 @@ namespace Application.CQRS.Airports.Queries.GetAll
         public string? Search { get; set; }
         public string? City { get; set; }
         public string? Country { get; set; }
+        public FlightStatus? Status { get; set; }
     }
 }

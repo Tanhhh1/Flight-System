@@ -8,6 +8,6 @@ namespace Application.CQRS.Airlines.Commands.Create
     public class CreateAirlineCommand : IRequest<ApiResult<AirlineDto>>
     { 
         public string AirlineName { get; set; } = string.Empty;
-        public FlightStatus Status { get; set; }
+        public FlightStatus Status { get; set; } = FlightStatus.Active;
     }
 }

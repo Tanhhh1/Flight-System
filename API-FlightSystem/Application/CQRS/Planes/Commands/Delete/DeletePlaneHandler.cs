@@ -20,19 +20,23 @@ namespace Application.CQRS.Planes.Commands.Delete
             var plane = await _unitOfWork.PlaneRepository.GetByIdAsync(request.PlaneId);
 
             if (plane == null)
-                return ApiResult<PlaneDto>.Failure(new[] { "Máy bay không tồn tại" });
+                return ApiResult<PlaneDto>.Failure(["Máy bay không tồn tại"]);
 
             if (plane.Status == FlightStatus.Inactive)
-                return ApiResult<PlaneDto>.Failure(new[] { "Máy bay đã bị vô hiệu hóa trước đó" });
+                return ApiResult<PlaneDto>.Failure(["Máy bay đã bị vô hiệu hóa trước đó"]);
+
+            var hasActiveFlight = _unitOfWork.FlightRepository
+                .GetByCondition(f => f.PlaneId == request.PlaneId
+                                  && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
+                .Any();
+            if (hasActiveFlight)
+                return ApiResult<PlaneDto>.Failure(["Không thể vô hiệu hóa máy bay đang có chuyến bay hoạt động"]);
+
 
             plane.Status = FlightStatus.Inactive;
 
             var planeDto = plane.Adapt<PlaneDto>();
             return ApiResult<PlaneDto>.Success(planeDto);
         }
-
-        /* Kiểm tra có Flight nào đang Active/Delayed không
-         * Nếu có → không cho vô hiệu hóa
-         * Hoặc tự động Cancelled → tùy nghiệp vụ */
     }
 }

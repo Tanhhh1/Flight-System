@@ -23,29 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CQRS\Accounts\Commands\" />
-    <Folder Include="CQRS\Accounts\DTOs\" />
-    <Folder Include="CQRS\Accounts\Queries\" />
-    <Folder Include="CQRS\Accounts\Validators\" />
     <Folder Include="CQRS\Bookings\Commands\" />
     <Folder Include="CQRS\Bookings\DTOs\" />
     <Folder Include="CQRS\Bookings\Queries\" />
     <Folder Include="CQRS\Bookings\Validators\" />
-    <Folder Include="CQRS\Flights\Commands\" />
-    <Folder Include="CQRS\Flights\DTOs\" />
-    <Folder Include="CQRS\Flights\Queries\" />
-    <Folder Include="CQRS\Flights\Validators\" />
     <Folder Include="CQRS\Auth\" />
     <Folder Include="CQRS\Supports\" />
-    <Folder Include="CQRS\Segments\" />
-    <Folder Include="CQRS\Reviews\Commands\" />
-    <Folder Include="CQRS\Reviews\DTOs\" />
-    <Folder Include="CQRS\Reviews\Queries\" />
-    <Folder Include="CQRS\Reviews\Validators\" />
-    <Folder Include="CQRS\Services\Commands\" />
-    <Folder Include="CQRS\Services\DTOs\" />
-    <Folder Include="CQRS\Services\Queries\" />
-    <Folder Include="CQRS\Services\Validators\" />
   </ItemGroup>
 
 </Project>

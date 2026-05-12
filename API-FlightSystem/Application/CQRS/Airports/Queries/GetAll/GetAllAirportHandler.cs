@@ -30,6 +30,9 @@ namespace Application.CQRS.Airports.Queries.GetAll
             if (!string.IsNullOrEmpty(request.Country))
                 airport = airport.Where(a => a.Country == request.Country);
 
+            if (request.Status.HasValue)
+                airport = airport.Where(a => a.Status == request.Status.Value);
+
             airport = airport.OrderBy(a => a.AirportId);
 
             // ProjectToType - map ngay trong SQL, chưa load về memory

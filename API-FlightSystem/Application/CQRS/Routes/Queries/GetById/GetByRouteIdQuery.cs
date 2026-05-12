@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.CQRS.Routes.Queries.GetById
 {
-    public class GetByIdRouteQuery : IRequest<ApiResult<RouteDto>>
+    public class GetByRouteIdQuery : IRequest<ApiResult<RouteDto>>
     {
         public int RouteId { get; set; }
     }

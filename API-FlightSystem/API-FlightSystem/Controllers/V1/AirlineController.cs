@@ -58,7 +58,7 @@ namespace API_FlightSystem.Controllers.V1
         public async Task<IActionResult> Update(int id, [FromBody] UpdateAirlineCommand command)
         {
             if (id != command.AirlineId)
-                return BadRequest(ApiResult<AirlineDto>.Failure(new[] { "Id không khớp" }));
+                return BadRequest(ApiResult<AirlineDto>.Failure(["Mã hãng bay không khớp"]));
 
             var result = await _mediator.Send(command);
             if (!result.Succeeded)
@@ -66,7 +66,7 @@ namespace API_FlightSystem.Controllers.V1
             return Ok(result);
         }
 
-        [HttpDelete("{id}")]
+        [HttpPatch("{id}")]
         [ProducesResponseType(typeof(ApiResult<AirlineDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<AirlineDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int id)

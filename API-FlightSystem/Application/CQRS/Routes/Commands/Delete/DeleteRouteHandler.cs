@@ -4,6 +4,7 @@ using Application.Interfaces.UnitOfWork;
 using Domain.Enums;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Routes.Commands.Delete
 {
@@ -19,19 +20,23 @@ namespace Application.CQRS.Routes.Commands.Delete
         {
             var route = await _unitOfWork.RouteRepository.GetByIdAsync(request.RouteId);
             if (route == null)
-                return ApiResult<RouteDto>.Failure(new[] { "Tuyến bay không tồn tại" });
+                return ApiResult<RouteDto>.Failure(["Tuyến bay không tồn tại"]);
 
             if (route.Status == FlightStatus.Inactive)
-                return ApiResult<RouteDto>.Failure(new[] { "Tuyến bay đã ngừng hoạt động" });
+                return ApiResult<RouteDto>.Failure(["Tuyến bay đã ngừng hoạt động"]);
+
+            var hasActiveFlights = await _unitOfWork.FlightRepository
+                .GetByCondition(f => f.RouteId == request.RouteId
+                                  && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
+                .AnyAsync();
+            
+            if (hasActiveFlights)
+                return ApiResult<RouteDto>.Failure(["Tuyến bay đang có chuyến bay hoạt động, không thể vô hiệu hóa"]);
 
             route.Status = FlightStatus.Inactive;
 
             var routeDto = route.Adapt<RouteDto>();
             return ApiResult<RouteDto>.Success(routeDto);
         }
-
-        /* Kiểm tra có Flight nào đang Active/Delayed không
-         * Nếu có → không cho vô hiệu hóa
-         * Hoặc tự động Cancelled → tùy nghiệp vụ */
     }
 }

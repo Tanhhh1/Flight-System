@@ -18,7 +18,7 @@ namespace Application.CQRS.Airlines.Queries.GetById
         {
             var airline = await _unitOfWork.AirlineRepository.GetByIdAsync(request.AirlineId);
             if (airline == null) 
-                return ApiResult<AirlineDto>.Failure(new[] { "Hãng bay không tồn tại" });
+                return ApiResult<AirlineDto>.Failure(["Hãng bay không tồn tại"]);
 
             var airlineDto = airline.Adapt<AirlineDto>();
             return ApiResult<AirlineDto>.Success(airlineDto);

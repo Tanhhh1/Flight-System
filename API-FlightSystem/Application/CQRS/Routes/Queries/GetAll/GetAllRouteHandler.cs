@@ -1,10 +1,8 @@
 ﻿using Application.Common;
 using Application.CQRS.Routes.DTOs;
 using Application.Interfaces.UnitOfWork;
-using Domain.Enums;
 using Mapster;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Routes.Queries.GetAll
 {
@@ -27,6 +25,9 @@ namespace Application.CQRS.Routes.Queries.GetAll
                     r.OriginAirport.AirportCode.Contains(request.Search) ||
                     r.DestinationAirport.AirportName.Contains(request.Search) ||
                     r.DestinationAirport.AirportCode.Contains(request.Search));
+
+            if (request.Status.HasValue)
+                route = route.Where(a => a.Status == request.Status.Value);
 
             if (!string.IsNullOrEmpty(request.OriginCity))
                 route = route.Where(r => r.OriginAirport.City == request.OriginCity);

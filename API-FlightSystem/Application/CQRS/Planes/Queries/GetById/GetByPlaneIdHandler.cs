@@ -18,7 +18,7 @@ namespace Application.CQRS.Planes.Queries.GetById
         {
             var plane = _unitOfWork.PlaneRepository.GetByIdAsync(request.PlaneId);
             if (plane == null)
-                return ApiResult<PlaneDto>.Failure(new[] { "Máy bay không tồn tại" });
+                return ApiResult<PlaneDto>.Failure(["Máy bay không tồn tại"]);
             var planeDto = plane.Adapt<PlaneDto>();
             return ApiResult<PlaneDto>.Success(planeDto);
         }

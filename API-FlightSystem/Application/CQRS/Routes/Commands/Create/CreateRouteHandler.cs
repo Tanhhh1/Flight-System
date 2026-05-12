@@ -20,11 +20,11 @@ namespace Application.CQRS.Routes.Commands.Create
         {
             var originAirport = await _unitOfWork.AirportRepository.GetByIdAsync(request.OriginAirportId);
             if (originAirport == null)
-                return ApiResult<RouteDto>.Failure(new[] { "Sân bay đi không tồn tại" });
+                return ApiResult<RouteDto>.Failure(["Sân bay đi không tồn tại"]);
 
             var destinationAirport = await _unitOfWork.AirportRepository.GetByIdAsync(request.DestinationAirportId);
             if (destinationAirport == null)
-                return ApiResult<RouteDto>.Failure(new[] { "Sân bay đến không tồn tại" });
+                return ApiResult<RouteDto>.Failure(["Sân bay đến không tồn tại"]);
 
             var existingRoute = _unitOfWork.RouteRepository
                 .GetByCondition(r => r.OriginAirportId == request.OriginAirportId
@@ -32,7 +32,7 @@ namespace Application.CQRS.Routes.Commands.Create
                 .FirstOrDefault();
 
             if (existingRoute != null)
-                return ApiResult<RouteDto>.Failure(new[] { "Tuyến bay này đã tồn tại" });
+                return ApiResult<RouteDto>.Failure(["Tuyến bay này đã tồn tại"]);
 
             var route = request.Adapt<Route>();
             await _unitOfWork.RouteRepository.AddAsync(route);

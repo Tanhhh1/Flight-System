@@ -19,7 +19,7 @@ namespace Application.CQRS.Planes.Commands.Create
         {
             var airline = await _unitOfWork.AirlineRepository.GetByIdAsync(request.AirlineId);
             if (airline == null)
-                return ApiResult<PlaneDto>.Failure(new[] { "Hãng bay không tồn tại" });
+                return ApiResult<PlaneDto>.Failure(["Hãng bay không tồn tại"]);
                     
             var plane = request.Adapt<Plane>();
             await _unitOfWork.PlaneRepository.AddAsync(plane);

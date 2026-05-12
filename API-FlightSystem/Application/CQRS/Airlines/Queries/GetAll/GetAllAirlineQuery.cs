@@ -1,5 +1,6 @@
 ﻿using Application.Common;
 using Application.CQRS.Airlines.DTOs;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.CQRS.Airlines.Queries.GetAll
@@ -9,5 +10,6 @@ namespace Application.CQRS.Airlines.Queries.GetAll
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
         public string? Search { get; set; }
+        public FlightStatus? Status { get; set; }
     }
 }
