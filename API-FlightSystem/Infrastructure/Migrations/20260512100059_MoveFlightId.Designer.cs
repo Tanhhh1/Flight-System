@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Persistences;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260512100059_MoveFlightId")]
+    partial class MoveFlightId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,7 +152,7 @@ namespace Infrastructure.Migrations
                     b.Property<int>("FlightId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("FlightSeatId")
+                    b.Property<int>("FlightSeatId")
                         .HasColumnType("integer");
 
                     b.Property<int>("PassengerId")
@@ -1055,7 +1058,8 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.FlightSeat", "FlightSeat")
                         .WithOne("BookingDetail")
                         .HasForeignKey("Domain.Entities.BookingDetail", "FlightSeatId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Domain.Entities.Passenger", "Passenger")
                         .WithMany("BookingDetails")

@@ -28,11 +28,6 @@ namespace Infrastructure.Persistences.Configuration
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(x => x.Flight)
-                .WithMany(f => f.Bookings)
-                .HasForeignKey(x => x.FlightId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             builder.HasMany(x => x.BookingDetails)
                 .WithOne(d => d.Booking)
                 .HasForeignKey(d => d.BookingId)

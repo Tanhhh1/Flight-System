@@ -19,6 +19,6 @@ namespace Domain.Entities
         public ICollection<FlightSegment> FlightSegments { get; set; } = new List<FlightSegment>();
         public ICollection<FlightSeat> FlightSeats { get; set; } = new List<FlightSeat>();
         public ICollection<FlightSeatPrice> FlightSeatPrices { get; set; } = new List<FlightSeatPrice>();
-        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+        public ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
     }
 }

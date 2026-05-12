@@ -20,6 +20,11 @@ namespace Infrastructure.Persistences.Configuration
                 .HasForeignKey(x => x.BookingId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasOne(x => x.Flight)
+                .WithMany(f => f.BookingDetails)
+                .HasForeignKey(x => x.FlightId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasOne(x => x.Passenger)
                 .WithMany(p => p.BookingDetails)
                 .HasForeignKey(x => x.PassengerId)
@@ -28,7 +33,11 @@ namespace Infrastructure.Persistences.Configuration
             builder.HasOne(x => x.FlightSeat)
                 .WithOne(s => s.BookingDetail)
                 .HasForeignKey<BookingDetail>(x => x.FlightSeatId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasIndex(x => x.FlightId)
+                .HasDatabaseName("IX_BookingDetail_Flight");
         }
     }
 }

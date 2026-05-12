@@ -45,9 +45,9 @@ namespace Infrastructure.Persistences.Configuration
                 .HasForeignKey(s => s.FlightId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(x => x.Bookings)
-                .WithOne(b => b.Flight)
-                .HasForeignKey(b => b.FlightId)
+            builder.HasMany(x => x.BookingDetails)
+                .WithOne(d => d.Flight)
+                .HasForeignKey(d => d.FlightId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasIndex(x => new { x.DepartureTime, x.RouteId })
