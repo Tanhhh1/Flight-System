@@ -15,7 +15,7 @@ namespace Application.Mappers
                 .Map(dest => dest.DestinationAirportCode, src => src.DestinationAirport.AirportCode);
 
             config.NewConfig<User, AccountDto>()
-                .Ignore(dest => dest.Roles);
+                .Map(dest => dest.Roles, src => src.UserRoles.Select(ur => ur.Role.Name!).ToList());
         }
     }
 }

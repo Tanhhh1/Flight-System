@@ -12,5 +12,11 @@ namespace Application.Interfaces.UnitOfWork
         IAirlineRepository AirlineRepository { get; }
         IPlaneRepository PlaneRepository { get; }
         IRouteRepository RouteRepository { get; }
+        IServiceRepository ServiceRepository { get; }
+        IReviewRepository ReviewRepository { get; }
+        IFlightRepository FlightRepository { get; }
+        IPolicyRepository PolicyRepository { get; }
+        IFlightServiceRepository FlightServiceRepository { get; }
+        IFlightSegmentRepository FlightSegmentRepository { get; }
     }
 }

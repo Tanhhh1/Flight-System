@@ -15,7 +15,12 @@ namespace Infrastructure.Uow
         private IAirlineRepository? _airlineRepository;
         private IPlaneRepository? _planeRepository;
         private IRouteRepository? _routeRepository;
-
+        private IServiceRepository? _serviceRepository;
+        private IReviewRepository? _reviewRepository;
+        private IFlightRepository? _flightRepository;
+        private IPolicyRepository? _policyRepository;
+        private IFlightServiceRepository? _flightServiceRepository;
+        private IFlightSegmentRepository? _flightSegmentRepository;
         public UnitOfWork(DatabaseContext dbContext)
         {
             _dbContext = dbContext;
@@ -25,6 +30,12 @@ namespace Infrastructure.Uow
         public IAirlineRepository AirlineRepository => _airlineRepository ??= new AirlineRepository(_dbContext);
         public IPlaneRepository PlaneRepository => _planeRepository ??= new PlaneRepository(_dbContext);
         public IRouteRepository RouteRepository => _routeRepository ??= new RouteRepository(_dbContext);
+        public IServiceRepository ServiceRepository => _serviceRepository ??= new ServiceRepository(_dbContext);
+        public IReviewRepository ReviewRepository => _reviewRepository ??= new ReviewRepository(_dbContext);
+        public IFlightRepository FlightRepository => _flightRepository ??= new FlightRepository(_dbContext);
+        public IPolicyRepository PolicyRepository => _policyRepository ??= new PolicyRepository(_dbContext);
+        public IFlightServiceRepository FlightServiceRepository => _flightServiceRepository ??= new FlightServiceRepository(_dbContext);
+        public IFlightSegmentRepository FlightSegmentRepository => _flightSegmentRepository ??= new FlightSegmentRepository(_dbContext);
 
         public async Task BeginTransactionAsync()
         {
