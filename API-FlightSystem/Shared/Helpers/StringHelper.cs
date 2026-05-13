@@ -1,15 +1,15 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace Shared.Helpers
 {
     public static class StringHelper
     {
-        public static string RandomString(int length = 32)
+        public static string GenerateRefreshToken()
         {
-            var random = new Random();
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
+            var bytes = new byte[64];
+            RandomNumberGenerator.Fill(bytes);
+            return Convert.ToBase64String(bytes);
         }
 
         public static string NormalizeString(this string input, string replacement = " ")

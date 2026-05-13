@@ -13,55 +13,64 @@ namespace Shared.Helpers
             if (string.IsNullOrEmpty(jwtSetting.SecretKey)) return null;
             var tokenHandler = new JwtSecurityTokenHandler();
             var credentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSetting.SecretKey)), SecurityAlgorithms.HmacSha256Signature);
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub,        user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti,        Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email,      user.Email),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
+                new Claim(JwtRegisteredClaimNames.Name,       user.Fullname),
+            };
+            claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r ?? "")));
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Issuer = jwtSetting.ValidIssuer,
                 Audience = jwtSetting.ValidAudience,
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Name, user.Fullname),
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = expireStart.AddMinutes(jwtSetting.TokenValidityInMinutes),
                 SigningCredentials = credentials
             };
-            foreach (var item in roles)
-            {
-                tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, item ?? ""));
-            }
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
 
         public static string? VerifyToken(JwtSetting jwtSetting, string? token)
-        {
-            var secretKey = jwtSetting.SecretKey;
-            var validIssuer = jwtSetting.ValidIssuer;
-            var validAudience = jwtSetting.ValidAudience;
+            => ValidateToken(jwtSetting, token, validateLifetime: true);
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+        public static string? GetJwtIdIgnoreExpiry(JwtSetting jwtSetting, string? token)
+            => ValidateToken(jwtSetting, token, validateLifetime: false);
+        private static string? ValidateToken(
+            JwtSetting jwtSetting, string? token, bool validateLifetime)
+        {
+            if (string.IsNullOrWhiteSpace(token)) return null;
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var validationParameters = new TokenValidationParameters();
-            validationParameters.ValidIssuer = validIssuer;
-            validationParameters.ValidAudience = validAudience;
-            validationParameters.IssuerSigningKey = key;
-            validationParameters.ValidateLifetime = true;
-            validationParameters.ValidateIssuerSigningKey = true;
-            validationParameters.ValidateIssuer = !string.IsNullOrEmpty(validIssuer);
-            validationParameters.ValidateAudience = !string.IsNullOrEmpty(validAudience);
-            validationParameters.RoleClaimType = ClaimTypes.Role;
-            validationParameters.ClockSkew = TimeSpan.Zero;
-
             if (!tokenHandler.CanReadToken(token)) return null;
+
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidIssuer = jwtSetting.ValidIssuer,
+                ValidAudience = jwtSetting.ValidAudience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSetting.SecretKey)),
+                ValidateLifetime = validateLifetime,
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = !string.IsNullOrEmpty(jwtSetting.ValidIssuer),
+                ValidateAudience = !string.IsNullOrEmpty(jwtSetting.ValidAudience),
+                RoleClaimType = ClaimTypes.Role,
+                ClockSkew = TimeSpan.Zero
+            };
+
             try
             {
-                var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
-                return principal?.Claims.First(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
+                var principal = tokenHandler.ValidateToken(
+                    token, validationParameters, out _);
+
+                return principal?.Claims
+                    .FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
             }
-            catch (SecurityTokenException e)
+            catch (SecurityTokenException)
             {
                 return null;
             }
