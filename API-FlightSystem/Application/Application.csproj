@@ -27,7 +27,6 @@
     <Folder Include="CQRS\Bookings\DTOs\" />
     <Folder Include="CQRS\Bookings\Queries\" />
     <Folder Include="CQRS\Bookings\Validators\" />
-    <Folder Include="CQRS\Auth\" />
     <Folder Include="CQRS\Supports\" />
   </ItemGroup>
 

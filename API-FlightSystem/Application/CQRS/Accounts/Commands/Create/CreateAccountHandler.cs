@@ -19,11 +19,11 @@ namespace Application.CQRS.Accounts.Commands.Create
         {
             var existingByUsername = await _userManager.FindByNameAsync(request.UserName);
             if (existingByUsername != null)
-                return ApiResult<AccountDto>.Failure(["Username đã tồn tại trong hệ thống."]);
+                return ApiResult<AccountDto>.Failure(["Username đã tồn tại trong hệ thống"]);
 
             var existingByEmail = await _userManager.FindByEmailAsync(request.Email);
             if (existingByEmail != null)
-                return ApiResult<AccountDto>.Failure(["Email đã tồn tại trong hệ thống."]);
+                return ApiResult<AccountDto>.Failure(["Email đã tồn tại trong hệ thống"]);
 
             var user = request.Adapt<User>();
 

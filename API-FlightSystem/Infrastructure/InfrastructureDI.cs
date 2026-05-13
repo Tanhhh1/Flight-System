@@ -1,6 +1,8 @@
-﻿using Application.Interfaces.UnitOfWork;
+﻿using Application.Interfaces.Services;
+using Application.Interfaces.UnitOfWork;
 using Infrastructure.Database;
 using Infrastructure.Persistences;
+using Infrastructure.Services;
 using Infrastructure.Uow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -23,7 +25,8 @@ namespace Infrastructure
                         opt => opt.MigrationsAssembly(typeof(DatabaseContext).Assembly.FullName)));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ICurrentUser, CurrentUser>();
             return services;
         }
     }

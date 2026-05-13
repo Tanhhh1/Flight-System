@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Microsoft.EntityFrameworkCore.Query;
+using System.Linq.Expressions;
 
 namespace Application.Interfaces.Repositories.Common
 {
@@ -9,7 +10,10 @@ namespace Application.Interfaces.Repositories.Common
         void Delete(T entity);
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> GetByIdAsync(int id);
-        IQueryable<T> GetByCondition(Expression<Func<T, bool>>? expression = null, Func<IQueryable<T>, IOrderedQueryable<T>>? order = null);
+        IQueryable<T> GetByCondition(
+            Expression<Func<T, bool>>? expression = null, 
+            Func<IQueryable<T>, IOrderedQueryable<T>>? order = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
     }
 }
 

@@ -1,4 +1,5 @@
 ﻿using Application.CQRS.Accounts.DTOs;
+using Application.CQRS.Planes.DTOs;
 using Application.CQRS.Routes.DTOs;
 using Domain.Entities;
 using Domain.Identity;
@@ -15,7 +16,11 @@ namespace Application.Mappers
                 .Map(dest => dest.DestinationAirportCode, src => src.DestinationAirport.AirportCode);
 
             config.NewConfig<User, AccountDto>()
+                .Map(dest => dest.UserId, src => src.Id)
                 .Map(dest => dest.Roles, src => src.UserRoles.Select(ur => ur.Role.Name!).ToList());
+
+            config.NewConfig<Plane, PlaneDto>()
+                .Map(dest => dest.AirlineName, src => src.Airline.AirlineName); 
         }
     }
 }

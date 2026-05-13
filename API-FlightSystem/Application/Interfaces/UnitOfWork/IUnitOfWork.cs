@@ -18,5 +18,6 @@ namespace Application.Interfaces.UnitOfWork
         IPolicyRepository PolicyRepository { get; }
         IFlightServiceRepository FlightServiceRepository { get; }
         IFlightSegmentRepository FlightSegmentRepository { get; }
+        IRefreshTokenRepository RefreshTokenRepository { get; }
     }
 }
