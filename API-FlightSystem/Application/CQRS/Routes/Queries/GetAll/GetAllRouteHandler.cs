@@ -3,6 +3,7 @@ using Application.CQRS.Routes.DTOs;
 using Application.Interfaces.UnitOfWork;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Routes.Queries.GetAll
 {
@@ -17,7 +18,11 @@ namespace Application.CQRS.Routes.Queries.GetAll
 
         public async Task<ApiResult<PageList<RouteDto>>> Handle(GetAllRouteQuery request, CancellationToken cancellationToken)
         {
-            var route = _unitOfWork.RouteRepository.GetByCondition();
+            var route = _unitOfWork.RouteRepository.GetByCondition(
+                include: q => q
+                .Include(r => r.OriginAirport)
+                .Include(r => r.DestinationAirport)
+            );
 
             if (!string.IsNullOrEmpty(request.Search))
                 route = route.Where(r =>

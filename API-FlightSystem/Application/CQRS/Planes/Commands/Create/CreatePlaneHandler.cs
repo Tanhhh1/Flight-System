@@ -2,6 +2,7 @@
 using Application.CQRS.Planes.DTOs;
 using Application.Interfaces.UnitOfWork;
 using Domain.Entities;
+using Domain.Enums;
 using Mapster;
 using MediatR;
 
@@ -22,6 +23,7 @@ namespace Application.CQRS.Planes.Commands.Create
                 return ApiResult<PlaneDto>.Failure(["Hãng bay không tồn tại"]);
                     
             var plane = request.Adapt<Plane>();
+            plane.Status = FlightStatus.Active;
             await _unitOfWork.PlaneRepository.AddAsync(plane);
             await _unitOfWork.SaveChangesAsync();
             var planeDto = plane.Adapt<PlaneDto>();

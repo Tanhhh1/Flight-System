@@ -11,6 +11,5 @@ namespace Application.CQRS.Airports.Commands.Create
         public string AirportName { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
-        public FlightStatus Status { get; set; } = FlightStatus.Active;
     }
 }

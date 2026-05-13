@@ -4,6 +4,7 @@ using Application.Interfaces.UnitOfWork;
 using Domain.Enums;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Routes.Commands.Update
 {
@@ -24,44 +25,48 @@ namespace Application.CQRS.Routes.Commands.Update
             var originAirport = await _unitOfWork.AirportRepository.GetByIdAsync(request.OriginAirportId);
             if (originAirport == null)
                 return ApiResult<RouteDto>.Failure(["Sân bay đi không tồn tại"]);
-
             if (originAirport.Status == FlightStatus.Inactive)
                 return ApiResult<RouteDto>.Failure(["Sân bay đi đã ngừng hoạt động"]);
 
             var destinationAirport = await _unitOfWork.AirportRepository.GetByIdAsync(request.DestinationAirportId);
             if (destinationAirport == null)
                 return ApiResult<RouteDto>.Failure(["Sân bay đến không tồn tại"]);
-
             if (destinationAirport.Status == FlightStatus.Inactive)
                 return ApiResult<RouteDto>.Failure(["Sân bay đến đã ngừng hoạt động"]);
 
-            var existingRoute = _unitOfWork.RouteRepository
+            bool isDuplicateRoute = await _unitOfWork.RouteRepository
                 .GetByCondition(r => r.OriginAirportId == request.OriginAirportId
                                   && r.DestinationAirportId == request.DestinationAirportId
                                   && r.RouteId != request.RouteId)
-                .FirstOrDefault();
-
-            if (existingRoute != null)
+                .AnyAsync(cancellationToken);
+            if (isDuplicateRoute)
                 return ApiResult<RouteDto>.Failure(["Tuyến bay này đã tồn tại"]);
 
-            var activeFlights = _unitOfWork.FlightRepository
-                .GetByCondition(f => f.RouteId == request.RouteId && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
-                .ToList();
-            bool isChangingAirports = route.OriginAirportId != request.OriginAirportId || route.DestinationAirportId != request.DestinationAirportId;
-            if (isChangingAirports && activeFlights.Any())
-                return ApiResult<RouteDto>.Failure(["Không thể thay đổi sân bay khi đang có chuyến bay hoạt động"]);
+            bool isChangingAirports = route.OriginAirportId != request.OriginAirportId
+                                   || route.DestinationAirportId != request.DestinationAirportId;
+            if (isChangingAirports)
+            {
+                bool hasActiveOrDelayedFlight = await _unitOfWork.FlightRepository
+                    .GetByCondition(f => f.RouteId == request.RouteId && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
+                    .AnyAsync(cancellationToken);
+                if (hasActiveOrDelayedFlight)
+                    return ApiResult<RouteDto>.Failure(["Không thể thay đổi sân bay khi đang có chuyến bay hoạt động"]);
+            }
 
             bool isChangingDuration = route.FlightDuration != request.FlightDuration;
-            if (isChangingDuration && activeFlights.Any(f => f.Status == FlightStatus.Active))
-                return ApiResult<RouteDto>.Failure(["Không thể thay đổi thời gian bay khi đang có chuyến bay hoạt động"]);
+            if (isChangingDuration)
+            {
+                bool hasActiveFlight = await _unitOfWork.FlightRepository
+                    .GetByCondition(f => f.RouteId == request.RouteId && f.Status == FlightStatus.Active)
+                    .AnyAsync(cancellationToken);
+                if (hasActiveFlight)
+                    return ApiResult<RouteDto>.Failure(["Không thể thay đổi thời gian bay khi đang có chuyến bay hoạt động"]);
+            }
 
             request.Adapt(route);
             route.OriginAirport = originAirport;
             route.DestinationAirport = destinationAirport;
-
             _unitOfWork.RouteRepository.Update(route);
-            await _unitOfWork.SaveChangesAsync();
-
             return ApiResult<RouteDto>.Success(route.Adapt<RouteDto>());
         }
     }

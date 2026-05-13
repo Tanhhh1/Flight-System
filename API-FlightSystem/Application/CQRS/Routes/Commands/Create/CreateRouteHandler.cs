@@ -5,6 +5,7 @@ using Domain.Entities;
 using Domain.Enums;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Routes.Commands.Create
 {
@@ -26,15 +27,16 @@ namespace Application.CQRS.Routes.Commands.Create
             if (destinationAirport == null)
                 return ApiResult<RouteDto>.Failure(["Sân bay đến không tồn tại"]);
 
-            var existingRoute = _unitOfWork.RouteRepository
+            var existingRoute = await _unitOfWork.RouteRepository
                 .GetByCondition(r => r.OriginAirportId == request.OriginAirportId
                                   && r.DestinationAirportId == request.DestinationAirportId)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             if (existingRoute != null)
                 return ApiResult<RouteDto>.Failure(["Tuyến bay này đã tồn tại"]);
 
             var route = request.Adapt<Route>();
+            route.Status = FlightStatus.Active;
             await _unitOfWork.RouteRepository.AddAsync(route);
             await _unitOfWork.SaveChangesAsync();
 

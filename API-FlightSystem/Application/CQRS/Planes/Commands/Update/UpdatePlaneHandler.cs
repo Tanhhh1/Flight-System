@@ -5,6 +5,7 @@ using Application.Interfaces.UnitOfWork;
 using Domain.Enums;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Planes.Commands.Update
 {
@@ -29,9 +30,9 @@ namespace Application.CQRS.Planes.Commands.Update
             var isChangingAirline = plane.AirlineId != request.AirlineId;
             if (isChangingAirline)
             {
-                var hasActiveFlight = _unitOfWork.FlightRepository
+                var hasActiveFlight = await _unitOfWork.FlightRepository
                     .GetByCondition(f => f.PlaneId == request.PlaneId && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
-                    .Any();
+                    .AnyAsync();
                 if (hasActiveFlight)
                     return ApiResult<PlaneDto>.Failure(["Không thể chuyển hãng khi máy bay đang có chuyến bay hoạt động"]);
             }

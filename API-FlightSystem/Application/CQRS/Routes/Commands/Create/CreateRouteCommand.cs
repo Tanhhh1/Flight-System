@@ -10,6 +10,5 @@ namespace Application.CQRS.Routes.Commands.Create
         public int OriginAirportId { get; set; }
         public int DestinationAirportId { get; set; }
         public int FlightDuration { get; set; }
-        public FlightStatus Status { get; set; } = FlightStatus.Active;
     }
 }

@@ -3,6 +3,7 @@ using Application.CQRS.Planes.DTOs;
 using Application.Interfaces.UnitOfWork;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Planes.Queries.GetAll
 {
@@ -16,7 +17,7 @@ namespace Application.CQRS.Planes.Queries.GetAll
 
         public async Task<ApiResult<PageList<PlaneDto>>> Handle(GetAllPlaneQuery request, CancellationToken cancellationToken)
         {
-            var plane = _unitOfWork.PlaneRepository.GetByCondition();
+            var plane = _unitOfWork.PlaneRepository.GetByCondition(include: q => q.Include(p => p.Airline));
             if (!string.IsNullOrEmpty(request.Search))
                 plane = plane.Where(p => p.PlaneModel.Contains(request.Search));
 

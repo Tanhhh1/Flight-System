@@ -16,7 +16,7 @@ namespace Application.CQRS.Planes.Queries.GetById
 
         public async Task<ApiResult<PlaneDto>> Handle(GetByPlaneIdQuery request, CancellationToken cancellationToken)
         {
-            var plane = _unitOfWork.PlaneRepository.GetByIdAsync(request.PlaneId);
+            var plane = await _unitOfWork.PlaneRepository.GetByIdAsync(request.PlaneId);
             if (plane == null)
                 return ApiResult<PlaneDto>.Failure(["Máy bay không tồn tại"]);
             var planeDto = plane.Adapt<PlaneDto>();

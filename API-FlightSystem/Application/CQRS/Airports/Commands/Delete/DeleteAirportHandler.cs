@@ -4,6 +4,7 @@ using Application.Interfaces.UnitOfWork;
 using Domain.Enums;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Airports.Commands.Delete
 {
@@ -26,20 +27,13 @@ namespace Application.CQRS.Airports.Commands.Delete
             if (airport.Status == FlightStatus.Inactive)
                 return ApiResult<AirportDto>.Failure(["Sân bay đã bị vô hiệu hóa trước đó"]);
 
-            bool hasActiveRoute = _unitOfWork.RouteRepository
+            bool hasActiveRoute = await _unitOfWork.RouteRepository
                 .GetByCondition(r => r.Status == FlightStatus.Active
                                   && (r.OriginAirportId == request.AirportId
                                    || r.DestinationAirportId == request.AirportId))
-                .Any();
+                .AnyAsync();
             if (hasActiveRoute)
                 return ApiResult<AirportDto>.Failure(["Sân bay đang được sử dụng trong tuyến bay hoạt động"]);
-
-            bool hasActiveSegment = _unitOfWork.FlightSegmentRepository
-                .GetByCondition(fs => (fs.OriginAirportId == request.AirportId
-                                    || fs.DestinationAirportId == request.AirportId))
-                .Any();
-            if (hasActiveSegment)
-                return ApiResult<AirportDto>.Failure(["Sân bay đang có chặng bay hoạt động"]);
 
             airport.Status = FlightStatus.Inactive;
 

@@ -4,6 +4,7 @@ using Application.Interfaces.UnitOfWork;
 using Domain.Enums;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Planes.Commands.Delete
 {
@@ -25,13 +26,12 @@ namespace Application.CQRS.Planes.Commands.Delete
             if (plane.Status == FlightStatus.Inactive)
                 return ApiResult<PlaneDto>.Failure(["Máy bay đã bị vô hiệu hóa trước đó"]);
 
-            var hasActiveFlight = _unitOfWork.FlightRepository
+            var hasActiveFlight = await _unitOfWork.FlightRepository
                 .GetByCondition(f => f.PlaneId == request.PlaneId
                                   && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
-                .Any();
+                .AnyAsync();
             if (hasActiveFlight)
                 return ApiResult<PlaneDto>.Failure(["Không thể vô hiệu hóa máy bay đang có chuyến bay hoạt động"]);
-
 
             plane.Status = FlightStatus.Inactive;
 
