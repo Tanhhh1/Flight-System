@@ -10,6 +10,9 @@ namespace Infrastructure.Persistences.Configuration
         {
             builder.HasKey(x => x.BookingId);
 
+            builder.Property(x => x.ClassId)
+            .IsRequired();
+
             builder.Property(x => x.TotalPrice)
                 .HasPrecision(18, 2)
                 .IsRequired();
@@ -26,6 +29,11 @@ namespace Infrastructure.Persistences.Configuration
             builder.HasOne(x => x.User)
                 .WithMany(u => u.Bookings)
                 .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.SeatClass)       
+                .WithMany(s => s.Bookings)
+                .HasForeignKey(x => x.ClassId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(x => x.BookingDetails)

@@ -13,5 +13,6 @@ namespace Domain.Entities
         public Airport OriginAirport { get; set; } = null!;
         public Airport DestinationAirport { get; set; } = null!;
         public ICollection<Flight> Flights { get; set; } = new List<Flight>();
+        public ICollection<FlightSegment> FlightSegments { get; set; } = new List<FlightSegment>();
     }
 }

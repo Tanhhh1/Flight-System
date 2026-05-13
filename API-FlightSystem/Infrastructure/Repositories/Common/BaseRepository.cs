@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.Repositories.Common;
 using Infrastructure.Persistences;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -40,11 +41,16 @@ namespace Infrastructure.Repositories.Base
             return await _dbContext.Set<T>().ToListAsync();
         }
 
-        public IQueryable<T> GetByCondition(Expression<Func<T, bool>>? expression = null, Func<IQueryable<T>, IOrderedQueryable<T>>? order = null)
+        public IQueryable<T> GetByCondition(
+            Expression<Func<T, bool>>? expression = null, 
+            Func<IQueryable<T>, IOrderedQueryable<T>>? order = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null)
         {
             IQueryable<T> query = _dbContext.Set<T>();
             if (expression != null)
                 query = query.Where(expression);
+            if (include != null)
+                query = include(query);
             if (order != null)
                 query = order(query);
             return query;

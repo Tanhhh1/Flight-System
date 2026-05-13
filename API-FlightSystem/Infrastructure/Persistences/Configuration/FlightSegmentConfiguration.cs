@@ -10,10 +10,7 @@ namespace Infrastructure.Persistences.Configuration
         {
             builder.HasKey(x => x.SegmentId);
 
-            builder.Property(x => x.OriginAirportId)
-                .IsRequired();
-
-            builder.Property(x => x.DestinationAirportId)
+            builder.Property(x => x.RouteId)
                 .IsRequired();
 
             builder.Property(x => x.DepartureTime)
@@ -30,14 +27,9 @@ namespace Infrastructure.Persistences.Configuration
                 .HasForeignKey(x => x.FlightId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(x => x.OriginAirport)
-                .WithMany()
-                .HasForeignKey(x => x.OriginAirportId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne(x => x.DestinationAirport)
-                .WithMany()
-                .HasForeignKey(x => x.DestinationAirportId)
+            builder.HasOne(x => x.Route)
+                .WithMany(r => r.FlightSegments)
+                .HasForeignKey(x => x.RouteId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasIndex(x => new { x.FlightId, x.SegmentOrder })

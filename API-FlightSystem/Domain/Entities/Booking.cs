@@ -8,11 +8,13 @@ namespace Domain.Entities
     {
         public int BookingId { get; set; }
         public int UserId { get; set; }
+        public int ClassId { get; set; }
         public DateTime BookingDate { get; set; }
         public int TripType { get; set; }
         public decimal TotalPrice { get; set; }
         public BookingStatus Status { get; set; }
         public User User { get; set; } = null!;
+        public SeatClass SeatClass { get; set; } = null!;
         public ICollection<SupportRequest> SupportRequests { get; set; } = new List<SupportRequest>();
         public ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
         public ICollection<Payment> Payments { get; set; } = new List<Payment>();

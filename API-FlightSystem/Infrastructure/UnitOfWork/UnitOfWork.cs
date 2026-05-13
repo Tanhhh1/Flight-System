@@ -21,6 +21,7 @@ namespace Infrastructure.Uow
         private IPolicyRepository? _policyRepository;
         private IFlightServiceRepository? _flightServiceRepository;
         private IFlightSegmentRepository? _flightSegmentRepository;
+        private IRefreshTokenRepository? _refreshTokenRepository;
         public UnitOfWork(DatabaseContext dbContext)
         {
             _dbContext = dbContext;
@@ -36,6 +37,7 @@ namespace Infrastructure.Uow
         public IPolicyRepository PolicyRepository => _policyRepository ??= new PolicyRepository(_dbContext);
         public IFlightServiceRepository FlightServiceRepository => _flightServiceRepository ??= new FlightServiceRepository(_dbContext);
         public IFlightSegmentRepository FlightSegmentRepository => _flightSegmentRepository ??= new FlightSegmentRepository(_dbContext);
+        public IRefreshTokenRepository RefreshTokenRepository => _refreshTokenRepository ??= new RefreshTokenRepository(_dbContext);
 
         public async Task BeginTransactionAsync()
         {

@@ -105,6 +105,9 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("ClassId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -125,6 +128,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("BookingId");
+
+                    b.HasIndex("ClassId");
 
                     b.HasIndex("UserId", "BookingDate")
                         .HasDatabaseName("IX_Booking_User_Date");
@@ -310,16 +315,13 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("DepartureTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("DestinationAirportId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("FlightDuration")
                         .HasColumnType("integer");
 
                     b.Property<int>("FlightId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("OriginAirportId")
+                    b.Property<int>("RouteId")
                         .HasColumnType("integer");
 
                     b.Property<int>("SegmentOrder")
@@ -330,9 +332,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("SegmentId");
 
-                    b.HasIndex("DestinationAirportId");
-
-                    b.HasIndex("OriginAirportId");
+                    b.HasIndex("RouteId");
 
                     b.HasIndex("FlightId", "SegmentOrder")
                         .IsUnique()
@@ -1029,11 +1029,19 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Booking", b =>
                 {
+                    b.HasOne("Domain.Entities.SeatClass", "SeatClass")
+                        .WithMany("Bookings")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Domain.Identity.User", "User")
                         .WithMany("Bookings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("SeatClass");
 
                     b.Navigation("User");
                 });
@@ -1139,29 +1147,21 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.FlightSegment", b =>
                 {
-                    b.HasOne("Domain.Entities.Airport", "DestinationAirport")
-                        .WithMany()
-                        .HasForeignKey("DestinationAirportId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.Flight", "Flight")
                         .WithMany("FlightSegments")
                         .HasForeignKey("FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Airport", "OriginAirport")
-                        .WithMany()
-                        .HasForeignKey("OriginAirportId")
+                    b.HasOne("Domain.Entities.Route", "Route")
+                        .WithMany("FlightSegments")
+                        .HasForeignKey("RouteId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("DestinationAirport");
-
                     b.Navigation("Flight");
 
-                    b.Navigation("OriginAirport");
+                    b.Navigation("Route");
                 });
 
             modelBuilder.Entity("Domain.Entities.FlightService", b =>
@@ -1395,11 +1395,15 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Route", b =>
                 {
+                    b.Navigation("FlightSegments");
+
                     b.Navigation("Flights");
                 });
 
             modelBuilder.Entity("Domain.Entities.SeatClass", b =>
                 {
+                    b.Navigation("Bookings");
+
                     b.Navigation("FlightSeatPrices");
 
                     b.Navigation("SeatTemplates");

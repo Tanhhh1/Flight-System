@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20260505152736_UpdateAirport")]
-    partial class UpdateAirport
+    [Migration("20260513022845_InitialCreateDatabase")]
+    partial class InitialCreateDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,6 +91,9 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("AirportId");
 
+                    b.HasIndex("AirportCode")
+                        .IsUnique();
+
                     b.ToTable("Airports");
                 });
 
@@ -105,11 +108,11 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("ClassId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("FlightId")
-                        .HasColumnType("integer");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -129,7 +132,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("BookingId");
 
-                    b.HasIndex("FlightId");
+                    b.HasIndex("ClassId");
 
                     b.HasIndex("UserId", "BookingDate")
                         .HasDatabaseName("IX_Booking_User_Date");
@@ -151,7 +154,10 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("FlightSeatId")
+                    b.Property<int>("FlightId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("FlightSeatId")
                         .HasColumnType("integer");
 
                     b.Property<int>("PassengerId")
@@ -167,6 +173,9 @@ namespace Infrastructure.Migrations
                     b.HasKey("BookingDetailId");
 
                     b.HasIndex("BookingId");
+
+                    b.HasIndex("FlightId")
+                        .HasDatabaseName("IX_BookingDetail_Flight");
 
                     b.HasIndex("FlightSeatId")
                         .IsUnique();
@@ -309,16 +318,13 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("DepartureTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("DestinationAirportId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("FlightDuration")
                         .HasColumnType("integer");
 
                     b.Property<int>("FlightId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("OriginAirportId")
+                    b.Property<int>("RouteId")
                         .HasColumnType("integer");
 
                     b.Property<int>("SegmentOrder")
@@ -329,9 +335,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("SegmentId");
 
-                    b.HasIndex("DestinationAirportId");
-
-                    b.HasIndex("OriginAirportId");
+                    b.HasIndex("RouteId");
 
                     b.HasIndex("FlightId", "SegmentOrder")
                         .IsUnique()
@@ -673,7 +677,7 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<bool>("IsAvailable")
+                    b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
@@ -1028,9 +1032,9 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Booking", b =>
                 {
-                    b.HasOne("Domain.Entities.Flight", "Flight")
+                    b.HasOne("Domain.Entities.SeatClass", "SeatClass")
                         .WithMany("Bookings")
-                        .HasForeignKey("FlightId")
+                        .HasForeignKey("ClassId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1040,7 +1044,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Flight");
+                    b.Navigation("SeatClass");
 
                     b.Navigation("User");
                 });
@@ -1053,11 +1057,16 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.Flight", "Flight")
+                        .WithMany("BookingDetails")
+                        .HasForeignKey("FlightId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.FlightSeat", "FlightSeat")
                         .WithOne("BookingDetail")
                         .HasForeignKey("Domain.Entities.BookingDetail", "FlightSeatId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Domain.Entities.Passenger", "Passenger")
                         .WithMany("BookingDetails")
@@ -1066,6 +1075,8 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Booking");
+
+                    b.Navigation("Flight");
 
                     b.Navigation("FlightSeat");
 
@@ -1139,29 +1150,21 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.FlightSegment", b =>
                 {
-                    b.HasOne("Domain.Entities.Airport", "DestinationAirport")
-                        .WithMany()
-                        .HasForeignKey("DestinationAirportId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.Flight", "Flight")
                         .WithMany("FlightSegments")
                         .HasForeignKey("FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Airport", "OriginAirport")
-                        .WithMany()
-                        .HasForeignKey("OriginAirportId")
+                    b.HasOne("Domain.Entities.Route", "Route")
+                        .WithMany("FlightSegments")
+                        .HasForeignKey("RouteId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("DestinationAirport");
-
                     b.Navigation("Flight");
 
-                    b.Navigation("OriginAirport");
+                    b.Navigation("Route");
                 });
 
             modelBuilder.Entity("Domain.Entities.FlightService", b =>
@@ -1357,7 +1360,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Flight", b =>
                 {
-                    b.Navigation("Bookings");
+                    b.Navigation("BookingDetails");
 
                     b.Navigation("FlightSeatPrices");
 
@@ -1395,11 +1398,15 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Route", b =>
                 {
+                    b.Navigation("FlightSegments");
+
                     b.Navigation("Flights");
                 });
 
             modelBuilder.Entity("Domain.Entities.SeatClass", b =>
                 {
+                    b.Navigation("Bookings");
+
                     b.Navigation("FlightSeatPrices");
 
                     b.Navigation("SeatTemplates");
