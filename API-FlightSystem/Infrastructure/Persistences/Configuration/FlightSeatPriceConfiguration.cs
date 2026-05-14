@@ -15,6 +15,9 @@ namespace Infrastructure.Persistences.Configuration
                 .HasPrecision(18, 2)
                 .IsRequired();
 
+            builder.Property(x => x.AvailableSeats)
+                .IsRequired();
+
             builder.HasOne(x => x.Flight)
                 .WithMany(f => f.FlightSeatPrices)
                 .HasForeignKey(x => x.FlightId)
