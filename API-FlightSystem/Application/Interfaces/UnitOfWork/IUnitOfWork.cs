@@ -19,5 +19,7 @@ namespace Application.Interfaces.UnitOfWork
         IFlightServiceRepository FlightServiceRepository { get; }
         IFlightSegmentRepository FlightSegmentRepository { get; }
         IRefreshTokenRepository RefreshTokenRepository { get; }
+        ISeatTemplateRepository SeatTemplateRepository { get; }
+        IBookingRepository BookingRepository { get; }
     }
 }
