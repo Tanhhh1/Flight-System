@@ -42,6 +42,7 @@ namespace Application.CQRS.Accounts.Commands.Create
             }
 
             var accountDto = user.Adapt<AccountDto>();
+            accountDto.IsActive = true;
             accountDto.Roles = request.RoleNames;
 
             return ApiResult<AccountDto>.Success(accountDto);

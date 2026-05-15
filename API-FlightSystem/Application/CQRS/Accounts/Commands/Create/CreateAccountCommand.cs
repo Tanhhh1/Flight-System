@@ -14,7 +14,6 @@ namespace Application.CQRS.Accounts.Commands.Create
         public string? Address { get; set; }
         public string? Gender { get; set; }
         public DateTime? Birthday { get; set; }
-        public bool IsActive { get; set; } = true;
         public IEnumerable<string> RoleNames { get; set; } = new List<string>();
     }
 }
