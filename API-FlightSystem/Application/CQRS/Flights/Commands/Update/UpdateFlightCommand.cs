@@ -12,7 +12,6 @@ namespace Application.CQRS.Flights.Commands.Update
         public bool IsRefund { get; set; }
         public bool IsChange { get; set; }
         public DateTime DepartureTime { get; set; }
-        public DateTime ArrivalTime { get; set; }
         public List<FlightSegmentDto> Segments { get; set; } = [];
         public List<FlightSeatPriceDto> SeatPrices { get; set; } = [];
         public List<FlightServiceDto> Services { get; set; } = [];

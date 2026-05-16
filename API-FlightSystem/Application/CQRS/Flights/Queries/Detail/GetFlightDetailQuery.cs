@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Common;
+using Application.CQRS.Flights.DTOs;
+using MediatR;
 
 namespace Application.CQRS.Flights.Queries.Detail
 {
-    internal class GetFlightDetailQuery
+    public class GetFlightDetailQuery : IRequest<ApiResult<FlightDetailDto>>
     {
+        public int FlightId { get; set; }
     }
 }

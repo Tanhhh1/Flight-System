@@ -1,6 +1,6 @@
 ﻿namespace Application.CQRS.Flights.DTOs
 {
-    public class FlightServiceDto
+    public class FlightDetailServiceDto
     {
         public int ServiceId { get; set; }
         public string ServiceName { get; set; } = string.Empty;

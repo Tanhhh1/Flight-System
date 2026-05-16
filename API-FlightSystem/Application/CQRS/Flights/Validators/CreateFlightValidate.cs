@@ -16,9 +16,6 @@ namespace Application.CQRS.Flights.Validators
             RuleFor(x => x.DepartureTime)
                 .GreaterThan(DateTime.UtcNow).WithMessage("Giờ khởi hành không hợp lệ");
 
-            RuleFor(x => x.ArrivalTime)
-                .GreaterThan(x => x.DepartureTime).WithMessage("Giờ đến phải sau giờ khởi hành");
-
             RuleFor(x => x.SeatPrices)
                 .NotEmpty().WithMessage("Phải nhập thông tin giá vé")
                 .Must(list => list.Select(s => s.ClassId).Distinct().Count() == list.Count)
@@ -49,29 +46,7 @@ namespace Application.CQRS.Flights.Validators
 
                 seg.RuleFor(s => s.DepartureTime)
                     .GreaterThan(DateTime.UtcNow).WithMessage("Giờ khởi hành chặng không hợp lệ");
-
-                seg.RuleFor(s => s.ArrivalTime)
-                    .GreaterThan(s => s.DepartureTime).WithMessage("Giờ hạ cánh chặng phải sau giờ khởi hành chặng");
             }).When(x => x.Segments.Count > 0);
-
-            RuleForEach(x => x.Segments)
-               .Must((command, seg) => seg.DepartureTime >= command.DepartureTime && seg.ArrivalTime <= command.ArrivalTime)
-               .WithMessage("Thời gian chặng phải nằm trong khoảng thời gian chuyến bay")
-               .When(x => x.Segments.Count > 0);
-
-
-            RuleFor(x => x.Segments)
-                .Must(segments =>
-                {
-                    for (int i = 0; i < segments.Count - 1; i++)
-                    {
-                        if (segments[i + 1].DepartureTime < segments[i].ArrivalTime)
-                            return false;
-                    }
-                    return true;
-                })
-                .WithMessage("Thời gian các chặng bị chồng lấp nhau")
-                .When(x => x.Segments.Count > 1);
 
             RuleFor(x => x.Segments)
                 .Must((command, segments) =>

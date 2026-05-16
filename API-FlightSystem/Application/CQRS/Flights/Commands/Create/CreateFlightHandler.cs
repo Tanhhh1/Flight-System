@@ -30,6 +30,7 @@ namespace Application.CQRS.Flights.Commands.Create
             if (route.Status == FlightStatus.Inactive)
                 return ApiResult<FlightDto>.Failure(["Tuyến bay đang không hoạt động"]);
 
+            Dictionary<int, Route> segmentRoutes = new();
             if (request.Segments.Count > 0)
             {
                 var segmentRouteIds = request.Segments
@@ -37,12 +38,11 @@ namespace Application.CQRS.Flights.Commands.Create
                     .Distinct()
                     .ToList();
 
-                var existingRouteIds = await _unitOfWork.RouteRepository
+                segmentRoutes = await _unitOfWork.RouteRepository
                     .GetByCondition(r => segmentRouteIds.Contains(r.RouteId) && r.Status == FlightStatus.Active)
-                    .Select(r => r.RouteId)
-                    .ToListAsync();
+                    .ToDictionaryAsync(r => r.RouteId, cancellationToken);
 
-                var invalidRouteIds = segmentRouteIds.Except(existingRouteIds).ToList();
+                var invalidRouteIds = segmentRouteIds.Except(segmentRoutes.Keys).ToList();
                 if (invalidRouteIds.Count > 0)
                     return ApiResult<FlightDto>.Failure(["Một hoặc nhiều tuyến bay của chặng không hợp lệ"]);
             }
@@ -82,17 +82,22 @@ namespace Application.CQRS.Flights.Commands.Create
                 RouteId = request.RouteId,
                 PolicyId = policy.PolicyId,
                 DepartureTime = request.DepartureTime,
-                ArrivalTime = request.ArrivalTime,
+                ArrivalTime = request.DepartureTime.AddMinutes(route.FlightDuration),
                 Status = FlightStatus.Active,
 
                 FlightSegments = request.Segments
-                    .Select((s, index) => new FlightSegment
+                    .Select((s, index) =>
                     {
-                        RouteId = s.RouteId,
-                        DepartureTime = s.DepartureTime,
-                        ArrivalTime = s.ArrivalTime,
-                        SegmentOrder = index + 1
-                    }).ToList(),
+                        var segmentRoute = segmentRoutes[s.RouteId];
+                        return new FlightSegment
+                        {
+                            RouteId = s.RouteId,
+                            DepartureTime = s.DepartureTime,
+                            ArrivalTime = s.DepartureTime.AddMinutes(segmentRoute.FlightDuration),
+                            SegmentOrder = index + 1,
+                        };
+                    })
+                    .ToList(),
 
                 FlightSeatPrices = request.SeatPrices
                     .Select(p => new FlightSeatPrice

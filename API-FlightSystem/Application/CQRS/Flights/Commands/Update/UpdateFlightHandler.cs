@@ -52,14 +52,14 @@ namespace Application.CQRS.Flights.Commands.Update
 
             var policy = await _unitOfWork.PolicyRepository
                 .GetByCondition(p => p.IsRefund == request.IsRefund && p.IsChange == request.IsChange)
-                .FirstOrDefaultAsync(cancellationToken);
+                .FirstOrDefaultAsync();
             if (policy == null)
                 return ApiResult<FlightDto>.Failure(["Chính sách không tồn tại"]);
 
             var hasPaidBooking = await _unitOfWork.BookingRepository
                 .GetByCondition(b => b.BookingDetails.Any(bd => bd.FlightId == request.FlightId)
                                   && b.Status == BookingStatus.Confirmed)
-                .AnyAsync(cancellationToken);
+                .AnyAsync();
             if (hasPaidBooking)
                 return ApiResult<FlightDto>.Failure(["Không thể cập nhật chuyến bay đang có đặt vé"]);
 
@@ -78,26 +78,28 @@ namespace Application.CQRS.Flights.Commands.Update
                     return ApiResult<FlightDto>.Failure(["Một hoặc nhiều tuyến bay của chặng không hợp lệ"]);
             }
 
-            if (request.Services.Count > 0)
+            Dictionary<int, Route> segmentRoutes = new();
+            if (request.Segments.Count > 0)
             {
-                var serviceIds = request.Services
-                    .Select(s => s.ServiceId).Distinct().ToList();
+                var segmentRouteIds = request.Segments
+                    .Select(s => s.RouteId)
+                    .Distinct()
+                    .ToList();
 
-                var existingServiceIds = await _unitOfWork.ServiceRepository
-                    .GetByCondition(s => serviceIds.Contains(s.ServiceId))
-                    .Select(s => s.ServiceId)
-                    .ToListAsync();
+                segmentRoutes = await _unitOfWork.RouteRepository
+                    .GetByCondition(r => segmentRouteIds.Contains(r.RouteId) && r.Status == FlightStatus.Active)
+                    .ToDictionaryAsync(r => r.RouteId, cancellationToken);
 
-                var invalidServiceIds = serviceIds.Except(existingServiceIds).ToList();
-                if (invalidServiceIds.Count > 0)
-                    return ApiResult<FlightDto>.Failure(["Một hoặc nhiều dịch vụ không hợp lệ"]);
+                var invalidRouteIds = segmentRouteIds.Except(segmentRoutes.Keys).ToList();
+                if (invalidRouteIds.Count > 0)
+                    return ApiResult<FlightDto>.Failure(["Một hoặc nhiều tuyến bay của chặng không hợp lệ"]);
             }
 
             flight.PlaneId = request.PlaneId;
             flight.RouteId = request.RouteId;
             flight.PolicyId = policy.PolicyId;
             flight.DepartureTime = request.DepartureTime;
-            flight.ArrivalTime = request.ArrivalTime;
+            flight.ArrivalTime = request.DepartureTime.AddMinutes(route.FlightDuration);
 
             var requestSegmentIds = request.Segments.Where(s => s.SegmentId > 0).Select(s => s.SegmentId).ToList();
             var segmentsToDelete = flight.FlightSegments.Where(s => !requestSegmentIds.Contains(s.SegmentId)).ToList();
@@ -113,7 +115,7 @@ namespace Application.CQRS.Flights.Commands.Update
                     {
                         existing.RouteId = seg.RouteId;
                         existing.DepartureTime = seg.DepartureTime;
-                        existing.ArrivalTime = seg.ArrivalTime;
+                        existing.ArrivalTime = seg.DepartureTime.AddMinutes(route.FlightDuration);
                         existing.SegmentOrder = index + 1;
                     }
                 }
@@ -124,7 +126,7 @@ namespace Application.CQRS.Flights.Commands.Update
                         FlightId = flight.FlightId,
                         RouteId = seg.RouteId,
                         DepartureTime = seg.DepartureTime,
-                        ArrivalTime = seg.ArrivalTime,
+                        ArrivalTime = seg.DepartureTime.AddMinutes(route.FlightDuration),
                         SegmentOrder = index + 1
                     });
                 }

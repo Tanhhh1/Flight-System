@@ -24,7 +24,7 @@ namespace Application.CQRS.Flights.Queries.GetById
                 .Include(f => f.FlightSegments.OrderBy(s => s.SegmentOrder))
                 .Include(f => f.FlightSeatPrices)
                 .Include(f => f.FlightServices)
-                .FirstOrDefaultAsync(cancellationToken);
+                .FirstOrDefaultAsync();
 
             if (flight == null)
                 return ApiResult<FlightDto>.Failure(["Chuyến bay không tồn tại."]);
