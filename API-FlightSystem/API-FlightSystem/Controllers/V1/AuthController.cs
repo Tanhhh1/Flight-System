@@ -19,7 +19,7 @@ namespace API_FlightSystem.Controllers.V1
         }
 
         [HttpPost("sign-up")]
-        [ProducesResponseType(typeof(ApiResult<SignUpDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SignUp([FromBody] SignUpCommand command)
         {
@@ -30,7 +30,7 @@ namespace API_FlightSystem.Controllers.V1
 
         [HttpPost("sign-in")]
         [ProducesResponseType(typeof(ApiResult<SignInDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResult<SignInDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SignIn([FromBody] SignInCommand command)
         {
             var result = await _mediator.Send(command);
@@ -49,7 +49,7 @@ namespace API_FlightSystem.Controllers.V1
         }
 
         [HttpPost("refresh")]
-        [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResult<RefreshTokenDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand command)
         {

@@ -1,4 +1,5 @@
 ﻿using Application.Common;
+using Application.CQRS.Auth.DTOs;
 using MediatR;
 
 namespace Application.CQRS.Auth.Commands.SignUp
