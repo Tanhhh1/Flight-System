@@ -1,12 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Common;
+using Application.Interfaces.Services;
+using Domain.Identity;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace Application.CQRS.Profile.Commands.ChangePassword
 {
-    internal class ChangePasswordHandler
+    public class ChangePasswordHandler : IRequestHandler<ChangePasswordCommand, ApiResult<string>>
     {
+        private readonly UserManager<User> _userManager;
+        private readonly ICurrentUser _currentUser;
+
+        public ChangePasswordHandler(UserManager<User> userManager, ICurrentUser currentUser)
+        {
+            _userManager = userManager;
+            _currentUser = currentUser;
+        }
+
+        public async Task<ApiResult<string>> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
+        {
+            if (!_currentUser.IsAuthenticated || _currentUser.Id is null)
+                return ApiResult<string>.Failure(["Người dùng chưa đăng nhập"]);
+
+            var user = await _userManager.FindByIdAsync(_currentUser.Id.ToString()!);
+            if (user is null)
+                return ApiResult<string>.Failure(["Không tìm thấy người dùng"]);
+
+            var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+
+            if (!result.Succeeded)
+                return ApiResult<string>.Failure(result.Errors.Select(e => e.Description).ToList());
+
+            await _userManager.UpdateSecurityStampAsync(user);
+
+            return ApiResult<string>.Success("Đổi mật khẩu thành công, vui lòng đăng nhập lại");
+        }
     }
 }

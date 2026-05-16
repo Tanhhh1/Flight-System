@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Common;
+using Application.CQRS.Profile.DTOs;
+using MediatR;
 
 namespace Application.CQRS.Profile.Queries.GetById
 {
-    internal class GetByUserIdQuery
+    public class GetByUserIdQuery : IRequest<ApiResult<UserProfileDto>>
     {
     }
 }

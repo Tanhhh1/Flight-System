@@ -19,9 +19,6 @@ namespace Application.CQRS.Accounts.Validators
             RuleFor(x => x.PhoneNumber)
                 .Matches(@"^0[0-9]{9}$").WithMessage("Số điện thoại phải bắt đầu bằng 0, gồm 10 chữ số.")
                 .When(x => !string.IsNullOrEmpty(x.PhoneNumber));
-
-            RuleFor(x => x.Gender)
-                .NotEmpty().WithMessage("Giới tính không được để trống.");
         }
     }
 }
