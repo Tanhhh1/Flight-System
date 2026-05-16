@@ -15,8 +15,16 @@ namespace Infrastructure.Persistences.Configuration
                 .HasMaxLength(200)
                 .IsRequired();
 
-            builder.Property(x => x.IDCard)
-                .HasMaxLength(50)
+            builder.Property(x => x.Gender)
+                .HasMaxLength(10)
+                .IsRequired();
+
+            builder.Property(x => x.Country)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            builder.Property(x => x.Birthday)
+                .HasColumnType("date")
                 .IsRequired();
 
             builder.HasOne(x => x.PassengerType)
@@ -28,9 +36,6 @@ namespace Infrastructure.Persistences.Configuration
                 .WithOne(d => d.Passenger)
                 .HasForeignKey(d => d.PassengerId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasIndex(x => x.IDCard)
-                .HasDatabaseName("IX_Passenger_IDCard");
         }
     }
 }

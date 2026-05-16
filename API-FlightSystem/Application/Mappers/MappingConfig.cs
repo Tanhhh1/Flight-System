@@ -39,6 +39,23 @@ namespace Application.Mappers
                 .Map(dest => dest.IsRefund, src => src.Policy.IsRefund)
                 .Map(dest => dest.IsChange, src => src.Policy.IsChange)
                 .Map(dest => dest.SeatPrices, src => src.FlightSeatPrices);
+
+            config.NewConfig<Flight, FlightSearchDto>()
+                .Map(dest => dest.FlightDuration, src => src.Route.FlightDuration)
+                .Map(dest => dest.PlaneModel, src => src.Plane.PlaneModel)
+                .Map(dest => dest.AirlineId, src => src.Plane.AirlineId)
+                .Map(dest => dest.AirlineName, src => src.Plane.Airline.AirlineName)
+                .Map(dest => dest.OriginAirportId, src => src.Route.OriginAirportId)
+                .Map(dest => dest.OriginAirportCode, src => src.Route.OriginAirport.AirportCode)
+                .Map(dest => dest.OriginCity, src => src.Route.OriginAirport.City)
+                .Map(dest => dest.DestinationAirportId, src => src.Route.DestinationAirportId)
+                .Map(dest => dest.DestinationAirportCode, src => src.Route.DestinationAirport.AirportCode)
+                .Map(dest => dest.DestinationCity, src => src.Route.DestinationAirport.City)
+                .Map(dest => dest.IsRefund, src => src.Policy.IsRefund)
+                .Map(dest => dest.IsChange, src => src.Policy.IsChange)
+                .Map(dest => dest.StopCount, src => src.FlightSegments.Count)
+                .Map(dest => dest.Services, src => src.FlightServices);
+
         }
     }
 }

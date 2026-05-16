@@ -23,14 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CQRS\Bookings\Commands\" />
-    <Folder Include="CQRS\Bookings\DTOs\" />
-    <Folder Include="CQRS\Bookings\Queries\" />
-    <Folder Include="CQRS\Bookings\Validators\" />
-    <Folder Include="CQRS\Supports\Commands\" />
-    <Folder Include="CQRS\Supports\DTOs\" />
-    <Folder Include="CQRS\Supports\Validators\" />
-    <Folder Include="CQRS\Supports\Queries\" />
+    <Folder Include="CQRS\Payments\Commands\" />
+    <Folder Include="CQRS\Payments\DTOs\" />
+    <Folder Include="CQRS\Payments\Validators\" />
   </ItemGroup>
 
 </Project>

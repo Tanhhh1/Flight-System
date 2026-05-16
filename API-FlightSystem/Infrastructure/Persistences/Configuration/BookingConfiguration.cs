@@ -10,8 +10,12 @@ namespace Infrastructure.Persistences.Configuration
         {
             builder.HasKey(x => x.BookingId);
 
+            builder.Property(x => x.BookingCode)
+                .HasMaxLength(6)
+                .IsRequired();
+                
             builder.Property(x => x.ClassId)
-            .IsRequired();
+                .IsRequired();
 
             builder.Property(x => x.TotalPrice)
                 .HasPrecision(18, 2)

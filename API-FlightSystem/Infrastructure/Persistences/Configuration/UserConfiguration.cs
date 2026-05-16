@@ -25,6 +25,9 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(u => u.Gender)
                 .HasMaxLength(10);
 
+            builder.Property(u => u.Birthday)
+                .HasColumnType("date");
+
             builder.Property(u => u.IsActive)
                 .HasDefaultValue(true);
 
