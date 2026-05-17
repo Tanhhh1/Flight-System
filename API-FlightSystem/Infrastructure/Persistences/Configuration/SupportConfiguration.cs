@@ -20,6 +20,11 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(x => x.Status)
                 .IsRequired();
 
+            builder.HasOne(x => x.NewFlight)
+                .WithMany()
+                .HasForeignKey(x => x.NewFlightId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasOne(x => x.Booking)
                 .WithMany(b => b.SupportRequests)
                 .HasForeignKey(x => x.BookingId)

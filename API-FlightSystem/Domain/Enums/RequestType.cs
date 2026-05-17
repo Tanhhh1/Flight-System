@@ -3,6 +3,6 @@
     public enum RequestType
     {
         Refund = 1,
-        ChangeFlight = 2    
+        Reschedule = 2    
     }
 }
