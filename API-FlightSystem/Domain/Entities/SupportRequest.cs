@@ -3,7 +3,7 @@ using Domain.Enums;
 
 namespace Domain.Entities
 {
-    public class SupportRequest
+    public class SupportRequest : BaseEntity
     {
         public int RequestId { get; set; }
         public int BookingId { get; set; }

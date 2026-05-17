@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreateDatabase : Migration
+    public partial class InitialCreateDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -139,7 +139,7 @@ namespace Infrastructure.Migrations
                     Fullname = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     Address = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     Gender = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
-                    Birthday = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Birthday = table.Column<DateTime>(type: "date", nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -224,7 +224,9 @@ namespace Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     TypeId = table.Column<int>(type: "integer", nullable: false),
                     FullName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    IDCard = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Gender = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    Birthday = table.Column<DateTime>(type: "date", nullable: false),
+                    Country = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -351,6 +353,7 @@ namespace Infrastructure.Migrations
                 {
                     BookingId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    BookingCode = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false),
                     ClassId = table.Column<int>(type: "integer", nullable: false),
                     BookingDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -523,7 +526,9 @@ namespace Infrastructure.Migrations
                     BookingId = table.Column<int>(type: "integer", nullable: false),
                     RequestType = table.Column<int>(type: "integer", nullable: false),
                     Reason = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false)
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -543,6 +548,7 @@ namespace Infrastructure.Migrations
                     FlightId = table.Column<int>(type: "integer", nullable: false),
                     ClassId = table.Column<int>(type: "integer", nullable: false),
                     Price = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    AvailableSeats = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -603,7 +609,6 @@ namespace Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FlightId = table.Column<int>(type: "integer", nullable: false),
                     RouteId = table.Column<int>(type: "integer", nullable: false),
-                    FlightDuration = table.Column<int>(type: "integer", nullable: false),
                     DepartureTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ArrivalTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     SegmentOrder = table.Column<int>(type: "integer", nullable: false),
@@ -798,11 +803,6 @@ namespace Infrastructure.Migrations
                 name: "IX_FlightServices_ServiceId",
                 table: "FlightServices",
                 column: "ServiceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Passenger_IDCard",
-                table: "Passengers",
-                column: "IDCard");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Passengers_TypeId",
