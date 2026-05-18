@@ -1,7 +1,6 @@
 ﻿using Application.Common;
 using Application.CQRS.Flights.DTOs;
 using Application.Interfaces.UnitOfWork;
-using Domain.Entities;
 using Domain.Enums;
 using Mapster;
 using MediatR;
@@ -12,7 +11,8 @@ namespace Application.CQRS.Flights.Queries.Search
     public class SearchFlightHandler : IRequestHandler<SearchFlightQuery, ApiResult<PageList<FlightSearchDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        public SearchFlightHandler(IUnitOfWork unitOfWork) 
+
+        public SearchFlightHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -20,92 +20,61 @@ namespace Application.CQRS.Flights.Queries.Search
         public async Task<ApiResult<PageList<FlightSearchDto>>> Handle(SearchFlightQuery request, CancellationToken cancellationToken)
         {
             var query = _unitOfWork.FlightRepository
-                .GetByCondition(f => f.Status == FlightStatus.Active)
-                .Include(f => f.Plane).ThenInclude(p => p.Airline)
-                .Include(f => f.Route).ThenInclude(r => r.OriginAirport)
-                .Include(f => f.Route).ThenInclude(r => r.DestinationAirport)
-                .Include(f => f.Policy)
-                .Include(f => f.FlightSegments)
-                .Include(f => f.FlightSeatPrices).ThenInclude(sp => sp.SeatClass)
-                .Include(f => f.FlightServices)
-                .AsQueryable();
+                .GetByCondition()
+                .Where(f => f.Status == FlightStatus.Active)
+                .AsNoTracking();
 
-            if (request.OriginAirportId.HasValue)
-                query = query.Where(f => f.Route.OriginAirportId == request.OriginAirportId.Value);
+            query = query.Where(f =>
+                f.Route.OriginAirport.City.Contains(request.OriginCity) ||
+                f.Route.OriginAirport.AirportCode.Contains(request.OriginCity));
 
-            if (request.DestinationAirportId.HasValue)
-                query = query.Where(f => f.Route.DestinationAirportId == request.DestinationAirportId.Value);
+            query = query.Where(f =>
+                f.Route.DestinationAirport.City.Contains(request.DestinationCity) ||
+                f.Route.DestinationAirport.AirportCode.Contains(request.DestinationCity));
 
-            if (request.DepartureDate.HasValue)
-                query = query.Where(f => f.DepartureTime.Date == request.DepartureDate.Value.Date);
+            query = query.Where(f =>
+                f.DepartureTime.Date == DateTime.SpecifyKind(request.DepartureDate.Date, DateTimeKind.Utc));
 
-            query = query.Where(f => f.FlightSeatPrices
-                .Any(sp => sp.ClassId == request.ClassId && sp.AvailableSeats > 0));
+            query = query.Where(f =>
+                f.FlightSeatPrices.Any(sp => sp.ClassId == request.ClassId && sp.AvailableSeats > 0));
 
+            query = query.Where(f => f.FlightSeatPrices.Any(sp => sp.ClassId == request.ClassId));
+             
             if (request.StopCount.HasValue)
-                query = query.Where(f => f.FlightSegments.Count == request.StopCount.Value);
+                query = query.Where(f => f.FlightSegments.Count - 1 == request.StopCount.Value);
 
             if (request.AirlineId.HasValue)
                 query = query.Where(f => f.Plane.AirlineId == request.AirlineId.Value);
 
+            if (request.ServiceIds != null && request.ServiceIds.Any())
+                query = query.Where(f => request.ServiceIds
+                    .All(sid => f.FlightServices.Any(fs => fs.ServiceId == sid)));
+
             if (request.DepartureFromHour.HasValue)
                 query = query.Where(f => f.DepartureTime.Hour >= request.DepartureFromHour.Value);
+
             if (request.DepartureToHour.HasValue)
                 query = query.Where(f => f.DepartureTime.Hour <= request.DepartureToHour.Value);
 
             if (request.ArrivalFromHour.HasValue)
                 query = query.Where(f => f.ArrivalTime.Hour >= request.ArrivalFromHour.Value);
+
             if (request.ArrivalToHour.HasValue)
                 query = query.Where(f => f.ArrivalTime.Hour <= request.ArrivalToHour.Value);
 
-            if (request.MinDuration.HasValue)
-                query = query.Where(f => f.Route.FlightDuration >= request.MinDuration.Value);
-            if (request.MaxDuration.HasValue)
-                query = query.Where(f => f.Route.FlightDuration <= request.MaxDuration.Value);
-
-            if (request.MinPrice.HasValue)
-                query = query.Where(f => f.FlightSeatPrices
-                    .Any(sp => sp.ClassId == request.ClassId && sp.Price >= request.MinPrice.Value));
-            if (request.MaxPrice.HasValue)
-                query = query.Where(f => f.FlightSeatPrices
-                    .Any(sp => sp.ClassId == request.ClassId && sp.Price <= request.MaxPrice.Value));
-
-            if (request.ServiceIds.Count > 0)
-                query = query.Where(f => request.ServiceIds
-                    .All(sid => f.FlightServices.Any(fs => fs.ServiceId == sid)));
-
-            if (request.IsRefund.HasValue)
-                query = query.Where(f => f.Policy.IsRefund == request.IsRefund.Value);
-            if (request.IsChange.HasValue)
-                query = query.Where(f => f.Policy.IsChange == request.IsChange.Value);
-
-            query = query.OrderByDescending(f => f.DepartureTime);
-
-            var pagedFlights = await PageList<Flight>.ToPagedListAsync(
-                query,
+            var result = await PageList<FlightSearchDto>.ToPagedListAsync(
+                query.OrderBy(f => f.DepartureTime).ProjectToType<FlightSearchDto>(),
                 request.PageIndex,
-                request.PageSize);
+                request.PageSize,
+                cancellationToken
+            );
 
-            var dtos = pagedFlights.Items.Select(f =>
+            foreach (var flight in result.Items)
             {
-                var dto = f.Adapt<FlightSearchDto>();
-
-                var seatPrice = f.FlightSeatPrices
-                    .FirstOrDefault(sp => sp.ClassId == request.ClassId);
-
-                dto.Price = seatPrice?.Price ?? 0;
-                dto.ClassId = request.ClassId;
-                dto.ClassName = seatPrice?.SeatClass?.ClassName ?? string.Empty;
-
-                return dto;
-            }).ToList();
-
-            var result = new PageList<FlightSearchDto>(
-                dtos,
-                pagedFlights.TotalCount,
-                pagedFlights.PageIndex,
-                pagedFlights.PageSize);
-
+                flight.SeatClasses = flight.SeatClasses
+                    .Where(sc => sc.ClassId == request.ClassId)
+                    .ToList();
+            }
             return ApiResult<PageList<FlightSearchDto>>.Success(result);
         }
     }

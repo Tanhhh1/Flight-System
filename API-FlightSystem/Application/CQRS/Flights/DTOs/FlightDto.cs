@@ -14,4 +14,22 @@
         public List<FlightSeatPriceDto> SeatPrices { get; set; } = [];
         public List<FlightServiceDto> Services { get; set; } = [];
     }
+
+    public class FlightSegmentDto
+    {
+        public int SegmentId { get; set; }
+        public int RouteId { get; set; }
+        public DateTime DepartureTime { get; set; }
+    }
+
+    public class FlightSeatPriceDto
+    {
+        public int ClassId { get; set; }
+        public decimal Price { get; set; }
+    }
+
+    public class FlightServiceDto
+    {
+        public int ServiceId { get; set; }
+    }
 }

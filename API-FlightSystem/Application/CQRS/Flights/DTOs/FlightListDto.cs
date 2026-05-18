@@ -3,16 +3,18 @@
     public class FlightListDto
     {
         public int FlightId { get; set; }
-        public string PlaneModel { get; set; } = string.Empty;
-        public string AirlineName { get; set; } = string.Empty;
-        public string OriginAirport { get; set; } = string.Empty;
-        public string DestinationAirport { get; set; } = string.Empty;
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
-        public int FlightDuration { get; set; }
         public string Status { get; set; } = string.Empty;
+        public string PlaneModel { get; set; } = string.Empty;
+        public string AirlineName { get; set; } = string.Empty;
+        public string OriginAirportCode { get; set; } = string.Empty;
+        public string OriginCity { get; set; } = string.Empty;
+        public string DestinationAirportCode { get; set; } = string.Empty;
+        public string DestinationCity { get; set; } = string.Empty;
+        public int FlightDuration { get; set; }
         public bool IsRefund { get; set; }
         public bool IsChange { get; set; }
-        public List<FlightSeatPriceDto> SeatPrices { get; set; } = new();
+        public int StopCount { get; set; }
     }
 }

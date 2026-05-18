@@ -6,6 +6,7 @@ using Domain.Enums;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Application.CQRS.Flights.Commands.Create
 {
@@ -30,6 +31,16 @@ namespace Application.CQRS.Flights.Commands.Create
             if (route.Status == FlightStatus.Inactive)
                 return ApiResult<FlightDto>.Failure(["Tuyến bay đang không hoạt động"]);
 
+            var isPlaneConflict = await _unitOfWork.FlightRepository
+                .GetByCondition(f => f.PlaneId == request.PlaneId
+                    && f.Status != FlightStatus.Cancelled
+                    && f.DepartureTime < request.DepartureTime.AddMinutes(route.FlightDuration)
+                    && f.ArrivalTime > request.DepartureTime)
+                .AnyAsync(cancellationToken);
+            if (isPlaneConflict)
+                return ApiResult<FlightDto>.Failure(["Máy bay đã được sử dụng trong khoảng thời gian này."]);
+
+            var arrivalTime = request.DepartureTime.AddMinutes(route.FlightDuration);
             Dictionary<int, Route> segmentRoutes = new();
             if (request.Segments.Count > 0)
             {
@@ -45,11 +56,36 @@ namespace Application.CQRS.Flights.Commands.Create
                 var invalidRouteIds = segmentRouteIds.Except(segmentRoutes.Keys).ToList();
                 if (invalidRouteIds.Count > 0)
                     return ApiResult<FlightDto>.Failure(["Một hoặc nhiều tuyến bay của chặng không hợp lệ"]);
+
+                foreach (var segment in request.Segments)
+                {
+                    if (segment.DepartureTime < request.DepartureTime)
+                        return ApiResult<FlightDto>.Failure(["Thời gian chặng không được trước giờ khởi hành chuyến bay."]);
+                }
+
+                for (int i = 0; i < request.Segments.Count - 1; i++)
+                {
+                    var current = request.Segments[i];
+                    var next = request.Segments[i + 1];
+                    var currentRoute = segmentRoutes[current.RouteId];
+                    var nextRoute = segmentRoutes[next.RouteId];
+                    var currentArrival = current.DepartureTime.AddMinutes(currentRoute.FlightDuration);
+
+                    if (next.DepartureTime < currentArrival)
+                        return ApiResult<FlightDto>.Failure(["Thời gian các chặng bị chồng lấp nhau."]);
+
+                    if (currentRoute.DestinationAirportId != nextRoute.OriginAirportId)
+                        return ApiResult<FlightDto>.Failure(["Sân bay đến của chặng trước phải trùng sân bay đi của chặng sau."]);
+                }
+
+                var lastSegment = request.Segments[^1];
+                var lastSegmentRoute = segmentRoutes[lastSegment.RouteId];
+                arrivalTime = lastSegment.DepartureTime.AddMinutes(lastSegmentRoute.FlightDuration);
             }
 
             var policy = await _unitOfWork.PolicyRepository
                 .GetByCondition(p => p.IsRefund == request.IsRefund && p.IsChange == request.IsChange)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
             if (policy == null)
                 return ApiResult<FlightDto>.Failure(["Chính sách không tồn tại"]);
 
@@ -63,7 +99,7 @@ namespace Application.CQRS.Flights.Commands.Create
                 var existingServiceIds = await _unitOfWork.ServiceRepository
                     .GetByCondition(s => serviceIds.Contains(s.ServiceId))
                     .Select(s => s.ServiceId)
-                    .ToListAsync();
+                    .ToListAsync(cancellationToken);
 
                 var invalidServiceIds = serviceIds.Except(existingServiceIds).ToList();
                 if (invalidServiceIds.Count > 0)
@@ -74,7 +110,7 @@ namespace Application.CQRS.Flights.Commands.Create
                 .GetByCondition()
                 .GroupBy(st => st.ClassId)
                 .Select(g => new { ClassId = g.Key, Count = g.Count() })
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             var flight = new Flight
             {
@@ -82,7 +118,7 @@ namespace Application.CQRS.Flights.Commands.Create
                 RouteId = request.RouteId,
                 PolicyId = policy.PolicyId,
                 DepartureTime = request.DepartureTime,
-                ArrivalTime = request.DepartureTime.AddMinutes(route.FlightDuration),
+                ArrivalTime = arrivalTime,
                 Status = FlightStatus.Active,
 
                 FlightSegments = request.Segments

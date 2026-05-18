@@ -34,25 +34,24 @@ namespace Application.CQRS.Flights.Validators
 
             RuleForEach(x => x.Services).ChildRules(service =>
             {
-                service.RuleFor(s => s.ServiceId)
-                    .GreaterThan(0).WithMessage("Dịch vụ không hợp lệ");
+                service.RuleFor(s => s.ServiceId).GreaterThan(0).WithMessage("Dịch vụ không hợp lệ");
             });
-
 
             RuleForEach(x => x.Segments).ChildRules(seg =>
             {
-                seg.RuleFor(s => s.RouteId)
-                    .GreaterThan(0).WithMessage("Tuyến bay không hợp lệ");
-
-                seg.RuleFor(s => s.DepartureTime)
-                    .GreaterThan(DateTime.UtcNow).WithMessage("Giờ khởi hành chặng không hợp lệ");
+                seg.RuleFor(s => s.RouteId).GreaterThan(0).WithMessage("Tuyến bay không hợp lệ");
+                seg.RuleFor(s => s.DepartureTime).GreaterThan(DateTime.UtcNow).WithMessage("Giờ khởi hành chặng không hợp lệ");
             }).When(x => x.Segments.Count > 0);
 
             RuleFor(x => x.Segments)
-                .Must((command, segments) =>
-                    segments.All(s => s.RouteId != command.RouteId))
+                .Must((command, segments) => segments.All(s => s.RouteId != command.RouteId))
                 .WithMessage("Tuyến bay của chặng không được trùng với tuyến bay chính")
                 .When(x => x.Segments.Count > 0);
+
+            RuleFor(x => x.Segments)
+                .Must(segments => segments.Select(s => s.RouteId).Distinct().Count() == segments.Count)
+                .WithMessage("Các chặng không được dùng trùng tuyến bay.")
+                .When(x => x.Segments.Count > 1);
         }
     }
 }

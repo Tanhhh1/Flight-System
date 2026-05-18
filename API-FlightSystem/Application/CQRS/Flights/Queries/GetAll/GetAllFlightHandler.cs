@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.CQRS.Flights.DTOs;
 using Application.Interfaces.UnitOfWork;
+using Domain.Enums;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -18,58 +19,36 @@ namespace Application.CQRS.Flights.Queries.GetAll
 
         public async Task<ApiResult<PageList<FlightListDto>>> Handle(GetAllFlightQuery request, CancellationToken cancellationToken)
         {
-            var flights = _unitOfWork.FlightRepository
+            var query = _unitOfWork.FlightRepository
                 .GetByCondition()
-                .Include(f => f.Plane).ThenInclude(p => p.Airline)
-                .Include(f => f.Route).ThenInclude(r => r.OriginAirport)
-                .Include(f => f.Route).ThenInclude(r => r.DestinationAirport)
-                .Include(f => f.Policy)
-                .Include(f => f.FlightSeatPrices)
-                .AsQueryable();
+                .AsNoTracking();
 
-            if (!string.IsNullOrEmpty(request.Search))
-                flights = flights.Where(f =>
-                    f.Plane.Airline.AirlineName.Contains(request.Search) ||
-                    f.Plane.PlaneModel.Contains(request.Search));
+            if (!string.IsNullOrWhiteSpace(request.OriginCity))
+                query = query.Where(f =>
+                    f.Route.OriginAirport.City.Contains(request.OriginCity) ||
+                    f.Route.OriginAirport.AirportCode.Contains(request.OriginCity));
 
-            if (request.RouteId.HasValue)
-                flights = flights.Where(f => f.RouteId == request.RouteId.Value);
+            if (!string.IsNullOrWhiteSpace(request.DestinationCity))
+                query = query.Where(f =>
+                    f.Route.DestinationAirport.City.Contains(request.DestinationCity) ||
+                    f.Route.DestinationAirport.AirportCode.Contains(request.DestinationCity));
 
-            if (request.AirlineId.HasValue)
-                flights = flights.Where(f => f.Plane.AirlineId == request.AirlineId.Value);
-
-            if (request.PlaneId.HasValue)
-                flights = flights.Where(f => f.PlaneId == request.PlaneId.Value);
+            if (request.DepartureDate.HasValue)
+                query = query.Where(f => f.DepartureTime.Date == DateTime.SpecifyKind(request.DepartureDate.Value.Date, DateTimeKind.Utc));
 
             if (request.Status.HasValue)
-                flights = flights.Where(f => f.Status == request.Status.Value);
+                query = query.Where(f => f.Status == request.Status.Value);
 
-            if (request.DepartureFrom.HasValue)
-                flights = flights.Where(f => f.DepartureTime >= request.DepartureFrom.Value);
-            if (request.DepartureTo.HasValue)
-                flights = flights.Where(f => f.DepartureTime <= request.DepartureTo.Value);
+            if (request.AirlineId.HasValue)
+                query = query.Where(f => f.Plane.AirlineId == request.AirlineId.Value);
 
-            if (request.MinPrice.HasValue)
-                flights = flights.Where(f =>
-                    f.FlightSeatPrices.Any(p => p.Price >= request.MinPrice.Value));
-            if (request.MaxPrice.HasValue)
-                flights = flights.Where(f =>
-                    f.FlightSeatPrices.Any(p => p.Price <= request.MaxPrice.Value));
-
-            if (request.IsRefund.HasValue)
-                flights = flights.Where(f => f.Policy.IsRefund == request.IsRefund.Value);
-            if (request.IsChange.HasValue)
-                flights = flights.Where(f => f.Policy.IsChange == request.IsChange.Value);
-
-            flights = flights.OrderByDescending(f => f.DepartureTime);
-
-            var pagedList = await PageList<FlightListDto>.ToPagedListAsync(
-                flights.ProjectToType<FlightListDto>(),
+            var result = await PageList<FlightListDto>.ToPagedListAsync(
+                query.OrderByDescending(f => f.DepartureTime).ProjectToType<FlightListDto>(),
                 request.PageIndex,
-                request.PageSize
-            );
+                request.PageSize,
+                cancellationToken);
 
-            return ApiResult<PageList<FlightListDto>>.Success(pagedList);
+            return ApiResult<PageList<FlightListDto>>.Success(result);
         }
     }
 }

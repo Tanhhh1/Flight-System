@@ -38,7 +38,7 @@ namespace Application.CQRS.Flights.Commands.Delete
             if (now > flight.ArrivalTime)
                 return ApiResult<FlightDto>.Failure(["Không thể xóa chuyến bay đã kết thúc."]);
             if (now >= flight.DepartureTime.AddHours(-24))
-                return ApiResult<FlightDto>.Failure(["Không thể cập nhật chuyến bay trong vòng 24 giờ trước khởi hành"]);
+                return ApiResult<FlightDto>.Failure(["Không thể xóa chuyến bay trong vòng 24 giờ trước khởi hành"]);
 
             var hasPaidBooking = await _unitOfWork.BookingRepository
                 .GetByCondition(b => b.BookingDetails.Any(bd => bd.FlightId == request.FlightId)

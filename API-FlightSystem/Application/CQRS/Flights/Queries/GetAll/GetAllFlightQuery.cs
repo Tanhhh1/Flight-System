@@ -9,16 +9,10 @@ namespace Application.CQRS.Flights.Queries.GetAll
     {
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
-        public string? Search { get; set; }
-        public int? RouteId { get; set; }
-        public int? AirlineId { get; set; }
-        public int? PlaneId { get; set; }
+        public string? OriginCity { get; set; }
+        public string? DestinationCity { get; set; }
+        public DateTime? DepartureDate { get; set; }
         public FlightStatus? Status { get; set; }
-        public DateTime? DepartureFrom { get; set; }
-        public DateTime? DepartureTo { get; set; }
-        public decimal? MinPrice { get; set; }
-        public decimal? MaxPrice { get; set; }
-        public bool? IsRefund { get; set; }
-        public bool? IsChange { get; set; }
+        public int? AirlineId { get; set; }
     }
 }

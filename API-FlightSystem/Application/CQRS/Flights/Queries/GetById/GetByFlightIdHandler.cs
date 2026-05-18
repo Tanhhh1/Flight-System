@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Flights.Queries.GetById
 {
-    public class GetByFlightIdHandler : IRequestHandler<GetByFlightIdQuery, ApiResult<FlightDto>>
+    public class GetByFlightIdHandler : IRequestHandler<GetByFlightIdQuery, ApiResult<FlightDetailDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -16,21 +16,17 @@ namespace Application.CQRS.Flights.Queries.GetById
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ApiResult<FlightDto>> Handle(GetByFlightIdQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResult<FlightDetailDto>> Handle(GetByFlightIdQuery request, CancellationToken cancellationToken)
         {
-            var flight = await _unitOfWork.FlightRepository
-                .GetByCondition(f => f.FlightId == request.FlightId)
-                .Include(f => f.Policy)
-                .Include(f => f.FlightSegments.OrderBy(s => s.SegmentOrder))
-                .Include(f => f.FlightSeatPrices)
-                .Include(f => f.FlightServices)
-                .FirstOrDefaultAsync();
+            var flightDto = await _unitOfWork.FlightRepository.GetByCondition()
+                .AsNoTracking()
+                .ProjectToType<FlightDetailDto>()
+                .FirstOrDefaultAsync(f => f.FlightId == request.FlightId, cancellationToken);
 
-            if (flight == null)
-                return ApiResult<FlightDto>.Failure(["Chuyến bay không tồn tại."]);
+            if (flightDto == null)
+                return ApiResult<FlightDetailDto>.Failure(["Không tìm thấy chuyến bay"]);
 
-            var flightDto = flight.Adapt<FlightDto>();
-            return ApiResult<FlightDto>.Success(flightDto);
+            return ApiResult<FlightDetailDto>.Success(flightDto);
         }
     }
 }
