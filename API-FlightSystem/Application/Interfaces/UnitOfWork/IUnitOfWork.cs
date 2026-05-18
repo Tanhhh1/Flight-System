@@ -21,5 +21,6 @@ namespace Application.Interfaces.UnitOfWork
         IRefreshTokenRepository RefreshTokenRepository { get; }
         ISeatTemplateRepository SeatTemplateRepository { get; }
         IBookingRepository BookingRepository { get; }
+        IFlightSeatPriceRepository FlightSeatPriceRepository { get; }
     }
 }

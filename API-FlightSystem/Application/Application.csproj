@@ -26,16 +26,10 @@
     <Folder Include="CQRS\Payments\Commands\" />
     <Folder Include="CQRS\Payments\DTOs\" />
     <Folder Include="CQRS\Payments\Validators\" />
-    <Folder Include="CQRS\SeatReverse\Commands\HoldSeat\" />
     <Folder Include="CQRS\SeatReverse\Commands\ConfirmReverse\" />
     <Folder Include="CQRS\SeatReverse\Commands\ReleaseSeat\" />
-    <Folder Include="CQRS\SeatReverse\DTOs\" />
     <Folder Include="CQRS\SeatReverse\Queries\GetSeatMap\" />
     <Folder Include="CQRS\SeatReverse\Validators\" />
-    <Folder Include="CQRS\Supports\Commands\" />
-    <Folder Include="CQRS\Supports\DTOs\" />
-    <Folder Include="CQRS\Supports\Validators\" />
-    <Folder Include="CQRS\Supports\Queries\" />
   </ItemGroup>
 
 </Project>

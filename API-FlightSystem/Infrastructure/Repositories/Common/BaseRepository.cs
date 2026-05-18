@@ -43,14 +43,11 @@ namespace Infrastructure.Repositories.Base
 
         public IQueryable<T> GetByCondition(
             Expression<Func<T, bool>>? expression = null, 
-            Func<IQueryable<T>, IOrderedQueryable<T>>? order = null,
-            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null)
+            Func<IQueryable<T>, IOrderedQueryable<T>>? order = null)
         {
             IQueryable<T> query = _dbContext.Set<T>();
             if (expression != null)
                 query = query.Where(expression);
-            if (include != null)
-                query = include(query);
             if (order != null)
                 query = order(query);
             return query;

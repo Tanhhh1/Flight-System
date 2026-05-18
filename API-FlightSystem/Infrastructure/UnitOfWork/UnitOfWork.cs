@@ -24,6 +24,7 @@ namespace Infrastructure.Uow
         private IRefreshTokenRepository? _refreshTokenRepository;
         private ISeatTemplateRepository? _seatTemplateRepository;
         private IBookingRepository? _bookingRepository;
+        private IFlightSeatPriceRepository? _flightSeatPriceRepository;
         public UnitOfWork(DatabaseContext dbContext)
         {
             _dbContext = dbContext;
@@ -42,6 +43,7 @@ namespace Infrastructure.Uow
         public IRefreshTokenRepository RefreshTokenRepository => _refreshTokenRepository ??= new RefreshTokenRepository(_dbContext);
         public ISeatTemplateRepository SeatTemplateRepository => _seatTemplateRepository ??= new SeatTemplateRepository(_dbContext);
         public IBookingRepository BookingRepository => _bookingRepository ??= new BookingRepository(_dbContext);
+        public IFlightSeatPriceRepository FlightSeatPriceRepository => _flightSeatPriceRepository ??= new FlightSeatPriceRepository(_dbContext);
 
         public async Task BeginTransactionAsync()
         {

@@ -12,8 +12,7 @@ namespace Application.Interfaces.Repositories.Common
         Task<T?> GetByIdAsync(int id);
         IQueryable<T> GetByCondition(
             Expression<Func<T, bool>>? expression = null, 
-            Func<IQueryable<T>, IOrderedQueryable<T>>? order = null,
-            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
+            Func<IQueryable<T>, IOrderedQueryable<T>>? order = null);
     }
 }
 
