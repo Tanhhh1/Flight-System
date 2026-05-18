@@ -4,6 +4,7 @@ using Application.CQRS.Services.DTOs;
 using Application.Interfaces.UnitOfWork;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Services.Queries.GetById
 {
@@ -17,7 +18,9 @@ namespace Application.CQRS.Services.Queries.GetById
 
         public async Task<ApiResult<ServiceDto>> Handle(GetByServiceIdQuery request, CancellationToken cancellationToken)
         {
-            var service = await _unitOfWork.ServiceRepository.GetByIdAsync(request.ServiceId);
+            var service = await _unitOfWork.ServiceRepository.GetByCondition()
+                 .AsNoTracking()
+                 .FirstOrDefaultAsync(s => s.ServiceId == request.ServiceId, cancellationToken);
             if (service == null)
                 return ApiResult<ServiceDto>.Failure(["Dịch vụ không tồn tại"]);
 

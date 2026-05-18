@@ -27,6 +27,10 @@ namespace Application.CQRS.Profile.Commands.ChangePassword
             if (user is null)
                 return ApiResult<string>.Failure(["Không tìm thấy người dùng"]);
 
+            var isCurrentPassword = await _userManager.CheckPasswordAsync(user, request.CurrentPassword);
+            if (!isCurrentPassword)
+                return ApiResult<string>.Failure(["Mật khẩu hiện tại không đúng"]);
+
             var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
 
             if (!result.Succeeded)

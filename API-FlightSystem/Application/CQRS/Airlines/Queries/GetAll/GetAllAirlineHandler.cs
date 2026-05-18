@@ -3,6 +3,7 @@ using Application.CQRS.Airlines.DTOs;
 using Application.Interfaces.UnitOfWork;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Airlines.Queries.GetAll
 {
@@ -16,7 +17,7 @@ namespace Application.CQRS.Airlines.Queries.GetAll
 
         public async Task<ApiResult<PageList<AirlineDto>>> Handle(GetAllAirlineQuery request, CancellationToken cancellationToken)
         {
-            var airline = _unitOfWork.AirlineRepository.GetByCondition();
+            var airline = _unitOfWork.AirlineRepository.GetByCondition().AsNoTracking();
             if (!string.IsNullOrEmpty(request.Search))
                 airline = airline.Where(a => a.AirlineName.Contains(request.Search));
 
@@ -28,7 +29,8 @@ namespace Application.CQRS.Airlines.Queries.GetAll
             var pagedList = await PageList<AirlineDto>.ToPagedListAsync(
                 airline.ProjectToType<AirlineDto>(),
                 request.PageIndex,
-                request.PageSize
+                request.PageSize,
+                cancellationToken
             );
 
             return ApiResult<PageList<AirlineDto>>.Success(pagedList);

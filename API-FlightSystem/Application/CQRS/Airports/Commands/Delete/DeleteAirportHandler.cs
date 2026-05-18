@@ -31,7 +31,7 @@ namespace Application.CQRS.Airports.Commands.Delete
                 .GetByCondition(r => r.Status == FlightStatus.Active
                                   && (r.OriginAirportId == request.AirportId
                                    || r.DestinationAirportId == request.AirportId))
-                .AnyAsync();
+                .AnyAsync(cancellationToken);
             if (hasActiveRoute)
                 return ApiResult<AirportDto>.Failure(["Sân bay đang được sử dụng trong tuyến bay hoạt động"]);
 

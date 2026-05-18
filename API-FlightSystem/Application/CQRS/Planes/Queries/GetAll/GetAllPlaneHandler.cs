@@ -17,19 +17,24 @@ namespace Application.CQRS.Planes.Queries.GetAll
 
         public async Task<ApiResult<PageList<PlaneDto>>> Handle(GetAllPlaneQuery request, CancellationToken cancellationToken)
         {
-            var plane = _unitOfWork.PlaneRepository.GetByCondition(include: q => q.Include(p => p.Airline));
+            var plane = _unitOfWork.PlaneRepository
+                .GetByCondition() 
+                .Include(p => p.Airline)                             
+                .AsNoTracking();
+
             if (!string.IsNullOrEmpty(request.Search))
                 plane = plane.Where(p => p.PlaneModel.Contains(request.Search));
 
             if (request.Status.HasValue)
-                plane = plane.Where(a => a.Status == request.Status.Value);
+                plane = plane.Where(p => p.Status == request.Status.Value);
 
-            plane = plane.OrderBy(a => a.PlaneId);
+            plane = plane.OrderBy(p => p.PlaneId);
 
             var pagedList = await PageList<PlaneDto>.ToPagedListAsync(
-                plane.ProjectToType<PlaneDto>(), 
+                plane.ProjectToType<PlaneDto>(),
                 request.PageIndex,
-                request.PageSize
+                request.PageSize,
+                cancellationToken
             );
 
             return ApiResult<PageList<PlaneDto>>.Success(pagedList);

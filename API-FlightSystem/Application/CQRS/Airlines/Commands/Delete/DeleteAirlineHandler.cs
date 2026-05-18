@@ -28,7 +28,7 @@ namespace Application.CQRS.Airlines.Commands.Delete
             bool hasActivePlane = await _unitOfWork.PlaneRepository
                 .GetByCondition(p => p.AirlineId == request.AirlineId
                                   && p.Status == FlightStatus.Active)
-                .AnyAsync();
+                .AnyAsync(cancellationToken);
             if (hasActivePlane)
                 return ApiResult<AirlineDto>.Failure(["Hãng bay đang có máy bay hoạt động"]);
 

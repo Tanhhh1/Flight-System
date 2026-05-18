@@ -29,7 +29,7 @@ namespace Application.CQRS.Planes.Commands.Delete
             var hasActiveFlight = await _unitOfWork.FlightRepository
                 .GetByCondition(f => f.PlaneId == request.PlaneId
                                   && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
-                .AnyAsync();
+                .AnyAsync(cancellationToken);
             if (hasActiveFlight)
                 return ApiResult<PlaneDto>.Failure(["Không thể vô hiệu hóa máy bay đang có chuyến bay hoạt động"]);
 

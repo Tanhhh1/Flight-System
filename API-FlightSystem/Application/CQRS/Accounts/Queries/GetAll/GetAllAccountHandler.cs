@@ -19,10 +19,7 @@ namespace Application.CQRS.Accounts.Queries.GetAll
 
         public async Task<ApiResult<PageList<AccountDto>>> Handle(GetAllAccountQuery request, CancellationToken cancellationToken)
         {
-            var query = _userManager.Users
-                .AsNoTracking()
-                .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
-                .AsQueryable();
+            var query = _userManager.Users.AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(request.Search))
             {
@@ -35,7 +32,8 @@ namespace Application.CQRS.Accounts.Queries.GetAll
             var result = await PageList<AccountDto>.ToPagedListAsync(
                 query.ProjectToType<AccountDto>(),
                 request.PageIndex,
-                request.PageSize
+                request.PageSize,
+                cancellationToken
             );
 
             return ApiResult<PageList<AccountDto>>.Success(result);

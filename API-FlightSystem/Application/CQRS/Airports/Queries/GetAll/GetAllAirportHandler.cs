@@ -3,6 +3,7 @@ using Application.CQRS.Airports.DTOs;
 using Application.Interfaces.UnitOfWork;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Airports.Queries.GetAll
 {
@@ -17,7 +18,7 @@ namespace Application.CQRS.Airports.Queries.GetAll
 
         public async Task<ApiResult<PageList<AirportDto>>> Handle(GetAllAirportQuery request, CancellationToken cancellationToken)
         {
-            var airport = _unitOfWork.AirportRepository.GetByCondition();
+            var airport = _unitOfWork.AirportRepository.GetByCondition().AsNoTracking();
 
             if (!string.IsNullOrEmpty(request.Search))
                 airport = airport.Where(a =>
@@ -39,7 +40,8 @@ namespace Application.CQRS.Airports.Queries.GetAll
             var pagedList = await PageList<AirportDto>.ToPagedListAsync(
                 airport.ProjectToType<AirportDto>(), // chỉ lấy các cột trong Dto
                 request.PageIndex,
-                request.PageSize
+                request.PageSize,
+                cancellationToken
             );
 
             return ApiResult<PageList<AirportDto>>.Success(pagedList);

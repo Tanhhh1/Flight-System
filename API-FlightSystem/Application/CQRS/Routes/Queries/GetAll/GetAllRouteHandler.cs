@@ -18,11 +18,10 @@ namespace Application.CQRS.Routes.Queries.GetAll
 
         public async Task<ApiResult<PageList<RouteDto>>> Handle(GetAllRouteQuery request, CancellationToken cancellationToken)
         {
-            var route = _unitOfWork.RouteRepository.GetByCondition(
-                include: q => q
+            var route = _unitOfWork.RouteRepository.GetByCondition()
                 .Include(r => r.OriginAirport)
                 .Include(r => r.DestinationAirport)
-            );
+                .AsNoTracking();
 
             if (!string.IsNullOrEmpty(request.Search))
                 route = route.Where(r =>
@@ -45,7 +44,8 @@ namespace Application.CQRS.Routes.Queries.GetAll
             var pagedList = await PageList<RouteDto>.ToPagedListAsync(
                 route.ProjectToType<RouteDto>(),
                 request.PageIndex,
-                request.PageSize
+                request.PageSize,
+                cancellationToken
             );
 
             return ApiResult<PageList<RouteDto>>.Success(pagedList);

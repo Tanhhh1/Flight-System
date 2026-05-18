@@ -3,6 +3,7 @@ using Application.CQRS.Planes.DTOs;
 using Application.Interfaces.UnitOfWork;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Planes.Queries.GetById
 {
@@ -16,9 +17,14 @@ namespace Application.CQRS.Planes.Queries.GetById
 
         public async Task<ApiResult<PlaneDto>> Handle(GetByPlaneIdQuery request, CancellationToken cancellationToken)
         {
-            var plane = await _unitOfWork.PlaneRepository.GetByIdAsync(request.PlaneId);
+            var plane = await _unitOfWork.PlaneRepository.GetByCondition()
+                .Include(p => p.Airline)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.PlaneId == request.PlaneId, cancellationToken);
+
             if (plane == null)
                 return ApiResult<PlaneDto>.Failure(["Máy bay không tồn tại"]);
+
             var planeDto = plane.Adapt<PlaneDto>();
             return ApiResult<PlaneDto>.Success(planeDto);
         }

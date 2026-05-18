@@ -3,6 +3,7 @@ using Application.CQRS.Airports.DTOs;
 using Application.Interfaces.UnitOfWork;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Airports.Queries.GetById
 {
@@ -17,7 +18,10 @@ namespace Application.CQRS.Airports.Queries.GetById
 
         public async Task<ApiResult<AirportDto>> Handle(GetByAirportIdQuery request, CancellationToken cancellationToken)
         {
-            var airport = await _unitOfWork.AirportRepository.GetByIdAsync(request.AirportId);
+            var airport = await _unitOfWork.AirportRepository
+                .GetByCondition(a => a.AirportId == request.AirportId)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (airport == null)
                 return ApiResult<AirportDto>.Failure(["Sân bay không tồn tại"]);

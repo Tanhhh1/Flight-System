@@ -42,15 +42,14 @@ namespace Application.CQRS.Routes.Commands.Update
             if (isDuplicateRoute)
                 return ApiResult<RouteDto>.Failure(["Tuyến bay này đã tồn tại"]);
 
-            bool isChangingAirports = route.OriginAirportId != request.OriginAirportId
-                                   || route.DestinationAirportId != request.DestinationAirportId;
+            bool isChangingAirports = route.OriginAirportId != request.OriginAirportId || route.DestinationAirportId != request.DestinationAirportId;
             if (isChangingAirports)
             {
                 bool hasActiveOrDelayedFlight = await _unitOfWork.FlightRepository
                     .GetByCondition(f => f.RouteId == request.RouteId && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
                     .AnyAsync(cancellationToken);
                 if (hasActiveOrDelayedFlight)
-                    return ApiResult<RouteDto>.Failure(["Không thể thay đổi sân bay khi đang có chuyến bay hoạt động"]);
+                    return ApiResult<RouteDto>.Failure(["Không thể thay đổi tuyến bay khi đang có chuyến bay hoạt động"]);
             }
 
             bool isChangingDuration = route.FlightDuration != request.FlightDuration;
@@ -62,6 +61,12 @@ namespace Application.CQRS.Routes.Commands.Update
                 if (hasActiveFlight)
                     return ApiResult<RouteDto>.Failure(["Không thể thay đổi thời gian bay khi đang có chuyến bay hoạt động"]);
             }
+
+            bool hasActiveSegment = await _unitOfWork.FlightSegmentRepository
+                .GetByCondition(s => s.RouteId == request.RouteId && s.Flight.Status != FlightStatus.Cancelled && s.Flight.ArrivalTime > DateTime.UtcNow)
+                .AnyAsync(cancellationToken);
+            if (hasActiveSegment)
+                return ApiResult<RouteDto>.Failure(["Không thể sửa tuyến bay khi đang có chặng dừng sử dụng."]);
 
             request.Adapt(route);
             route.OriginAirport = originAirport;

@@ -4,6 +4,7 @@ using Application.CQRS.Services.DTOs;
 using Application.Interfaces.UnitOfWork;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Application.CQRS.Services.Queries.GetAll
@@ -19,7 +20,7 @@ namespace Application.CQRS.Services.Queries.GetAll
 
         public async Task<ApiResult<PageList<ServiceDto>>> Handle(GetAllServiceQuery request, CancellationToken cancellationToken)
         {
-            var service = _unitOfWork.ServiceRepository.GetByCondition();
+            var service = _unitOfWork.ServiceRepository.GetByCondition().AsNoTracking();
             if (!string.IsNullOrEmpty(request.Search))
                 service = service.Where(a => a.ServiceName.Contains(request.Search));
 
@@ -31,7 +32,8 @@ namespace Application.CQRS.Services.Queries.GetAll
             var pagedList = await PageList<ServiceDto>.ToPagedListAsync(
                 service.ProjectToType<ServiceDto>(),
                 request.PageIndex,
-                request.PageSize
+                request.PageSize,
+                cancellationToken
             );
 
             return ApiResult<PageList<ServiceDto>>.Success(pagedList);

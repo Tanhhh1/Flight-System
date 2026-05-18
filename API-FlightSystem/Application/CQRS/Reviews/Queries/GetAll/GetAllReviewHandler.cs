@@ -3,6 +3,7 @@ using Application.CQRS.Reviews.DTOs;
 using Application.Interfaces.UnitOfWork;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Reviews.Queries.GetAll
 {
@@ -16,7 +17,7 @@ namespace Application.CQRS.Reviews.Queries.GetAll
 
         public async Task<ApiResult<PageList<ReviewDto>>> Handle(GetAllReviewQuery request, CancellationToken cancellationToken)
         {
-            var review = _unitOfWork.ReviewRepository.GetByCondition();
+            var review = _unitOfWork.ReviewRepository.GetByCondition().AsNoTracking();
             if (!string.IsNullOrEmpty(request.Search))
                 review = review.Where(p => p.Content.Contains(request.Search));
 
@@ -28,7 +29,8 @@ namespace Application.CQRS.Reviews.Queries.GetAll
             var pagedList = await PageList<ReviewDto>.ToPagedListAsync(
                 review.ProjectToType<ReviewDto>(),
                 request.PageIndex,
-                request.PageSize
+                request.PageSize,
+                cancellationToken
             );
             return ApiResult<PageList<ReviewDto>>.Success(pagedList);
         }

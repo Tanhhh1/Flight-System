@@ -21,9 +21,8 @@ namespace Application.CQRS.Accounts.Queries.GetById
         {
             var user = await _userManager.Users
                 .AsNoTracking()
-                .Include(u => u.UserRoles)
-                    .ThenInclude(ur => ur.Role)
-                .FirstOrDefaultAsync(u => u.Id == request.UserId);
+                .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
             if (user == null)
                 return ApiResult<AccountDto>.Failure(["Tài khoản không tồn tại"]);

@@ -30,7 +30,7 @@ namespace Application.CQRS.Routes.Commands.Create
             var existingRoute = await _unitOfWork.RouteRepository
                 .GetByCondition(r => r.OriginAirportId == request.OriginAirportId
                                   && r.DestinationAirportId == request.DestinationAirportId)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (existingRoute != null)
                 return ApiResult<RouteDto>.Failure(["Tuyến bay này đã tồn tại"]);

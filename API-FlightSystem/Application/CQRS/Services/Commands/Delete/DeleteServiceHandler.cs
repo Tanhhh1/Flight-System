@@ -32,7 +32,7 @@ namespace Application.CQRS.Services.Commands.Delete
             var isInactiveFlight = await _unitOfWork.FlightServiceRepository
                 .GetByCondition(fs => fs.ServiceId == request.ServiceId
                                    && fs.Flight.Status == FlightStatus.Active)
-                .AnyAsync();
+                .AnyAsync(cancellationToken);
 
             if (isInactiveFlight)
                 return ApiResult<ServiceDto>.Failure(["Dịch vụ đang được sử dụng trong chuyến bay hoạt động, không thể ngừng cung cấp"]);
