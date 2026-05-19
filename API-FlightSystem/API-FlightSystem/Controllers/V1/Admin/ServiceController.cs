@@ -1,4 +1,4 @@
-﻿using API_FlightBooking.Controllers.Common;
+﻿using API_FlightSystem.Controllers.Common;
 using Application.Common;
 using Application.CQRS.Services.Commands.Create;
 using Application.CQRS.Services.Commands.Delete;
@@ -9,9 +9,9 @@ using Application.CQRS.Services.Queries.GetById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API_FlightSystem.Controllers.V1
+namespace API_FlightSystem.Controllers.V1.Admin
 {
-    public class ServiceController : ApiController
+    public class ServiceController : AdminApiController
     {
         private readonly IMediator _mediator;
         public ServiceController(IMediator mediator)

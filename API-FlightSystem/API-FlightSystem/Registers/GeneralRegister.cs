@@ -1,4 +1,5 @@
 ﻿using API_FlightBooking.Configurations;
+using Application.Common;
 using Asp.Versioning;
 using Domain.Identity;
 using Infrastructure.Persistences;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Tokens;
 using Shared.Identity;
 using System.Text;
+using System.Text.Json;
 
 namespace API_FlightBooking.Registers
 {
@@ -112,7 +114,48 @@ namespace API_FlightBooking.Registers
                         }
 
                         return Task.CompletedTask;
-                    }
+                    },
+                    OnChallenge = async context =>
+                    {
+                        context.HandleResponse();
+
+                        var message = context.AuthenticateFailure?.GetType().Name switch
+                        {
+                            "SecurityTokenExpiredException" => "Token đã hết hạn, vui lòng đăng nhập lại",
+                            "SecurityTokenInvalidSignatureException" => "Token không hợp lệ",
+                            "SecurityTokenNotFoundException" => "Không tìm thấy token",
+                            _ => "Bạn chưa đăng nhập"
+                        };
+
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.ContentType = "application/json";
+
+                        var response = ApiResult<object>.Failure([message]);
+                        await context.Response.WriteAsync(
+                            JsonSerializer.Serialize(response, new JsonSerializerOptions
+                            {
+                                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                            })
+                        );
+                    },
+                    OnForbidden = async context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                        context.Response.ContentType = "application/json";
+
+                        var response = ApiResult<object>.Failure(["Bạn không có quyền thực hiện chức năng này"]);
+                        await context.Response.WriteAsync(
+                            JsonSerializer.Serialize(response, new JsonSerializerOptions
+                            {
+                                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                            })
+                        );
+                    },
+                    OnAuthenticationFailed = context =>
+                    {
+                        Console.WriteLine($"Auth failed: {context.Exception.GetType().Name}: {context.Exception.Message}");
+                        return Task.CompletedTask;
+                    },
                 };
                 options.RequireHttpsMetadata = false;
                 options.SaveToken = true;
@@ -120,8 +163,10 @@ namespace API_FlightBooking.Registers
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
+                    ValidateIssuer = true,
+                    ValidIssuer = configuration["JwtConfiguration:ValidIssuer"],
+                    ValidateAudience = true,
+                    ValidAudience = configuration["JwtConfiguration:ValidAudience"],
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 };

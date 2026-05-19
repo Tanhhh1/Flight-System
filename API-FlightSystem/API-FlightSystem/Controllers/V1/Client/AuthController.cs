@@ -1,4 +1,4 @@
-﻿using API_FlightBooking.Controllers.Common;
+﻿using API_FlightSystem.Controllers.Common;
 using Application.Common;
 using Application.CQRS.Auth.Commands.RefreshToken;
 using Application.CQRS.Auth.Commands.RevokeToken;
@@ -6,9 +6,10 @@ using Application.CQRS.Auth.Commands.SignIn;
 using Application.CQRS.Auth.Commands.SignUp;
 using Application.CQRS.Auth.DTOs;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API_FlightSystem.Controllers.V1
+namespace API_FlightSystem.Controllers.V1.Client
 {
     public class AuthController : ApiController
     {
@@ -39,6 +40,7 @@ namespace API_FlightSystem.Controllers.V1
         }
 
         [HttpPost("revoke")]
+        [Authorize]
         [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenCommand command)
@@ -49,6 +51,7 @@ namespace API_FlightSystem.Controllers.V1
         }
 
         [HttpPost("refresh")]
+        [Authorize]
         [ProducesResponseType(typeof(ApiResult<RefreshTokenDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand command)

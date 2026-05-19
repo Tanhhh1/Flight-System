@@ -1,14 +1,16 @@
-﻿using API_FlightBooking.Controllers.Common;
+﻿using API_FlightSystem.Controllers.Common;
 using Application.Common;
 using Application.CQRS.Profile.Commands.ChangePassword;
 using Application.CQRS.Profile.Commands.Update;
 using Application.CQRS.Profile.DTOs;
 using Application.CQRS.Profile.Queries.GetById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API_FlightSystem.Controllers.V1
+namespace API_FlightSystem.Controllers.V1.Client
 {
+    [Authorize]
     public class ProfileController : ApiController
     {
         private readonly IMediator _mediator;
