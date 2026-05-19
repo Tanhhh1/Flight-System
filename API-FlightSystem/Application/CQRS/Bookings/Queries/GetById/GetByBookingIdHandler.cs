@@ -31,7 +31,7 @@ namespace Application.CQRS.Bookings.Queries.GetById
                 return ApiResult<BookingDto>.Failure([$"Không tìm thấy booking với Id: {request.BookingId}"]);
 
             var dto = booking.Adapt<BookingDto>();
-            dto.UserFullname = booking.User.Fullname;
+            dto.Fullname = booking.User.Fullname;
             dto.ClassName = booking.SeatClass.ClassName;
             dto.TripType = ((Domain.Enums.TripType)booking.TripType) switch
             {

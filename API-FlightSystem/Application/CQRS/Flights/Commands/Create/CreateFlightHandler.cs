@@ -6,7 +6,6 @@ using Domain.Enums;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Application.CQRS.Flights.Commands.Create
 {
@@ -40,7 +39,7 @@ namespace Application.CQRS.Flights.Commands.Create
             if (isPlaneConflict)
                 return ApiResult<FlightDto>.Failure(["Máy bay đã được sử dụng trong khoảng thời gian này."]);
 
-            var arrivalTime = request.DepartureTime.AddMinutes(route.FlightDuration);
+            DateTime arrivalTime;
             Dictionary<int, Route> segmentRoutes = new();
             if (request.Segments.Count > 0)
             {
@@ -82,10 +81,12 @@ namespace Application.CQRS.Flights.Commands.Create
                 var lastSegmentRoute = segmentRoutes[lastSegment.RouteId];
                 arrivalTime = lastSegment.DepartureTime.AddMinutes(lastSegmentRoute.FlightDuration);
             }
+            else
+                arrivalTime = request.DepartureTime.AddMinutes(route.FlightDuration);
 
-            var policy = await _unitOfWork.PolicyRepository
-                .GetByCondition(p => p.IsRefund == request.IsRefund && p.IsChange == request.IsChange)
-                .FirstOrDefaultAsync(cancellationToken);
+                var policy = await _unitOfWork.PolicyRepository
+                    .GetByCondition(p => p.IsRefund == request.IsRefund && p.IsChange == request.IsChange)
+                    .FirstOrDefaultAsync(cancellationToken);
             if (policy == null)
                 return ApiResult<FlightDto>.Failure(["Chính sách không tồn tại"]);
 
