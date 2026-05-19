@@ -22,5 +22,8 @@ namespace Application.Interfaces.UnitOfWork
         ISeatTemplateRepository SeatTemplateRepository { get; }
         IBookingRepository BookingRepository { get; }
         IFlightSeatPriceRepository FlightSeatPriceRepository { get; }
+        IBookingDetailRepository BookingDetailRepository { get; }
+        IPassengerRepository PassengerRepository { get; }
+        IPassengerTypeRepository PassengerTypeRepository { get; }
     }
 }
