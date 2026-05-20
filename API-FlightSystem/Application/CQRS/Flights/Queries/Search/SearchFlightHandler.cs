@@ -33,7 +33,7 @@ namespace Application.CQRS.Flights.Queries.Search
                 f.Route.DestinationAirport.AirportCode.Contains(request.DestinationCity));
 
             query = query.Where(f =>
-                f.DepartureTime.Date == DateTime.SpecifyKind(request.DepartureDate.Date, DateTimeKind.Utc));
+                f.DepartureTime.Date == request.DepartureDate.Date);
 
             query = query.Where(f =>
                 f.FlightSeatPrices.Any(sp => sp.ClassId == request.ClassId && sp.AvailableSeats > 0));

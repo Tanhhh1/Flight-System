@@ -1,4 +1,5 @@
 ﻿using Application.CQRS.Accounts.DTOs;
+using Application.CQRS.Bookings.DTOs;
 using Application.CQRS.Flights.DTOs;
 using Domain.Entities;
 using Domain.Identity;
@@ -79,6 +80,16 @@ namespace Application.Mappers
                 .Map(dest => dest.ClassName, src => src.SeatClass.ClassName)
                 .Map(dest => dest.Price, src => src.Price)
                 .Map(dest => dest.AvailableSeats, src => src.AvailableSeats);
+
+            config.NewConfig<Booking, BookingDto>()
+                .Map(dest => dest.Fullname, src => src.User.Fullname)
+                .Map(dest => dest.ClassName, src => src.SeatClass.ClassName)
+                .Map(dest => dest.TripType, src => src.TripType == 1 ? "Một chiều" : src.TripType == 2 ? "Khứ hồi" : src.TripType == 3 ? "Nhiều điểm đến" : "Không xác định");
+
+            config.NewConfig<Booking, BookingListDto>()
+                .Map(dest => dest.Fullname, src => src.User.Fullname)
+                .Map(dest => dest.ClassName, src => src.SeatClass.ClassName)
+                .Map(dest => dest.TripType, src => src.TripType == 1 ? "Một chiều" : src.TripType == 2 ? "Khứ hồi" : src.TripType == 3 ? "Nhiều điểm đến" : "Không xác định");
         }
     }
 }

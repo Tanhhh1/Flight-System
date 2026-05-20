@@ -34,7 +34,7 @@ namespace Application.CQRS.Flights.Queries.GetAll
                     f.Route.DestinationAirport.AirportCode.Contains(request.DestinationCity));
 
             if (request.DepartureDate.HasValue)
-                query = query.Where(f => f.DepartureTime.Date == DateTime.SpecifyKind(request.DepartureDate.Value.Date, DateTimeKind.Utc));
+                query = query.Where(f => f.DepartureTime.Date == request.DepartureDate.Value.Date);
 
             if (request.Status.HasValue)
                 query = query.Where(f => f.Status == request.Status.Value);

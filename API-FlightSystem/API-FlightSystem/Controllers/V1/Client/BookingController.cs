@@ -19,8 +19,8 @@ namespace API_FlightSystem.Controllers.V1.Client
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResult<BookingDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResult<BookingDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResult<BookingListDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResult<BookingListDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateBookingCommand command)
         {
             var result = await _mediator.Send(command);
@@ -29,7 +29,7 @@ namespace API_FlightSystem.Controllers.V1.Client
             return Ok(result);
         }
 
-        [HttpGet("my-bookings")]
+        [HttpGet]
         [ProducesResponseType(typeof(ApiResult<PageList<BookingDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<PageList<BookingDto>>), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetMyBookings([FromQuery] GetUserBookingQuery query)

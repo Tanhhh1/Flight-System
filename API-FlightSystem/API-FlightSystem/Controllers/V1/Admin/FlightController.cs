@@ -31,8 +31,8 @@ namespace API_FlightSystem.Controllers.V1.Admin
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ApiResult<FlightDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResult<FlightDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResult<FlightDetailDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResult<FlightDetailDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetById(int id)
         {
             var result = await _mediator.Send(new GetByFlightIdQuery { FlightId = id });

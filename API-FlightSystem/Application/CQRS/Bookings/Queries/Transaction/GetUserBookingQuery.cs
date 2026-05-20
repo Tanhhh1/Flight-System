@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.CQRS.Bookings.Queries.Transaction
 {
-    public class GetUserBookingQuery : IRequest<ApiResult<PageList<BookingDto>>>
+    public class GetUserBookingQuery : IRequest<ApiResult<PageList<BookingListDto>>>
     {
         public int PageIndex { get; set; } = 1;
         public int PageSize { get; set; } = 10;

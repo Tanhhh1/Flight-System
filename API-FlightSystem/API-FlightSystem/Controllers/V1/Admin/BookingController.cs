@@ -17,8 +17,8 @@ namespace API_FlightSystem.Controllers.V1.Admin
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResult<PageList<BookingDto>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResult<PageList<BookingDto>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResult<PageList<BookingListDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResult<PageList<BookingListDto>>), StatusCodes.Status400BadRequest)]
 
         public async Task<IActionResult> GetAll([FromQuery] GetAllBookingQuery query)
         {
@@ -29,9 +29,9 @@ namespace API_FlightSystem.Controllers.V1.Admin
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResult<BookingDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<BookingDto>), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetById(int bookingId)
+        public async Task<IActionResult> GetById(int id)
         {
-            var result = await _mediator.Send(new GetByBookingIdQuery { BookingId = bookingId });
+            var result = await _mediator.Send(new GetByBookingIdQuery { BookingId = id });
             if (!result.Succeeded)
                 return NotFound(result);
             return Ok(result);
