@@ -18,7 +18,7 @@ namespace Application.Behaviors
         {
             var requestName = typeof(TRequest).Name;
 
-            Logging.Info("Handling {RequestName}", requestName);
+            _logger.LogInformation("Handling {RequestName}", requestName);
 
             var stopwatch = Stopwatch.StartNew();
             try
@@ -27,7 +27,7 @@ namespace Application.Behaviors
                 stopwatch.Stop();
 
                 var succeeded = response is ApiResult<object> result ? result.Succeeded : true;
-                Logging.Info("Handled {RequestName} in {ElapsedMilliseconds}ms - Succeeded: {Succeeded}",
+                _logger.LogInformation("Handled {RequestName} in {ElapsedMilliseconds}ms - Succeeded: {Succeeded}",
                     requestName, stopwatch.ElapsedMilliseconds, succeeded);
 
                 return response;
@@ -36,7 +36,7 @@ namespace Application.Behaviors
             {
                 stopwatch.Stop();
 
-                Logging.Error(ex, "Error handling {RequestName} in {ElapsedMilliseconds}ms",
+                _logger.LogError(ex, "Error handling {RequestName} in {ElapsedMilliseconds}ms",
                      requestName, stopwatch.ElapsedMilliseconds);
 
                 throw;
