@@ -1,5 +1,7 @@
-﻿using Application.Interfaces.Services;
+﻿using Application.Common.Caching;
+using Application.Interfaces.Services;
 using Application.Interfaces.UnitOfWork;
+using Infrastructure.Caching;
 using Infrastructure.Database;
 using Infrastructure.Persistences;
 using Infrastructure.Services;
@@ -7,6 +9,7 @@ using Infrastructure.Uow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 
 namespace Infrastructure
 {
@@ -27,6 +30,8 @@ namespace Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ICurrentUser, CurrentUser>();
+            services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
+
             return services;
         }
     }
