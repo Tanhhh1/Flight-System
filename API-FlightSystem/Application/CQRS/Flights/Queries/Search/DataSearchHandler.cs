@@ -19,32 +19,46 @@ namespace Application.CQRS.Flights.Queries.Search
 
         public async Task<ApiResult<DataSearchDto>> Handle(DataSearchQuery request, CancellationToken cancellationToken)
         {
-            var airports = await _unitOfWork.AirportRepository
-                .GetByCondition()
-                .AsNoTracking()
-                .Where(a => a.Status == FlightStatus.Active)
-                .ProjectToType<DataAirportDto>()
-                .ToListAsync(cancellationToken);
+            var inc = request.Include;
 
-            var airlines = await _unitOfWork.AirlineRepository
-                .GetByCondition()
-                .AsNoTracking()
-                .Where(a => a.Status == FlightStatus.Active)
-                .ProjectToType<DataAirlineDto>()
-                .ToListAsync(cancellationToken);
+            var airports = inc.Contains(DataSearch.Airports)
+                ? await _unitOfWork.AirportRepository.GetByCondition()
+                    .AsNoTracking()
+                    .Where(a => a.Status == FlightStatus.Active)
+                    .ProjectToType<DataAirportDto>()
+                    .ToListAsync(cancellationToken)
+                : null;
 
-            var services = await _unitOfWork.ServiceRepository
-                .GetByCondition()
-                .AsNoTracking()
-                .Where(a => a.IsActive == true)
-                .ProjectToType<DataServiceDto>()
-                .ToListAsync(cancellationToken);
+            var airlines = inc.Contains(DataSearch.Airlines)
+                ? await _unitOfWork.AirlineRepository.GetByCondition()
+                    .AsNoTracking()
+                    .Where(a => a.Status == FlightStatus.Active)
+                    .ProjectToType<DataAirlineDto>()
+                    .ToListAsync(cancellationToken)
+                : null;
+
+            var services = inc.Contains(DataSearch.Services)
+                ? await _unitOfWork.ServiceRepository.GetByCondition()
+                    .AsNoTracking()
+                    .Where(a => a.IsActive)
+                    .ProjectToType<DataServiceDto>()
+                    .ToListAsync(cancellationToken)
+                : null;
+
+            var planes = inc.Contains(DataSearch.Planes)
+                ? await _unitOfWork.PlaneRepository.GetByCondition()
+                    .AsNoTracking()
+                    .Where(a => a.Status == FlightStatus.Active)
+                    .ProjectToType<DataPlaneDto>()
+                    .ToListAsync(cancellationToken)
+                : null;
 
             return ApiResult<DataSearchDto>.Success(new DataSearchDto
             {
                 Airports = airports,
                 Airlines = airlines,
-                Services = services
+                Services = services,
+                Planes = planes,
             });
         }
     }

@@ -18,9 +18,9 @@ namespace API_FlightSystem.Controllers.V1.Client
         [HttpGet]
         [ProducesResponseType(typeof(ApiResult<DataSearchDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<DataSearchDto>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetMetadata()
+        public async Task<IActionResult> GetMetadata([FromQuery] DataSearchQuery query)
         {
-            var result = await _mediator.Send(new DataSearchQuery());
+            var result = await _mediator.Send(query);
             if (!result.Succeeded)
                 return BadRequest(result);
             return Ok(result);
