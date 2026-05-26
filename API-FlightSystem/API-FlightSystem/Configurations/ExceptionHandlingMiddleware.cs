@@ -59,7 +59,10 @@ namespace API_FlightBooking.Configurations
                     httpContext.Request.Path, statusCode, ex.Message);
             }
 
-            var result = JsonSerializer.Serialize(ApiResult<string>.Failure(errors), new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            var result = JsonSerializer.Serialize(
+                ApiResult<string>.Failure(string.Join(", ", errors)),
+                new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
+            );
 
             httpContext.Response.ContentType = "application/json";
             httpContext.Response.StatusCode = statusCode;

@@ -21,14 +21,14 @@ namespace Application.Behaviors
 
             var context = new ValidationContext<TRequest>(request);
 
-            var errors = (await Task.WhenAll(
+            var fieldErrors = (await Task.WhenAll(
                     _validators.Select(v => v.ValidateAsync(context, cancellationToken))))
                 .SelectMany(r => r.Errors)
                 .Where(f => f != null)
-                .Select(f => f.ErrorMessage)
+                .Select(f => new FieldError(f.PropertyName, f.ErrorMessage))
                 .ToArray();
 
-            if (!errors.Any())
+            if (!fieldErrors.Any())
                 return await next();
 
             if (typeof(TResponse).IsGenericType && typeof(TResponse).GetGenericTypeDefinition() == typeof(ApiResult<>))
@@ -36,12 +36,12 @@ namespace Application.Behaviors
                 var innerType = typeof(TResponse).GenericTypeArguments[0];
                 var failureMethod = typeof(ApiResult<>)
                     .MakeGenericType(innerType)
-                    .GetMethod(nameof(ApiResult<object>.Failure));
+                    .GetMethod(nameof(ApiResult<object>.Failure), [typeof(IEnumerable<FieldError>)]);
 
-                return (TResponse)failureMethod!.Invoke(null, new object[] { errors })!;
+                return (TResponse)failureMethod!.Invoke(null, new object[] { fieldErrors })!;
             }
 
-            throw new ValidationException(errors.Select(e => new FluentValidation.Results.ValidationFailure("", e)));
+            throw new ValidationException(fieldErrors.Select(e => new FluentValidation.Results.ValidationFailure(e.PropertyName, e.ErrorMessage)));
         }
     }
 }

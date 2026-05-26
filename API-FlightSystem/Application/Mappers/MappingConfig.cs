@@ -1,6 +1,9 @@
 ﻿using Application.CQRS.Accounts.DTOs;
 using Application.CQRS.Bookings.DTOs;
 using Application.CQRS.Flights.DTOs;
+using Application.CQRS.Planes.DTOs;
+using Application.CQRS.Reviews.DTOs;
+using Application.CQRS.Routes.DTOs;
 using Domain.Entities;
 using Domain.Identity;
 using Mapster;
@@ -14,6 +17,9 @@ namespace Application.Mappers
             config.NewConfig<User, AccountDto>()
                 .Map(dest => dest.UserId, src => src.Id)
                 .Map(dest => dest.Roles, src => src.UserRoles.Select(ur => ur.Role.Name!).ToList());
+
+            config.NewConfig<Plane, PlaneDto>()
+                .Map(dest => dest.AirlineName, src => src.Airline.AirlineName);
 
             config.NewConfig<Flight, FlightDto>()
                 .Map(dest => dest.IsRefund, src => src.Policy.IsRefund)
@@ -47,7 +53,8 @@ namespace Application.Mappers
                 .Map(dest => dest.Services, src => src.FlightServices.Select(fs => fs.Service))
                 .Map(dest => dest.FlightDuration, src => src.Route.FlightDuration)
                 .Map(dest => dest.IsRefund, src => src.Policy.IsRefund)
-                .Map(dest => dest.IsChange, src => src.Policy.IsChange);
+                .Map(dest => dest.IsChange, src => src.Policy.IsChange)
+                .Map(dest => dest.SeatPrices, src => src.FlightSeatPrices);
 
             config.NewConfig<FlightSegment, FlightDetailSegmentDto>()
                 .Map(dest => dest.StopOrder, src => src.SegmentOrder)
@@ -59,8 +66,8 @@ namespace Application.Mappers
                 .Map(dest => dest.DestinationAirportCode, src => src.Route.DestinationAirport.AirportCode)
                 .Map(dest => dest.DestinationCity, src => src.Route.DestinationAirport.City);
 
-            config.NewConfig<Service, FlightDetailServiceDto>()
-                .Map(dest => dest.ServiceName, src => src.ServiceName);
+            config.NewConfig<FlightSeatPrice, FlightDetailSeatPriceDto>()
+                .Map(dest => dest.ClassName, src => src.SeatClass.ClassName);
 
             config.NewConfig<Flight, FlightSearchDto>()
                 .Map(dest => dest.AirlineName, src => src.Plane.Airline.AirlineName)
@@ -70,15 +77,13 @@ namespace Application.Mappers
                 .Map(dest => dest.DestinationAirportCode, src => src.Route.DestinationAirport.AirportCode)
                 .Map(dest => dest.DestinationCity, src => src.Route.DestinationAirport.City)
                 .Map(dest => dest.FlightDuration, src => (int)(src.ArrivalTime - src.DepartureTime).TotalMinutes)
-                .Map(dest => dest.StopCount, src => src.FlightSegments.Count - 1)
+                .Map(dest => dest.StopCount, src => src.FlightSegments.Count)
                 .Map(dest => dest.SeatClasses, src => src.FlightSeatPrices)
                 .Map(dest => dest.IsRefund, src => src.Policy.IsRefund)
                 .Map(dest => dest.IsChange, src => src.Policy.IsChange);
 
             config.NewConfig<FlightSeatPrice, FlightSeatClassDto>()
-                .Map(dest => dest.ClassId, src => src.ClassId)
                 .Map(dest => dest.ClassName, src => src.SeatClass.ClassName)
-                .Map(dest => dest.Price, src => src.Price)
                 .Map(dest => dest.AvailableSeats, src => src.AvailableSeats);
 
             config.NewConfig<Booking, BookingDto>()
@@ -86,10 +91,44 @@ namespace Application.Mappers
                 .Map(dest => dest.ClassName, src => src.SeatClass.ClassName)
                 .Map(dest => dest.TripType, src => src.TripType == 1 ? "Một chiều" : src.TripType == 2 ? "Khứ hồi" : src.TripType == 3 ? "Nhiều điểm đến" : "Không xác định");
 
+            config.NewConfig<Booking, BookingByIdDto>()
+                .Map(dest => dest.Fullname, src => src.User.Fullname)
+                .Map(dest => dest.ClassName, src => src.SeatClass.ClassName)
+                .Map(dest => dest.TripType, src => src.TripType == 1 ? "Một chiều" : src.TripType == 2 ? "Khứ hồi" : src.TripType == 3 ? "Nhiều điểm đến" : "Không xác định")
+                .Map(dest => dest.Flights, src => src.BookingDetails
+                    .GroupBy(bd => bd.FlightId)
+                    .Select(g => new BookingFlightDto
+                    {
+                        FlightId = g.Key,
+                        DepartureTime = g.First().Flight.DepartureTime,
+                        ArrivalTime = g.First().Flight.ArrivalTime,
+                        FlightStatus = g.First().Flight.Status.ToString(),
+                        AirlineName = g.First().Flight.Plane.Airline.AirlineName,
+                        PlaneModel = g.First().Flight.Plane.PlaneModel,
+                        OriginAirport = g.First().Flight.Route.OriginAirport.AirportCode,
+                        DestinationAirport = g.First().Flight.Route.DestinationAirport.AirportCode,
+                        UnitPrice = g.First().UnitPrice,
+                        Passengers = g.Select(bd => new PassengerDto
+                        {
+                            TypeId = bd.Passenger.TypeId,
+                            FullName = bd.Passenger.FullName,
+                            Gender = bd.Passenger.Gender,
+                            Birthday = bd.Passenger.Birthday,
+                            Country = bd.Passenger.Country
+                        }).ToList()
+                    }).ToList());
+
             config.NewConfig<Booking, BookingListDto>()
                 .Map(dest => dest.Fullname, src => src.User.Fullname)
                 .Map(dest => dest.ClassName, src => src.SeatClass.ClassName)
                 .Map(dest => dest.TripType, src => src.TripType == 1 ? "Một chiều" : src.TripType == 2 ? "Khứ hồi" : src.TripType == 3 ? "Nhiều điểm đến" : "Không xác định");
+
+            config.NewConfig<Review, ReviewDto>()
+                .Map(dest => dest.UserName, src => src.User.UserName);
+
+            config.NewConfig<Route, RouteDto>()
+                .Map(dest => dest.OriginAirportCode, src => src.OriginAirport.AirportCode)
+                .Map(dest => dest.DestinationAirportCode, src => src.DestinationAirport.AirportCode);
         }
     }
 }

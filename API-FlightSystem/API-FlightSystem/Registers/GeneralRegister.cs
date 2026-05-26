@@ -130,7 +130,7 @@ namespace API_FlightBooking.Registers
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         context.Response.ContentType = "application/json";
 
-                        var response = ApiResult<object>.Failure([message]);
+                        var response = ApiResult<object>.Failure(message);
                         await context.Response.WriteAsync(
                             JsonSerializer.Serialize(response, new JsonSerializerOptions
                             {
@@ -143,7 +143,7 @@ namespace API_FlightBooking.Registers
                         context.Response.StatusCode = StatusCodes.Status403Forbidden;
                         context.Response.ContentType = "application/json";
 
-                        var response = ApiResult<object>.Failure(["Bạn không có quyền thực hiện chức năng này"]);
+                        var response = ApiResult<object>.Failure("Bạn không có quyền thực hiện chức năng này");
                         await context.Response.WriteAsync(
                             JsonSerializer.Serialize(response, new JsonSerializerOptions
                             {
@@ -177,10 +177,23 @@ namespace API_FlightBooking.Registers
         {
             services.AddCors(options =>
             {
-                var withOrigins = configuration.GetSection("WithOrigins").Get<string[]>() ?? Array.Empty<string>();
+                var withOrigins = configuration.GetSection("ServerSetting:WithOrigins").Get<string[]>();
+
+                if (withOrigins == null || withOrigins.Length == 0)
+                {
+                    var singleOrigin = configuration.GetValue<string>("ServerSetting:WithOrigins");
+                    if (!string.IsNullOrEmpty(singleOrigin))
+                    {
+                        withOrigins = [singleOrigin];
+                    }
+                }
+                withOrigins ??= ["http://localhost:5173"];
                 options.AddPolicy(PolicyName, policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins(withOrigins);
+                    policy.WithOrigins(withOrigins)
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
                 });
             });
             services.Configure<FormOptions>(x =>
