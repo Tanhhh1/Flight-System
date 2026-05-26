@@ -19,7 +19,7 @@ namespace Application.CQRS.Airports.Commands.Update
         {
             var airport = await _unitOfWork.AirportRepository.GetByIdAsync(request.AirportId);
             if (airport == null) 
-                return ApiResult<AirportDto>.Failure(["Sân bay không tồn tại"]);
+                return ApiResult<AirportDto>.Failure("Sân bay không tồn tại");
             request.Adapt(airport);
             _unitOfWork.AirportRepository.Update(airport);
             var airportDto = airport.Adapt<AirportDto>();

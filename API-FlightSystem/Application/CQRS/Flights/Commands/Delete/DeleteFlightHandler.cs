@@ -28,24 +28,24 @@ namespace Application.CQRS.Flights.Commands.Delete
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (flight == null)
-                return ApiResult<FlightDto>.Failure(["Chuyến bay không tồn tại"]);
+                return ApiResult<FlightDto>.Failure("Chuyến bay không tồn tại");
 
             var now = DateTime.UtcNow;
             if (flight.Status == FlightStatus.Inactive)
-                return ApiResult<FlightDto>.Failure(["Chuyến bay đã bị vô hiệu hóa trước đó."]);
+                return ApiResult<FlightDto>.Failure("Chuyến bay đã bị vô hiệu hóa trước đó");
             if (now >= flight.DepartureTime && now <= flight.ArrivalTime)
-                return ApiResult<FlightDto>.Failure(["Không thể xóa chuyến bay đang trong hành trình."]);
+                return ApiResult<FlightDto>.Failure("Không thể xóa chuyến bay đang trong hành trình");
             if (now > flight.ArrivalTime)
-                return ApiResult<FlightDto>.Failure(["Không thể xóa chuyến bay đã kết thúc."]);
+                return ApiResult<FlightDto>.Failure("Không thể xóa chuyến bay đã kết thúc");
             if (now >= flight.DepartureTime.AddHours(-24))
-                return ApiResult<FlightDto>.Failure(["Không thể xóa chuyến bay trong vòng 24 giờ trước khởi hành"]);
+                return ApiResult<FlightDto>.Failure("Không thể xóa chuyến bay trong vòng 24 giờ trước khởi hành");
 
             var hasPaidBooking = await _unitOfWork.BookingRepository
                 .GetByCondition(b => b.BookingDetails.Any(bd => bd.FlightId == request.FlightId)
                                   && b.Status == BookingStatus.Confirmed)
                 .AnyAsync(cancellationToken);
             if (hasPaidBooking)
-                return ApiResult<FlightDto>.Failure(["Không thể xóa chuyến bay đang có đặt chỗ"]);
+                return ApiResult<FlightDto>.Failure("Không thể xóa chuyến bay đang có đặt chỗ");
 
             flight.Status = FlightStatus.Inactive;
 

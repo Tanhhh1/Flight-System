@@ -25,7 +25,7 @@ namespace Application.CQRS.Routes.Queries.GetById
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (route == null)
-                return ApiResult<RouteDto>.Failure(["Tuyến bay không tồn tại"]);
+                return ApiResult<RouteDto>.Failure("Tuyến bay không tồn tại");
 
             return ApiResult<RouteDto>.Success(route.Adapt<RouteDto>());
         }

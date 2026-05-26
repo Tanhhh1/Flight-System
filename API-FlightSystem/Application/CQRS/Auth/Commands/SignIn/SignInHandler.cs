@@ -30,14 +30,14 @@ namespace Application.CQRS.Auth.Commands.SignIn
                 : await _userManager.FindByNameAsync(request.LoginId);
 
             if (user == null)
-                return ApiResult<SignInDto>.Failure(["Email, tên đăng nhập hoặc mật khẩu không chính xác"]);
+                return ApiResult<SignInDto>.Failure("Email, tên đăng nhập hoặc mật khẩu không chính xác");
 
             if (!user.IsActive)
-                return ApiResult<SignInDto>.Failure(["Tài khoản đã bị vô hiệu hóa"]);
+                return ApiResult<SignInDto>.Failure("Tài khoản đã bị vô hiệu hóa");
 
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
             if (!isPasswordValid)
-                return ApiResult<SignInDto>.Failure(["Email, tên đăng nhập hoặc mật khẩu không chính xác"]);
+                return ApiResult<SignInDto>.Failure("Email, tên đăng nhập hoặc mật khẩu không chính xác");
 
             var tokenResult = await _tokenService.GenerateAsync(user);
 

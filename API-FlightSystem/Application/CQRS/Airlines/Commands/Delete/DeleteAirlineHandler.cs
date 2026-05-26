@@ -20,17 +20,17 @@ namespace Application.CQRS.Airlines.Commands.Delete
         {
             var airline = await _unitOfWork.AirlineRepository.GetByIdAsync(request.AirlineId);
             if (airline == null)
-                return ApiResult<AirlineDto>.Failure(["Hãng bay không tồn tại"]);
+                return ApiResult<AirlineDto>.Failure("Hãng bay không tồn tại");
 
             if (airline.Status == FlightStatus.Inactive)
-                return ApiResult<AirlineDto>.Failure(["Hãng bay đã bị vô hiệu hóa trước đó"]);
+                return ApiResult<AirlineDto>.Failure("Hãng bay đã bị vô hiệu hóa trước đó");
 
             bool hasActivePlane = await _unitOfWork.PlaneRepository
                 .GetByCondition(p => p.AirlineId == request.AirlineId
                                   && p.Status == FlightStatus.Active)
                 .AnyAsync(cancellationToken);
             if (hasActivePlane)
-                return ApiResult<AirlineDto>.Failure(["Hãng bay đang có máy bay hoạt động"]);
+                return ApiResult<AirlineDto>.Failure("Hãng bay đang có máy bay hoạt động");
 
             airline.Status = FlightStatus.Inactive;
 

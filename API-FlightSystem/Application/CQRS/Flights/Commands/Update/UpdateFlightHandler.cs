@@ -27,37 +27,37 @@ namespace Application.CQRS.Flights.Commands.Update
                 .Include(f => f.FlightServices)
                 .FirstOrDefaultAsync(f => f.FlightId == request.FlightId, cancellationToken);
             if (flight == null)
-                return ApiResult<FlightDto>.Failure(["Chuyến bay không tồn tại."]);
+                return ApiResult<FlightDto>.Failure("Chuyến bay không tồn tại");
 
             if (flight.Status == FlightStatus.Cancelled)
-                return ApiResult<FlightDto>.Failure(["Không thể cập nhật chuyến bay đã bị hủy."]);
+                return ApiResult<FlightDto>.Failure("Không thể cập nhật chuyến bay đã bị hủy");
 
             var now = DateTime.UtcNow;
             if (now >= flight.DepartureTime && now <= flight.ArrivalTime)
-                return ApiResult<FlightDto>.Failure(["Không thể cập nhật chuyến bay đang trong hành trình."]);
+                return ApiResult<FlightDto>.Failure("Không thể cập nhật chuyến bay đang trong hành trình");
             if (now > flight.ArrivalTime)
-                return ApiResult<FlightDto>.Failure(["Không thể cập nhật chuyến bay đã kết thúc."]);
+                return ApiResult<FlightDto>.Failure("Không thể cập nhật chuyến bay đã kết thúc");
             if (now >= flight.DepartureTime.AddHours(-24))
-                return ApiResult<FlightDto>.Failure(["Không thể cập nhật chuyến bay trong vòng 24 giờ trước khởi hành."]);
+                return ApiResult<FlightDto>.Failure("Không thể cập nhật chuyến bay trong vòng 24 giờ trước khởi hành");
 
             var hasPaidBooking = await _unitOfWork.BookingRepository
                 .GetByCondition(b => b.BookingDetails.Any(bd => bd.FlightId == request.FlightId)
                                   && b.Status == BookingStatus.Confirmed)
                 .AnyAsync(cancellationToken);
             if (hasPaidBooking)
-                return ApiResult<FlightDto>.Failure(["Không thể cập nhật chuyến bay đang có đặt vé."]);
+                return ApiResult<FlightDto>.Failure("Không thể cập nhật chuyến bay đang có đặt vé");
 
             var plane = await _unitOfWork.PlaneRepository.GetByIdAsync(request.PlaneId);
             if (plane == null)
-                return ApiResult<FlightDto>.Failure(["Máy bay không tồn tại."]);
+                return ApiResult<FlightDto>.Failure("Máy bay không tồn tại");
             if (plane.Status == FlightStatus.Inactive)
-                return ApiResult<FlightDto>.Failure(["Máy bay đang không hoạt động."]);
+                return ApiResult<FlightDto>.Failure("Máy bay đang không hoạt động");
 
             var route = await _unitOfWork.RouteRepository.GetByIdAsync(request.RouteId);
             if (route == null)
-                return ApiResult<FlightDto>.Failure(["Tuyến bay không tồn tại."]);
+                return ApiResult<FlightDto>.Failure("Tuyến bay không tồn tại");
             if (route.Status == FlightStatus.Inactive)
-                return ApiResult<FlightDto>.Failure(["Tuyến bay đang không hoạt động."]);
+                return ApiResult<FlightDto>.Failure("Tuyến bay đang không hoạt động");
 
             var arrivalTime = request.DepartureTime.AddMinutes(route.FlightDuration);
 
@@ -69,7 +69,7 @@ namespace Application.CQRS.Flights.Commands.Update
                     && f.ArrivalTime > request.DepartureTime)
                 .AnyAsync(cancellationToken);
             if (isPlaneConflict)
-                return ApiResult<FlightDto>.Failure(["Máy bay đã được sử dụng trong khoảng thời gian này."]);
+                return ApiResult<FlightDto>.Failure("Máy bay đã được sử dụng trong khoảng thời gian này");
 
             var isRouteConflict = await _unitOfWork.FlightRepository
                 .GetByCondition(f => f.RouteId == request.RouteId
@@ -78,7 +78,7 @@ namespace Application.CQRS.Flights.Commands.Update
                     && f.DepartureTime == request.DepartureTime)
                 .AnyAsync(cancellationToken);
             if (isRouteConflict)
-                return ApiResult<FlightDto>.Failure(["Tuyến bay này đã có chuyến bay vào thời điểm đó."]);
+                return ApiResult<FlightDto>.Failure("Tuyến bay này đã có chuyến bay vào thời điểm đó");
 
             Dictionary<int, Route> segmentRoutes = new();
             if (request.Segments.Count > 0)
@@ -94,12 +94,12 @@ namespace Application.CQRS.Flights.Commands.Update
 
                 var invalidRouteIds = segmentRouteIds.Except(segmentRoutes.Keys).ToList();
                 if (invalidRouteIds.Count > 0)
-                    return ApiResult<FlightDto>.Failure(["Một hoặc nhiều tuyến bay của chặng không hợp lệ."]);
+                    return ApiResult<FlightDto>.Failure("Một hoặc nhiều tuyến bay của chặng không hợp lệ");
 
                 foreach (var segment in request.Segments)
                 {
                     if (segment.DepartureTime < request.DepartureTime)
-                        return ApiResult<FlightDto>.Failure(["Thời gian chặng không được trước giờ khởi hành chuyến bay."]);
+                        return ApiResult<FlightDto>.Failure("Thời gian chặng không được trước giờ khởi hành chuyến bay");
                 }
 
                 if (request.Segments.Count > 1)
@@ -113,10 +113,10 @@ namespace Application.CQRS.Flights.Commands.Update
                         var currentArrival = current.DepartureTime.AddMinutes(currentRoute.FlightDuration);
 
                         if (next.DepartureTime < currentArrival)
-                            return ApiResult<FlightDto>.Failure(["Thời gian các chặng bị chồng lấp nhau."]);
+                            return ApiResult<FlightDto>.Failure("Thời gian các chặng bị chồng lấp nhau");
 
                         if (currentRoute.DestinationAirportId != nextRoute.OriginAirportId)
-                            return ApiResult<FlightDto>.Failure(["Sân bay đến của chặng trước phải trùng sân bay đi của chặng sau."]);
+                            return ApiResult<FlightDto>.Failure("Sân bay đến của chặng trước phải trùng sân bay đi của chặng sau");
                     }
                 }
                 var lastSegment = request.Segments[^1];
@@ -125,17 +125,17 @@ namespace Application.CQRS.Flights.Commands.Update
                 arrivalTime = lastSegment.DepartureTime.AddMinutes(lastSegmentRoute.FlightDuration);
 
                 if (firstSegmentRoute.OriginAirportId != route.OriginAirportId)
-                    return ApiResult<FlightDto>.Failure(["Sân bay đi của chặng đầu phải khớp với điểm đi của tuyến bay chính."]);
+                    return ApiResult<FlightDto>.Failure("Sân bay đi của chặng đầu phải khớp với điểm đi của tuyến bay chính");
 
                 if (lastSegmentRoute.DestinationAirportId != route.DestinationAirportId)
-                    return ApiResult<FlightDto>.Failure(["Sân bay đến của chặng cuối phải khớp với điểm đến của tuyến bay chính."]);
+                    return ApiResult<FlightDto>.Failure("Sân bay đến của chặng cuối phải khớp với điểm đến của tuyến bay chính");
             }
 
             var policy = await _unitOfWork.PolicyRepository
                 .GetByCondition(p => p.IsRefund == request.IsRefund && p.IsChange == request.IsChange)
                 .FirstOrDefaultAsync(cancellationToken);
             if (policy == null)
-                return ApiResult<FlightDto>.Failure(["Chính sách không tồn tại."]);
+                return ApiResult<FlightDto>.Failure("Chính sách không tồn tại");
 
             if (request.Services.Count > 0)
             {
@@ -151,7 +151,7 @@ namespace Application.CQRS.Flights.Commands.Update
 
                 var invalidServiceIds = serviceIds.Except(existingServiceIds).ToList();
                 if (invalidServiceIds.Count > 0)
-                    return ApiResult<FlightDto>.Failure(["Một hoặc nhiều dịch vụ không hợp lệ."]);
+                    return ApiResult<FlightDto>.Failure("Một hoặc nhiều dịch vụ không hợp lệ");
             }
 
             flight.PlaneId = request.PlaneId;

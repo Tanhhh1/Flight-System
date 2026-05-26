@@ -22,7 +22,7 @@ namespace Application.CQRS.Services.Queries.GetById
                  .AsNoTracking()
                  .FirstOrDefaultAsync(s => s.ServiceId == request.ServiceId, cancellationToken);
             if (service == null)
-                return ApiResult<ServiceDto>.Failure(["Dịch vụ không tồn tại"]);
+                return ApiResult<ServiceDto>.Failure("Dịch vụ không tồn tại");
 
             var serviceDto = service.Adapt<ServiceDto>();
             return ApiResult<ServiceDto>.Success(serviceDto);

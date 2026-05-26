@@ -23,7 +23,7 @@ namespace Application.CQRS.Planes.Queries.GetById
                 .FirstOrDefaultAsync(p => p.PlaneId == request.PlaneId, cancellationToken);
 
             if (plane == null)
-                return ApiResult<PlaneDto>.Failure(["Máy bay không tồn tại"]);
+                return ApiResult<PlaneDto>.Failure("Máy bay không tồn tại");
 
             var planeDto = plane.Adapt<PlaneDto>();
             return ApiResult<PlaneDto>.Success(planeDto);

@@ -18,7 +18,7 @@ namespace Application.CQRS.Airlines.Commands.Update
         {
             var airline = await _unitOfWork.AirlineRepository.GetByIdAsync(request.AirlineId);
             if(airline == null)
-                return ApiResult<AirlineDto>.Failure(["Hãng bay không tồn tại"]);
+                return ApiResult<AirlineDto>.Failure("Hãng bay không tồn tại");
             request.Adapt(airline);
             _unitOfWork.AirlineRepository.Update(airline);
             var airlineDto = request.Adapt<AirlineDto>();

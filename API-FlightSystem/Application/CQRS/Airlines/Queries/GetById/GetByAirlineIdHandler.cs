@@ -22,7 +22,7 @@ namespace Application.CQRS.Airlines.Queries.GetById
                 .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken);
             if (airline == null) 
-                return ApiResult<AirlineDto>.Failure(["Hãng bay không tồn tại"]);
+                return ApiResult<AirlineDto>.Failure("Hãng bay không tồn tại");
 
             var airlineDto = airline.Adapt<AirlineDto>();
             return ApiResult<AirlineDto>.Success(airlineDto);

@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.CQRS.Airlines.DTOs;
 using Application.Interfaces.CQRS;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.CQRS.Airlines.Commands.Create
@@ -9,5 +10,6 @@ namespace Application.CQRS.Airlines.Commands.Create
     {
         public IEnumerable<string> InvalidatePrefixes => ["Airline"];
         public string AirlineName { get; set; } = string.Empty;
+        public FlightStatus Status { get; set; }
     }
 }

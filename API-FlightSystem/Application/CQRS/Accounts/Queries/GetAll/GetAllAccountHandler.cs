@@ -26,7 +26,12 @@ namespace Application.CQRS.Accounts.Queries.GetAll
                 var keyword = request.Search.Trim().ToLower();
                 query = query.Where(u => u.UserName!.ToLower().Contains(keyword) || u.Fullname.ToLower().Contains(keyword));
             }
-
+            if (!string.IsNullOrWhiteSpace(request.RoleName))
+            {
+                query = query.Where(u =>
+                    u.UserRoles.Any(ur =>
+                        ur.Role.Name!.ToLower() == request.RoleName.Trim().ToLower()));
+            }
             query = query.OrderByDescending(u => u.CreatedAt);
 
             var result = await PageList<AccountDto>.ToPagedListAsync(

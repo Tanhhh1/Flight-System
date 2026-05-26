@@ -21,7 +21,6 @@ namespace Application.CQRS.Airports.Commands.Create
         {
             // Adapt - map sau khi load data về memory
             var airport = request.Adapt<Airport>(); // chuyển từ command -> entity
-            airport.Status = FlightStatus.Active;
             await _unitOfWork.AirportRepository.AddAsync(airport);
             await _unitOfWork.SaveChangesAsync();
             var airportDto = airport.Adapt<AirportDto>(); // chuyển từ entity -> Dto

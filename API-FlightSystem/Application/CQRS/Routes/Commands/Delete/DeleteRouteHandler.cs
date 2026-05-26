@@ -20,22 +20,22 @@ namespace Application.CQRS.Routes.Commands.Delete
         {
             var route = await _unitOfWork.RouteRepository.GetByIdAsync(request.RouteId);
             if (route == null)
-                return ApiResult<RouteDto>.Failure(["Tuyến bay không tồn tại"]);
+                return ApiResult<RouteDto>.Failure("Tuyến bay không tồn tại");
 
             if (route.Status == FlightStatus.Inactive)
-                return ApiResult<RouteDto>.Failure(["Tuyến bay đã ngừng hoạt động"]);
+                return ApiResult<RouteDto>.Failure("Tuyến bay đã ngừng hoạt động");
 
             var hasActiveFlights = await _unitOfWork.FlightRepository
                 .GetByCondition(f => f.RouteId == request.RouteId && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
                 .AnyAsync(cancellationToken);
             if (hasActiveFlights)
-                return ApiResult<RouteDto>.Failure(["Tuyến bay đang có chuyến bay hoạt động, không thể vô hiệu hóa"]);
+                return ApiResult<RouteDto>.Failure("Tuyến bay đang có chuyến bay hoạt động, không thể vô hiệu hóa");
 
             var hasActiveSegment = await _unitOfWork.FlightSegmentRepository
                 .GetByCondition(s => s.RouteId == request.RouteId)
                 .AnyAsync(cancellationToken);
             if (hasActiveSegment)
-                return ApiResult<RouteDto>.Failure(["Tuyến bay đang có chặng dừng hoạt động, không thể vô hiệu hóa"]);
+                return ApiResult<RouteDto>.Failure("Tuyến bay đang có chặng dừng hoạt động, không thể vô hiệu hóa");
 
             route.Status = FlightStatus.Inactive;
 

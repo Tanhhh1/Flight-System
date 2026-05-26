@@ -24,7 +24,7 @@ namespace Application.CQRS.Airports.Queries.GetById
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (airport == null)
-                return ApiResult<AirportDto>.Failure(["Sân bay không tồn tại"]);
+                return ApiResult<AirportDto>.Failure("Sân bay không tồn tại");
 
             var airportDto = airport.Adapt<AirportDto>();
             return ApiResult<AirportDto>.Success(airportDto);

@@ -24,7 +24,7 @@ namespace Application.CQRS.Flights.Queries.GetById
                 .FirstOrDefaultAsync(f => f.FlightId == request.FlightId, cancellationToken);
 
             if (flightDto == null)
-                return ApiResult<FlightDetailDto>.Failure(["Không tìm thấy chuyến bay"]);
+                return ApiResult<FlightDetailDto>.Failure("Không tìm thấy chuyến bay");
 
             return ApiResult<FlightDetailDto>.Success(flightDto);
         }

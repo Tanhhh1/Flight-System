@@ -17,7 +17,11 @@ namespace Application.CQRS.Reviews.Queries.GetAll
 
         public async Task<ApiResult<PageList<ReviewDto>>> Handle(GetAllReviewQuery request, CancellationToken cancellationToken)
         {
-            var review = _unitOfWork.ReviewRepository.GetByCondition().AsNoTracking();
+            var review = _unitOfWork.ReviewRepository
+                .GetByCondition()
+                .Include(r => r.User)
+                .AsNoTracking();
+
             if (!string.IsNullOrEmpty(request.Search))
                 review = review.Where(p => p.Content.Contains(request.Search));
 
@@ -32,6 +36,7 @@ namespace Application.CQRS.Reviews.Queries.GetAll
                 request.PageSize,
                 cancellationToken
             );
+
             return ApiResult<PageList<ReviewDto>>.Success(pagedList);
         }
     }

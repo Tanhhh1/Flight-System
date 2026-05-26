@@ -58,7 +58,7 @@ namespace API_FlightSystem.Controllers.V1.Admin
         public async Task<IActionResult> Update(int id, [FromBody] UpdateFlightCommand command)
         {
             if(id != command.FlightId)
-                return BadRequest(ApiResult<FlightDto>.Failure(["Mã chuyến bay không khớp"]));
+                return BadRequest(ApiResult<FlightDto>.Failure("Mã chuyến bay không khớp"));
 
             var result = await _mediator.Send(command);
             if (!result.Succeeded)

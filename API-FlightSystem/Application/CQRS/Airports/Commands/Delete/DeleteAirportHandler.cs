@@ -22,10 +22,10 @@ namespace Application.CQRS.Airports.Commands.Delete
             var airport = await _unitOfWork.AirportRepository.GetByIdAsync(request.AirportId);
 
             if (airport == null)
-                return ApiResult<AirportDto>.Failure(["Sân bay không tồn tại"]);
+                return ApiResult<AirportDto>.Failure("Sân bay không tồn tại");
 
             if (airport.Status == FlightStatus.Inactive)
-                return ApiResult<AirportDto>.Failure(["Sân bay đã bị vô hiệu hóa trước đó"]);
+                return ApiResult<AirportDto>.Failure("Sân bay đã bị vô hiệu hóa trước đó");
 
             bool hasActiveRoute = await _unitOfWork.RouteRepository
                 .GetByCondition(r => r.Status == FlightStatus.Active
@@ -33,7 +33,7 @@ namespace Application.CQRS.Airports.Commands.Delete
                                    || r.DestinationAirportId == request.AirportId))
                 .AnyAsync(cancellationToken);
             if (hasActiveRoute)
-                return ApiResult<AirportDto>.Failure(["Sân bay đang được sử dụng trong tuyến bay hoạt động"]);
+                return ApiResult<AirportDto>.Failure("Sân bay đang được sử dụng trong tuyến bay hoạt động");
 
             airport.Status = FlightStatus.Inactive;
 

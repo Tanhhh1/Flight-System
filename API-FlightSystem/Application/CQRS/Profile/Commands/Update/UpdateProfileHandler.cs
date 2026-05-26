@@ -21,15 +21,15 @@ namespace Application.CQRS.Profile.Commands.Update
         public async Task<ApiResult<UserProfileDto>> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
         {
             if (!_currentUser.IsAuthenticated || _currentUser.Id == null)
-                return ApiResult<UserProfileDto>.Failure(["Người dùng chưa đăng nhập"]);
+                return ApiResult<UserProfileDto>.Failure("Người dùng chưa đăng nhập");
 
             var user = await _userManager.FindByIdAsync(_currentUser.Id.ToString()!);
             if (user is null)
-                return ApiResult<UserProfileDto>.Failure(["Không tìm thấy người dùng"]);
+                return ApiResult<UserProfileDto>.Failure("Không tìm thấy người dùng");
 
             var existingByEmail = await _userManager.FindByEmailAsync(request.Email!);
             if (existingByEmail != null && existingByEmail.Id != _currentUser.Id)
-                return ApiResult<UserProfileDto>.Failure(["Email đã được sử dụng bởi tài khoản khác"]);
+                return ApiResult<UserProfileDto>.Failure("Email đã được sử dụng bởi tài khoản khác");
 
             request.Adapt(user);
             
@@ -37,7 +37,7 @@ namespace Application.CQRS.Profile.Commands.Update
 
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
-                return ApiResult<UserProfileDto>.Failure(result.Errors.Select(e => e.Description).ToList());
+                return ApiResult<UserProfileDto>.Failure(string.Join(", ", result.Errors.Select(e => e.Description)));
 
             var userDto = user.Adapt<UserProfileDto>();
             return ApiResult<UserProfileDto>.Success(userDto);

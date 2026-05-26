@@ -23,10 +23,6 @@ namespace Application.CQRS.Accounts.Validators
                 .Matches(@"[0-9]").WithMessage("Mật khẩu phải có ít nhất 1 chữ số.")
                 .Matches(@"[^a-zA-Z0-9]").WithMessage("Mật khẩu phải có ít nhất 1 ký tự đặc biệt.");
 
-            RuleFor(x => x.ConfirmPassword)
-                .NotEmpty().WithMessage("Xác nhận mật khẩu không được để trống.")
-                .Equal(x => x.Password).WithMessage("Mật khẩu xác nhận không khớp.");
-
             RuleFor(x => x.Fullname)
                 .NotEmpty().WithMessage("Họ tên không được để trống.")
                 .Matches(@"^[\p{L}\s]+$").WithMessage("Họ tên chỉ được chứa chữ cái và khoảng trắng.");

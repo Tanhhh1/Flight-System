@@ -58,7 +58,7 @@ namespace API_FlightSystem.Controllers.V1.Admin
         public async Task<IActionResult> Update(int id, [FromBody] UpdateRouteCommand command)
         {
             if (id != command.RouteId)
-                return BadRequest(ApiResult<RouteDto>.Failure(["Mã tuyến bay không khớp"]));
+                return BadRequest(ApiResult<RouteDto>.Failure("Mã tuyến bay không khớp"));
 
             var result = await _mediator.Send(command);
             if (!result.Succeeded)

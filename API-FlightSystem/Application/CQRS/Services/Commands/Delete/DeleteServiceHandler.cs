@@ -24,10 +24,10 @@ namespace Application.CQRS.Services.Commands.Delete
                 .GetByIdAsync(request.ServiceId);
 
             if (service is null)
-                return ApiResult<ServiceDto>.Failure(["Dịch vụ không tồn tại"]);
+                return ApiResult<ServiceDto>.Failure("Dịch vụ không tồn tại");
 
             if (!service.IsActive)
-                return ApiResult<ServiceDto>.Failure(["Dịch vụ này đã ngừng cung cấp trước đó"]);
+                return ApiResult<ServiceDto>.Failure("Dịch vụ này đã ngừng cung cấp trước đó");
 
             var isInactiveFlight = await _unitOfWork.FlightServiceRepository
                 .GetByCondition(fs => fs.ServiceId == request.ServiceId
@@ -35,7 +35,7 @@ namespace Application.CQRS.Services.Commands.Delete
                 .AnyAsync(cancellationToken);
 
             if (isInactiveFlight)
-                return ApiResult<ServiceDto>.Failure(["Dịch vụ đang được sử dụng trong chuyến bay hoạt động, không thể ngừng cung cấp"]);
+                return ApiResult<ServiceDto>.Failure("Dịch vụ đang được sử dụng trong chuyến bay hoạt động, không thể ngừng cung cấp");
 
             service.IsActive = false;
             var serviceDto = service.Adapt<ServiceDto>();

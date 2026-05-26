@@ -19,7 +19,7 @@ namespace Application.CQRS.Services.Commands.Update
         {
             var service = await _unitOfWork.ServiceRepository.GetByIdAsync(request.ServiceId);
             if (service == null)
-                return ApiResult<ServiceDto>.Failure(["Dịch vụ không tồn tại"]);
+                return ApiResult<ServiceDto>.Failure("Dịch vụ không tồn tại");
             request.Adapt(service);
             _unitOfWork.ServiceRepository.Update(service);
             var result = service.Adapt<ServiceDto>();

@@ -25,7 +25,7 @@ namespace Application.CQRS.Accounts.Queries.GetById
                 .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
             if (user == null)
-                return ApiResult<AccountDto>.Failure(["Tài khoản không tồn tại"]);
+                return ApiResult<AccountDto>.Failure("Tài khoản không tồn tại");
 
             var accountDto = user.Adapt<AccountDto>();
             return ApiResult<AccountDto>.Success(accountDto);

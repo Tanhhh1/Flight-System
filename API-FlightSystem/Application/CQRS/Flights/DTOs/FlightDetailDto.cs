@@ -18,6 +18,7 @@
 
         public List<FlightDetailSegmentDto> Segments { get; set; } = new();
         public List<FlightDetailServiceDto> Services { get; set; } = new();
+        public List<FlightDetailSeatPriceDto> SeatPrices { get; set; } = new();
     }
 
     public class FlightDetailSegmentDto
@@ -36,5 +37,12 @@
     {
         public int ServiceId { get; set; }
         public string ServiceName { get; set; } = string.Empty;
+    }
+
+    public class FlightDetailSeatPriceDto
+    {
+        public int ClassId { get; set; }
+        public string ClassName { get; set; } = string.Empty;
+        public decimal Price { get; set; }
     }
 }

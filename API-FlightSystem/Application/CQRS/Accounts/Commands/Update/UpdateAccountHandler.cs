@@ -19,29 +19,30 @@ namespace Application.CQRS.Accounts.Commands.Update
         {
             var user = await _userManager.FindByIdAsync(request.UserId.ToString());
             if (user == null)
-                return ApiResult<AccountDto>.Failure(["Tài khoản không tồn tại"]);
+                return ApiResult<AccountDto>.Failure("Tài khoản không tồn tại");
 
             var existingByEmail = await _userManager.FindByEmailAsync(request.Email);
             if (existingByEmail != null && existingByEmail.Id != request.UserId)
-                return ApiResult<AccountDto>.Failure(["Email đã được sử dụng bởi tài khoản khác"]);
+                return ApiResult<AccountDto>.Failure([new FieldError("Email", "Email đã tồn tại trong hệ thống")]);
 
             request.Adapt(user);
 
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
-                return ApiResult<AccountDto>.Failure(updateResult.Errors.Select(e => e.Description));
+                return ApiResult<AccountDto>.Failure(string.Join(", ", updateResult.Errors.Select(e => e.Description)));
 
             var currentRoles = await _userManager.GetRolesAsync(user);
-
+            if (currentRoles.Contains("user"))
+                return ApiResult<AccountDto>.Failure("Không thể chỉnh sửa tài khoản người dùng thông thường.");
             var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
             if (!removeResult.Succeeded)
-                return ApiResult<AccountDto>.Failure(removeResult.Errors.Select(e => e.Description));
+                return ApiResult<AccountDto>.Failure(string.Join(", ", removeResult.Errors.Select(e => e.Description)));
 
             var addRoleResult = await _userManager.AddToRolesAsync(user, request.RoleNames);
             if (!addRoleResult.Succeeded)
             {
                 await _userManager.AddToRolesAsync(user, currentRoles);
-                return ApiResult<AccountDto>.Failure(addRoleResult.Errors.Select(e => e.Description));
+                return ApiResult<AccountDto>.Failure(string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
             }
 
             var accountDto = user.Adapt<AccountDto>();

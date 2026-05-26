@@ -20,7 +20,7 @@ namespace Application.CQRS.Reviews.Commands.Send
         public async Task<ApiResult<ReviewDto>> Handle(SendReviewCommand request, CancellationToken cancellationToken)
         {
             if (!_currentUser.IsAuthenticated || _currentUser.Id == null)
-                return ApiResult<ReviewDto>.Failure(["Bạn cần đăng nhập để thực hiện chức năng này."]);
+                return ApiResult<ReviewDto>.Failure("Bạn cần đăng nhập để thực hiện chức năng này");
 
             var review = request.Adapt<Review>();
             review.UserId = _currentUser.Id.Value;

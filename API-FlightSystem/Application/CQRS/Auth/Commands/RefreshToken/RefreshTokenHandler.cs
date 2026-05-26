@@ -28,36 +28,36 @@ namespace Application.CQRS.Auth.Commands.RefreshToken
         {
             var jwtId = _tokenService.GetJwtId(request.AccessToken);
             if (jwtId == null)
-                return ApiResult<RefreshTokenDto>.Failure(["Access token không hợp lệ"]);
+                return ApiResult<RefreshTokenDto>.Failure("Access token không hợp lệ");
 
             var refreshToken = await _unitOfWork.RefreshTokenRepository
                 .GetByCondition(x => x.Token == request.RefreshToken)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (refreshToken == null)
-                return ApiResult<RefreshTokenDto>.Failure(["Refresh token không tồn tại"]);
+                return ApiResult<RefreshTokenDto>.Failure("Refresh token không tồn tại");
 
             if (refreshToken.IsUsed)
-                return ApiResult<RefreshTokenDto>.Failure(["Refresh token đã được sử dụng"]);
+                return ApiResult<RefreshTokenDto>.Failure("Refresh token đã được sử dụng");
 
             if (refreshToken.InRevoked)
-                return ApiResult<RefreshTokenDto>.Failure(["Refresh token đã bị thu hồi"]);
+                return ApiResult<RefreshTokenDto>.Failure("Refresh token đã bị thu hồi");
 
             if (refreshToken.ExpiryTime < DateTime.UtcNow)
-                return ApiResult<RefreshTokenDto>.Failure(["Refresh token đã hết hạn"]);
+                return ApiResult<RefreshTokenDto>.Failure("Refresh token đã hết hạn");
 
             if (refreshToken.JwtId != jwtId)
-                return ApiResult<RefreshTokenDto>.Failure(["Token không khớp"]);
+                return ApiResult<RefreshTokenDto>.Failure("Token không khớp");
 
             refreshToken.IsUsed = true;
             _unitOfWork.RefreshTokenRepository.Update(refreshToken);
 
             var user = await _userManager.FindByIdAsync(refreshToken.UserId.ToString());
             if (user == null)
-                return ApiResult<RefreshTokenDto>.Failure(["Người dùng không tồn tại"]);
+                return ApiResult<RefreshTokenDto>.Failure("Người dùng không tồn tại");
 
             if (!user.IsActive)
-                return ApiResult<RefreshTokenDto>.Failure(["Tài khoản đã bị vô hiệu hóa"]);
+                return ApiResult<RefreshTokenDto>.Failure("Tài khoản đã bị vô hiệu hóa");
 
             var tokenResult = await _tokenService.GenerateAsync(user);
 

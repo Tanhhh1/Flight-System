@@ -58,7 +58,7 @@ namespace API_FlightSystem.Controllers.V1.Admin
         public async Task<IActionResult> Update(int id, [FromBody] UpdateAccountCommand command)
         {
             if (id != command.UserId)
-                return BadRequest(ApiResult<AccountDto>.Failure(["Mã hãng bay không khớp"]));
+                return BadRequest(ApiResult<AccountDto>.Failure("Mã tài khoản không khớp"));
 
             var result = await _mediator.Send(command);
             if (!result.Succeeded)

@@ -18,7 +18,7 @@ namespace Application.CQRS.Reviews.Commands.Delete
         {
             var review = await _unitOfWork.ReviewRepository.GetByIdAsync(request.ReviewId);
             if (review == null)
-                return ApiResult<ReviewDto>.Failure(["Đánh giá không tồn tại"]);
+                return ApiResult<ReviewDto>.Failure("Đánh giá không tồn tại");
 
             review.IsHidden = true; 
             var reviewDto = review.Adapt<ReviewDto>();
