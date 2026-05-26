@@ -24,7 +24,7 @@ namespace Application.CQRS.Bookings.Commands.Booking
         public async Task<ApiResult<BookingDto>> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
         {
             if (!_currentUser.IsAuthenticated || _currentUser.Id == null)
-                return ApiResult<BookingDto>.Failure(["Bạn cần đăng nhập để đặt vé"]);
+                return ApiResult<BookingDto>.Failure("Bạn cần đăng nhập để đặt vé");
 
             var flightIds = request.Details
                 .Select(d => d.FlightId)
@@ -37,7 +37,7 @@ namespace Application.CQRS.Bookings.Commands.Booking
                 .ToListAsync(cancellationToken);
 
             if (flightIds.Except(existingFlightIds).Any())
-                return ApiResult<BookingDto>.Failure(["Một hoặc nhiều chuyến bay không tồn tại"]);
+                return ApiResult<BookingDto>.Failure("Một hoặc nhiều chuyến bay không tồn tại");
 
             var flightSeatPrices = await _unitOfWork.FlightSeatPriceRepository
                 .GetByCondition(fsp =>
@@ -46,7 +46,7 @@ namespace Application.CQRS.Bookings.Commands.Booking
                 .ToListAsync(cancellationToken);
 
             if (flightSeatPrices.Count != flightIds.Count)
-                return ApiResult<BookingDto>.Failure(["Không tìm thấy giá vé cho hạng ghế này"]);
+                return ApiResult<BookingDto>.Failure("Không tìm thấy giá vé cho hạng ghế này");
 
             var pricePerFlight = flightSeatPrices
                 .ToDictionary(fsp => fsp.FlightId, fsp => fsp.Price);
@@ -65,7 +65,7 @@ namespace Application.CQRS.Bookings.Commands.Booking
 
             var missingTypeIds = typeIds.Except(discountPerType.Keys).ToList();
             if (missingTypeIds.Any())
-                return ApiResult<BookingDto>.Failure(["Loại hành khách không hợp lệ"]);
+                return ApiResult<BookingDto>.Failure("Loại hành khách không hợp lệ");
 
             var passengerCountPerFlight = request.Details
                 .GroupBy(d => d.FlightId)
@@ -76,19 +76,8 @@ namespace Application.CQRS.Bookings.Commands.Booking
                .ToList();
             if (notEnoughSeats.Any())
             {
-                var errors = notEnoughSeats
-                    .Select(fsp => $"Chuyến bay {fsp.FlightId} chỉ còn {fsp.AvailableSeats} chỗ trống")
-                    .ToList();
+                var errors = string.Join(", ", notEnoughSeats.Select(fsp => $"Chuyến bay {fsp.FlightId} chỉ còn {fsp.AvailableSeats} chỗ trống"));
                 return ApiResult<BookingDto>.Failure(errors);
-            }
-
-            foreach (var fsp in flightSeatPrices)
-            {
-                if (fsp.AvailableSeats < passengerCountPerFlight[fsp.FlightId])
-                    return ApiResult<BookingDto>.Failure([$"Chuyến bay {fsp.FlightId} không đủ chỗ trống"]);
-
-                fsp.AvailableSeats -= passengerCountPerFlight[fsp.FlightId];
-                _unitOfWork.FlightSeatPriceRepository.Update(fsp);
             }
 
             var passengers = request.Details
