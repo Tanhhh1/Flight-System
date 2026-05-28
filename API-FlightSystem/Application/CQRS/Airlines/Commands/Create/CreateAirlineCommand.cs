@@ -10,6 +10,7 @@ namespace Application.CQRS.Airlines.Commands.Create
     {
         public IEnumerable<string> InvalidatePrefixes => ["Airline"];
         public string AirlineName { get; set; } = string.Empty;
-        public FlightStatus Status { get; set; }
+        public string AirlineCode { get; set; } = string.Empty;
+        public string Country { get; set; } = string.Empty;
     }
 }

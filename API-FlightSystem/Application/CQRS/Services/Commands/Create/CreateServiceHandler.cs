@@ -18,6 +18,7 @@ namespace Application.CQRS.Services.Commands.Create
         public async Task<ApiResult<ServiceDto>> Handle(CreateServiceCommand request, CancellationToken cancellationToken)
         {
             var service = request.Adapt<Service>();
+            service.IsActive = true;
             await _unitOfWork.ServiceRepository.AddAsync(service);
             await _unitOfWork.SaveChangesAsync();
             var result = service.Adapt<ServiceDto>();

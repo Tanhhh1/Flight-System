@@ -20,9 +20,6 @@ namespace Application.CQRS.Routes.Validators
             RuleFor(x => x.FlightDuration)
                 .GreaterThan(0).WithMessage("Thời gian bay phải lớn hơn 0")
                 .LessThanOrEqualTo(1440).WithMessage("Thời gian bay không được vượt quá 1440 phút (24 giờ)");
-
-            RuleFor(x => x.Status)
-                .IsInEnum().WithMessage("Trạng thái tuyến bay không hợp lệ");
         }
     }
 }

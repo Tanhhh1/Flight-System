@@ -32,24 +32,24 @@ namespace Application.CQRS.Accounts.Commands.Delete
             if (user == null)
                 return ApiResult<AccountDto>.Failure("Tài khoản không tồn tại");
 
-            if (!user.IsActive)
-                return ApiResult<AccountDto>.Failure("Tài khoản đã bị khóa trước đó");
-
-            var activeTokens = await _unitOfWork.RefreshTokenRepository
-                .GetByCondition(t => t.UserId == request.UserId && !t.InRevoked && !t.IsUsed)
-                .ToListAsync(cancellationToken);
-
-            if (activeTokens.Any())
+            if (user.IsActive)
             {
-                foreach (var token in activeTokens)
+                var activeTokens = await _unitOfWork.RefreshTokenRepository
+                    .GetByCondition(t => t.UserId == request.UserId && !t.InRevoked && !t.IsUsed)
+                    .ToListAsync(cancellationToken);
+
+                if (activeTokens.Any())
                 {
-                    token.InRevoked = true;
-                    _unitOfWork.RefreshTokenRepository.Update(token);
+                    foreach (var token in activeTokens)
+                    {
+                        token.InRevoked = true;
+                        _unitOfWork.RefreshTokenRepository.Update(token);
+                    }
+                    await _unitOfWork.SaveChangesAsync();
                 }
-                await _unitOfWork.SaveChangesAsync();
             }
 
-            user.IsActive = false;
+            user.IsActive = !user.IsActive;
 
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)

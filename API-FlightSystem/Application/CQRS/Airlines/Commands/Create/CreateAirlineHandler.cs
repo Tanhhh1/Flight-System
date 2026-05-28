@@ -19,6 +19,7 @@ namespace Application.CQRS.Airlines.Commands.Create
         public async Task<ApiResult<AirlineDto>> Handle(CreateAirlineCommand request, CancellationToken cancellationToken)
         {
             var airline = request.Adapt<Airline>();
+            airline.Status = FlightStatus.Active;
             await _unitOfWork.AirlineRepository.AddAsync(airline);
             await _unitOfWork.SaveChangesAsync();
             var airlineDto = airline.Adapt<AirlineDto>();

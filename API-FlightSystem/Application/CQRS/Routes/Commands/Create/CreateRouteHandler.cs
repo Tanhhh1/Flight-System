@@ -36,6 +36,7 @@ namespace Application.CQRS.Routes.Commands.Create
                 return ApiResult<RouteDto>.Failure("Tuyến bay này đã tồn tại");
 
             var route = request.Adapt<Route>();
+            route.Status = FlightStatus.Active;
             await _unitOfWork.RouteRepository.AddAsync(route);
             await _unitOfWork.SaveChangesAsync();
 

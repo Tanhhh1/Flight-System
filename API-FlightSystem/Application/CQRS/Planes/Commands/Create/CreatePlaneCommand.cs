@@ -11,6 +11,5 @@ namespace Application.CQRS.Planes.Commands.Create
         public IEnumerable<string> InvalidatePrefixes => ["Plane"];
         public string PlaneModel { get; set; } = string.Empty;
         public int AirlineId { get; set; }
-        public FlightStatus Status { get; set; }
     }
 }
