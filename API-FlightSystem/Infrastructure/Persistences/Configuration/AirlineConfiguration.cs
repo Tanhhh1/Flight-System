@@ -14,6 +14,17 @@ namespace Infrastructure.Persistences.Configuration
                 .IsRequired()
                 .HasMaxLength(100);
 
+            builder.Property(a => a.AirlineCode)
+                .IsRequired()
+                .HasMaxLength(10);
+
+            builder.HasIndex(a => a.AirlineCode)
+                .IsUnique();
+
+            builder.Property(a => a.Country)
+                .IsRequired()
+                .HasMaxLength(100);
+
             builder.Property(a => a.Status)
                 .IsRequired();
 

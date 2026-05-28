@@ -7,6 +7,8 @@ namespace Domain.Entities
     {
         public int AirlineId { get; set; }
         public string AirlineName { get; set; } = string.Empty;
+        public string AirlineCode { get; set; } = string.Empty;
+        public string Country { get; set; } = string.Empty;
         public FlightStatus Status { get; set; }
         public ICollection<Plane> Planes { get; set; } = new List<Plane>();
     }
