@@ -45,8 +45,7 @@ namespace Infrastructure.Persistences
               Assembly.GetExecutingAssembly());
         }
 
-        public override async Task<int> SaveChangesAsync(
-          CancellationToken cancellationToken = default)
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             foreach (var entry in ChangeTracker.Entries<BaseEntity>())
             {

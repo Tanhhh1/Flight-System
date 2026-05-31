@@ -7,6 +7,7 @@ using Application.CQRS.Airports.DTOs;
 using Application.CQRS.Airports.Queries.GetAll;
 using Application.CQRS.Airports.Queries.GetById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_FlightSystem.Controllers.V1.Admin
@@ -43,6 +44,7 @@ namespace API_FlightSystem.Controllers.V1.Admin
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(typeof(ApiResult<AirportDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResult<AirportDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateAirportCommand command)
@@ -54,6 +56,7 @@ namespace API_FlightSystem.Controllers.V1.Admin
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(typeof(ApiResult<AirportDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<AirportDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateAirportCommand command)
@@ -68,6 +71,7 @@ namespace API_FlightSystem.Controllers.V1.Admin
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(typeof(ApiResult<AirportDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<AirportDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int id)

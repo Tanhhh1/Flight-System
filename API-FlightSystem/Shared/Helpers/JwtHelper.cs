@@ -28,7 +28,7 @@ namespace Shared.Helpers
                 Issuer = jwtSetting.ValidIssuer,
                 Audience = jwtSetting.ValidAudience,
                 Subject = new ClaimsIdentity(claims),
-                Expires = expireStart.AddMinutes(jwtSetting.TokenValidityInMinutes),
+                Expires = expireStart.AddHours(jwtSetting.TokenValidityInHours),
                 SigningCredentials = credentials
             };
 

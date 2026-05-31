@@ -51,7 +51,6 @@ namespace API_FlightSystem.Controllers.V1.Client
         }
 
         [HttpPost("refresh")]
-        [Authorize]
         [ProducesResponseType(typeof(ApiResult<RefreshTokenDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand command)

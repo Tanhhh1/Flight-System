@@ -159,6 +159,7 @@ namespace Application.CQRS.Flights.Commands.Update
             flight.PolicyId = policy.PolicyId;
             flight.DepartureTime = request.DepartureTime;
             flight.ArrivalTime = arrivalTime;
+            flight.Status = request.Status;
 
             var requestSegmentIds = request.Segments
                 .Where(s => s.SegmentId > 0)

@@ -129,6 +129,12 @@ namespace Application.Mappers
             config.NewConfig<Route, RouteDto>()
                 .Map(dest => dest.OriginAirportCode, src => src.OriginAirport.AirportCode)
                 .Map(dest => dest.DestinationAirportCode, src => src.DestinationAirport.AirportCode);
+
+            config.NewConfig<Route, DataRouteDto>()
+                .Map(dest => dest.OriginAirportCode, src => src.OriginAirport.AirportCode)
+                .Map(dest => dest.OriginAirportName, src => src.OriginAirport.AirportName)
+                .Map(dest => dest.DestinationAirportCode, src => src.DestinationAirport.AirportCode)
+                .Map(dest => dest.DestinationAirportName, src => src.DestinationAirport.AirportName);
         }
     }
 }

@@ -23,7 +23,10 @@ namespace Application.CQRS.Planes.Queries.GetAll
                 .AsNoTracking();
 
             if (!string.IsNullOrEmpty(request.Search))
-                plane = plane.Where(p => p.PlaneModel.Contains(request.Search));
+            {
+                var keyword = request.Search.Trim().ToLower();
+                plane = plane.Where(p => p.PlaneModel.ToLower().Contains(keyword));
+            }
 
             if (request.Status.HasValue)
                 plane = plane.Where(p => p.Status == request.Status.Value);

@@ -25,5 +25,6 @@ namespace Application.Interfaces.UnitOfWork
         IBookingDetailRepository BookingDetailRepository { get; }
         IPassengerRepository PassengerRepository { get; }
         IPassengerTypeRepository PassengerTypeRepository { get; }
+        IPaymentRepository PaymentRepository { get; }
     }
 }

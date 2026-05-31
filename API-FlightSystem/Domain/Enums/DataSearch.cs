@@ -5,6 +5,7 @@
         Airports,
         Airlines,
         Services,
-        Planes
+        Planes,
+        Routes
     }
 }

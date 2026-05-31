@@ -19,7 +19,10 @@ namespace Application.CQRS.Airlines.Queries.GetAll
         {
             var airline = _unitOfWork.AirlineRepository.GetByCondition().AsNoTracking();
             if (!string.IsNullOrEmpty(request.Search))
-                airline = airline.Where(a => a.AirlineName.Contains(request.Search));
+            {
+                var keyword = request.Search.Trim().ToLower();
+                airline = airline.Where(u => u.AirlineCode!.ToLower().Contains(keyword) || u.AirlineName.ToLower().Contains(keyword));
+            }
 
             if (request.Status.HasValue)
                 airline = airline.Where(a => a.Status == request.Status.Value);

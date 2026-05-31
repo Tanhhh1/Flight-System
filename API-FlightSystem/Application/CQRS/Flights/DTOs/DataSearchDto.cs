@@ -6,6 +6,7 @@
         public List<DataAirlineDto>? Airlines { get; set; }
         public List<DataServiceDto>? Services { get; set; }
         public List<DataPlaneDto>? Planes { get; set; }
+        public List<DataRouteDto>? Routes { get; set; }
     }
     public class DataAirportDto
     {
@@ -31,5 +32,17 @@
     {
         public int PlaneId { get; set; }
         public string PlaneModel { get; set; } = string.Empty;
+    }
+
+    public class DataRouteDto
+    {
+        public int RouteId { get; set; }
+        public int OriginAirportId { get; set; }
+        public int DestinationAirportId { get; set; }
+        public int FlightDuration { get; set; }
+        public string OriginAirportCode { get; set; } = string.Empty;
+        public string OriginAirportName { get; set; } = string.Empty;
+        public string DestinationAirportCode { get; set; } = string.Empty;
+        public string DestinationAirportName { get; set; } = string.Empty;
     }
 }

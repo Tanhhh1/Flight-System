@@ -37,6 +37,16 @@ namespace Infrastructure.Services
 
             var issuedAt = DateTime.UtcNow;
 
+            var accessTokenExpires = DateTime.SpecifyKind(
+                issuedAt.AddHours(_jwtSetting.TokenValidityInHours),
+                DateTimeKind.Utc
+            );
+
+            var refreshTokenExpires = DateTime.SpecifyKind(
+                issuedAt.AddDays(_jwtSetting.RefreshTokenValidityInDays),
+                DateTimeKind.Utc
+            );
+
             var accessToken = JwtHelper.GenerateToken(
                 roles,
                 _jwtSetting,
@@ -51,8 +61,8 @@ namespace Infrastructure.Services
                 JwtId = jwtId ?? string.Empty,
                 AccessToken = accessToken!,
                 RefreshToken = StringHelper.GenerateRefreshToken(),
-                AccessTokenExpires = issuedAt.AddMinutes(_jwtSetting.TokenValidityInMinutes),
-                RefreshTokenExpires = issuedAt.AddDays(_jwtSetting.RefreshTokenValidityInDays)
+                AccessTokenExpires = accessTokenExpires,
+                RefreshTokenExpires = refreshTokenExpires
             };
         }
     }

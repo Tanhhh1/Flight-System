@@ -2,9 +2,8 @@
 {
     public enum PaymentMethod
     {
-        Cash = 1,
-        VNPay = 2,
-        Momo = 3,
-        BankTransfer = 4
+        VNPay = 1,
+        MoMo = 2,
+        Stripe = 3
     }
 }

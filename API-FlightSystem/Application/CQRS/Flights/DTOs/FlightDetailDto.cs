@@ -3,6 +3,8 @@
     public class FlightDetailDto
     {
         public int FlightId { get; set; }
+        public int PlaneId { get; set; }
+        public int RouteId { get; set; }
         public string PlaneName { get; set; } = string.Empty;
         public string AirlineName { get; set; } = string.Empty;
         public string OriginAirportCode { get; set; } = string.Empty;
@@ -23,6 +25,8 @@
 
     public class FlightDetailSegmentDto
     {
+        public int SegmentId { get; set; }
+        public int RouteId { get; set; }
         public int StopOrder { get; set; }
         public string OriginAirportCode { get; set; } = string.Empty;
         public string OriginCity { get; set; } = string.Empty;

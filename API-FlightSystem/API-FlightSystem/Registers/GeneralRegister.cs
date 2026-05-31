@@ -167,7 +167,7 @@ namespace API_FlightBooking.Registers
                     ValidIssuer = configuration["JwtConfiguration:ValidIssuer"],
                     ValidateAudience = true,
                     ValidAudience = configuration["JwtConfiguration:ValidAudience"],
-                    ValidateLifetime = true,
+                    ValidateLifetime = false,
                     ClockSkew = TimeSpan.Zero
                 };
             });

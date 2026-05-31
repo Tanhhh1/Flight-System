@@ -12,5 +12,6 @@ namespace Application.CQRS.Bookings.Queries.GetAll
         public TripType? TripType { get; set; }
         public int? ClassId { get; set; }
         public DateTime? BookingDate { get; set; }
+        public BookingStatus? Status { get; set; }
     }
 }

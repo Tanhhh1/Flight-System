@@ -23,9 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CQRS\Payments\Commands\" />
-    <Folder Include="CQRS\Payments\DTOs\" />
-    <Folder Include="CQRS\Payments\Validators\" />
     <Folder Include="CQRS\SeatReverse\Commands\ConfirmReverse\" />
     <Folder Include="CQRS\SeatReverse\Commands\ReleaseSeat\" />
     <Folder Include="CQRS\SeatReverse\Queries\GetSeatMap\" />

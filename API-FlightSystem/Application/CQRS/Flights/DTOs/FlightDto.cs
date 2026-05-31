@@ -1,4 +1,6 @@
-﻿namespace Application.CQRS.Flights.DTOs
+﻿using Domain.Enums;
+
+namespace Application.CQRS.Flights.DTOs
 {
     public class FlightDto
     {
@@ -9,7 +11,7 @@
         public bool IsChange { get; set; }
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
-        public string Status { get; set; } = string.Empty;
+        public FlightStatus Status { get; set; }
         public List<FlightSegmentDto> Segments { get; set; } = [];
         public List<FlightSeatPriceDto> SeatPrices { get; set; } = [];
         public List<FlightServiceDto> Services { get; set; } = [];

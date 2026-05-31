@@ -22,7 +22,10 @@ namespace Application.CQRS.Services.Queries.GetAll
         {
             var service = _unitOfWork.ServiceRepository.GetByCondition().AsNoTracking();
             if (!string.IsNullOrEmpty(request.Search))
-                service = service.Where(a => a.ServiceName.Contains(request.Search));
+            {
+                var keyword = request.Search.Trim().ToLower();
+                service = service.Where(a => a.ServiceName.ToLower().Contains(keyword));
+            }
 
             if (request.IsActive.HasValue)
                 service = service.Where(a => a.IsActive == request.IsActive.Value);

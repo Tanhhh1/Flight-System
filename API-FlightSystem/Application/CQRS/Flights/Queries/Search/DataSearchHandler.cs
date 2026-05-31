@@ -53,12 +53,21 @@ namespace Application.CQRS.Flights.Queries.Search
                     .ToListAsync(cancellationToken)
                 : null;
 
+            var routes = inc.Contains(DataSearch.Routes)
+                ? await _unitOfWork.RouteRepository.GetByCondition()
+                    .AsNoTracking()
+                    .Where(r => r.Status == FlightStatus.Active)
+                    .ProjectToType<DataRouteDto>()
+                    .ToListAsync(cancellationToken)
+                : null;
+
             return ApiResult<DataSearchDto>.Success(new DataSearchDto
             {
                 Airports = airports,
                 Airlines = airlines,
                 Services = services,
                 Planes = planes,
+                Routes = routes,
             });
         }
     }

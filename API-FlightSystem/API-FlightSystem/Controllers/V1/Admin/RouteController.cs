@@ -7,6 +7,7 @@ using Application.CQRS.Routes.DTOs;
 using Application.CQRS.Routes.Queries.GetAll;
 using Application.CQRS.Routes.Queries.GetById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_FlightSystem.Controllers.V1.Admin
@@ -42,6 +43,7 @@ namespace API_FlightSystem.Controllers.V1.Admin
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(typeof(ApiResult<PageList<RouteDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<PageList<RouteDto>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateRouteCommand command)
@@ -53,6 +55,7 @@ namespace API_FlightSystem.Controllers.V1.Admin
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(typeof(ApiResult<RouteDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<RouteDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateRouteCommand command)
@@ -67,6 +70,7 @@ namespace API_FlightSystem.Controllers.V1.Admin
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(typeof(ApiResult<RouteDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<RouteDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int id)

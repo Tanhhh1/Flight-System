@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.CQRS.Airports.DTOs;
 using Application.Interfaces.UnitOfWork;
+using Domain.Entities;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -21,10 +22,11 @@ namespace Application.CQRS.Airports.Queries.GetAll
             var airport = _unitOfWork.AirportRepository.GetByCondition().AsNoTracking();
 
             if (!string.IsNullOrEmpty(request.Search))
-                airport = airport.Where(a =>
-                    a.AirportCode.Contains(request.Search) ||
-                    a.AirportName.Contains(request.Search));
-
+            {
+                var keyword = request.Search.Trim().ToLower();
+                airport = airport.Where(u => u.AirportCode!.ToLower().Contains(keyword) || u.AirportName.ToLower().Contains(keyword));
+            }
+                
             if (!string.IsNullOrEmpty(request.City))
                 airport = airport.Where(a => a.City == request.City);
 

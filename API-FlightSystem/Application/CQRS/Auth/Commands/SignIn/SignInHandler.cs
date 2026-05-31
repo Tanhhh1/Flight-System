@@ -56,7 +56,8 @@ namespace Application.CQRS.Auth.Commands.SignIn
             {
                 AccessToken = tokenResult.AccessToken,
                 RefreshToken = tokenResult.RefreshToken,
-                AccessTokenExpires = tokenResult.AccessTokenExpires
+                AccessTokenExpires = tokenResult.AccessTokenExpires,
+                RefreshTokenExpires = tokenResult.RefreshTokenExpires
             });
         }
     }

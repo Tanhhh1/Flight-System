@@ -7,6 +7,7 @@ using Application.CQRS.Accounts.DTOs;
 using Application.CQRS.Accounts.Queries.GetAll;
 using Application.CQRS.Accounts.Queries.GetById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_FlightSystem.Controllers.V1.Admin
@@ -42,6 +43,7 @@ namespace API_FlightSystem.Controllers.V1.Admin
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(typeof(ApiResult<AccountDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResult<AccountDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateAccountCommand command)
@@ -53,6 +55,7 @@ namespace API_FlightSystem.Controllers.V1.Admin
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(typeof(ApiResult<AccountDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<AccountDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateAccountCommand command)
@@ -67,6 +70,7 @@ namespace API_FlightSystem.Controllers.V1.Admin
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(typeof(ApiResult<AccountDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<AccountDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int id)

@@ -36,8 +36,6 @@ namespace Application.CQRS.Profile.Commands.ChangePassword
             if (!result.Succeeded)
                 return ApiResult<string>.Failure(string.Join(", ", result.Errors.Select(e => e.Description)));
 
-            await _userManager.UpdateSecurityStampAsync(user);
-
             return ApiResult<string>.Success("Đổi mật khẩu thành công, vui lòng đăng nhập lại");
         }
     }
