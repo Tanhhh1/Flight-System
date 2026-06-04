@@ -1,6 +1,6 @@
-﻿using Application.Common.Caching;
-using Application.Interfaces.Services;
+﻿using Application.Interfaces.Services;
 using Application.Interfaces.UnitOfWork;
+using Application.Services;
 using Infrastructure.Caching;
 using Infrastructure.Database;
 using Infrastructure.Persistences;
@@ -9,7 +9,6 @@ using Infrastructure.Uow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using StackExchange.Redis;
 
 namespace Infrastructure
 {
@@ -30,7 +29,13 @@ namespace Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ICurrentUser, CurrentUser>();
+            services.AddScoped<IPaymentGateway, VNPayGatewayService>();
+            services.AddScoped<IPaymentGateway, MoMoGatewayService>();
+            services.AddScoped<IPaymentGateway, StripeGatewayService>();
+            services.AddScoped<IEmailService, EmailService>();
             services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
+            services.AddHostedService<FlightStatusUpdateService>();
+
 
             return services;
         }

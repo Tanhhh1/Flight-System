@@ -1,5 +1,6 @@
 ﻿using API_FlightBooking.Configurations;
 using Application.Common;
+using Application.Hubs;
 using Asp.Versioning;
 using Domain.Identity;
 using Infrastructure.Persistences;
@@ -37,6 +38,7 @@ namespace API_FlightBooking.Registers
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.MapControllers();
+            app.MapHub<SeatHub>("/hubs/seat");
         }
 
         private static void VersionApiInjection(this IServiceCollection services)
@@ -108,7 +110,7 @@ namespace API_FlightBooking.Registers
                     {
                         var accessToken = context.Request.Query["access_token"];
                         var path = context.HttpContext.Request.Path;
-                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/realtime"))
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/seat"))
                         {
                             context.Token = accessToken;
                         }

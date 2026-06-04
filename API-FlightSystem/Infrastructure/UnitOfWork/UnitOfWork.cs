@@ -29,6 +29,7 @@ namespace Infrastructure.Uow
         private IPassengerRepository _passengerRepository;
         private IPassengerTypeRepository _passengerTypeRepository;
         private IPaymentRepository _paymentRepository;
+        private IFlightSeatRepository _flightSeatRepository;
         public UnitOfWork(DatabaseContext dbContext)
         {
             _dbContext = dbContext;
@@ -52,6 +53,7 @@ namespace Infrastructure.Uow
         public IPassengerRepository PassengerRepository => _passengerRepository ??= new PassengerRepository(_dbContext);
         public IPassengerTypeRepository PassengerTypeRepository => _passengerTypeRepository ??= new PassengerTypeRepository(_dbContext);
         public IPaymentRepository PaymentRepository => _paymentRepository ??= new PaymentRepository(_dbContext);
+        public IFlightSeatRepository FlightSeatRepository => _flightSeatRepository ??= new FlightSeatRepository(_dbContext);
 
         public async Task BeginTransactionAsync()
         {
