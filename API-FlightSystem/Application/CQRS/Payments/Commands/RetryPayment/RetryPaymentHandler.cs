@@ -6,11 +6,6 @@ using Domain.Entities;
 using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.CQRS.Payments.Commands.RetryPayment
 {
@@ -26,9 +21,7 @@ namespace Application.CQRS.Payments.Commands.RetryPayment
             _gateways = gateways;
         }
 
-        public async Task<ApiResult<InitiateDto>> Handle(
-            RetryPaymentCommand request,
-            CancellationToken cancellationToken)
+        public async Task<ApiResult<InitiateDto>> Handle(RetryPaymentCommand request, CancellationToken cancellationToken)
         {
             var booking = await _unitOfWork.BookingRepository
                 .GetByIdAsync(request.BookingId);
