@@ -1,0 +1,133 @@
+.content_table {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05),
+                0 1px 2px rgba(0, 0, 0, 0.02);
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.table_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 16px;
+}
+
+.table_title h3 {
+    font-size: 18px;
+    color: #1e293b;
+    font-weight: 600;
+    margin: 0;
+}
+
+.table_all span {
+    color: #64748b;
+    font-weight: 500;
+    font-size: 15px;
+    background: #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+.table_all a {
+    text-decoration: none;
+    color: #4f46e5;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.table_responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table_responsive table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1000px;
+}
+
+.table_responsive thead {
+    background: #f8fafc;
+}
+
+.table_responsive th {
+    font-weight: 600;
+    color: #475569;
+    border-bottom: 2px solid #e2e8f0;
+    padding: 14px 16px;
+    text-align: center;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.table_responsive td {
+    padding: 14px 16px;
+    text-align: center;
+    font-size: 14px;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.table_row_hover {
+    transition: background-color 0.15s ease;
+}
+
+.table_row_hover:hover {
+    background: #f8fafc;
+}
+
+.no_data {
+    color: #94a3b8 !important;
+    text-align: center !important;
+    padding: 32px !important;
+    font-style: italic;
+}
+
+.action_buttons_group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn_action {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 16px;
+    transition: all .15s ease;
+    cursor: pointer;
+}
+
+.table_responsive {
+    width: 100%;
+    overflow-x: auto; 
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+.table_responsive::-webkit-scrollbar-track {
+    background: transparent; 
+    border-radius: 10px;
+}
+
+.table_responsive::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-light);
+}
