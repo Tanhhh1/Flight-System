@@ -40,9 +40,7 @@ namespace Application.CQRS.Bookings.Commands.Booking
                 return ApiResult<BookingDto>.Failure("Một hoặc nhiều chuyến bay không tồn tại");
 
             var flightSeatPrices = await _unitOfWork.FlightSeatPriceRepository
-                .GetByCondition(fsp =>
-                    flightIds.Contains(fsp.FlightId) &&
-                    fsp.ClassId == request.ClassId)
+                .GetByCondition(fsp => flightIds.Contains(fsp.FlightId) && fsp.ClassId == request.ClassId)
                 .ToListAsync(cancellationToken);
 
             if (flightSeatPrices.Count != flightIds.Count)
@@ -67,12 +65,12 @@ namespace Application.CQRS.Bookings.Commands.Booking
             if (missingTypeIds.Any())
                 return ApiResult<BookingDto>.Failure("Loại hành khách không hợp lệ");
 
-            var passengerCountPerFlight = request.Details
+            var passengerCount = request.Details
                 .GroupBy(d => d.FlightId)
                 .ToDictionary(g => g.Key, g => g.Count());
 
             var notEnoughSeats = flightSeatPrices
-               .Where(fsp => fsp.AvailableSeats < passengerCountPerFlight[fsp.FlightId])
+               .Where(fsp => fsp.AvailableSeats < passengerCount[fsp.FlightId])
                .ToList();
             if (notEnoughSeats.Any())
             {
@@ -93,7 +91,7 @@ namespace Application.CQRS.Bookings.Commands.Booking
                 ClassId = request.ClassId,
                 BookingCode = GenerateBookingCode(),
                 BookingDate = DateTime.UtcNow,
-                TripType = request.TripType,
+                TripType = (TripType)request.TripType,
                 TotalPrice = 0,
                 Status = BookingStatus.Pending
             };
@@ -126,17 +124,18 @@ namespace Application.CQRS.Bookings.Commands.Booking
 
             await _unitOfWork.SaveChangesAsync();
 
-            var dto = booking.Adapt<BookingDto>();
-            dto.BookingDetails = bookingDetails
+            var bookingDto = booking.Adapt<BookingDto>();
+            bookingDto.BookingDetails = bookingDetails
                 .Select((d, i) =>
                 {
                     var detailDto = d.Adapt<BookingDetailDto>();
+                    detailDto.UnitPrice = d.UnitPrice;
                     detailDto.Passenger = passengers[i].Adapt<PassengerDto>();
                     return detailDto;
                 })
                 .ToList();
 
-            return ApiResult<BookingDto>.Success(dto);
+            return ApiResult<BookingDto>.Success(bookingDto);
         }
 
         private static string GenerateBookingCode()

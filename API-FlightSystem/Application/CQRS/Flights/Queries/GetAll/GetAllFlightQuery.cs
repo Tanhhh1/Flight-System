@@ -12,8 +12,8 @@ namespace Application.CQRS.Flights.Queries.GetAll
         public CacheProfile GetCacheProfile() => CacheProfile.Of("Flight", 5);
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
-        public string? OriginCity { get; set; }
-        public string? DestinationCity { get; set; }
+        public string? OriginAirportCode { get; set; }
+        public string? DestinationAirportCode { get; set; }
         public DateTime? DepartureDate { get; set; }
         public FlightStatus? Status { get; set; }
         public int? AirlineId { get; set; }

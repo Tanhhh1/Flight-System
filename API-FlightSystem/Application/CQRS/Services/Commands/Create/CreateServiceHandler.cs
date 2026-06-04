@@ -21,8 +21,8 @@ namespace Application.CQRS.Services.Commands.Create
             service.IsActive = true;
             await _unitOfWork.ServiceRepository.AddAsync(service);
             await _unitOfWork.SaveChangesAsync();
-            var result = service.Adapt<ServiceDto>();
-            return ApiResult<ServiceDto>.Success(result);
+            var serviceDto = service.Adapt<ServiceDto>();
+            return ApiResult<ServiceDto>.Success(serviceDto);
         }
     }
 }

@@ -20,22 +20,22 @@ namespace Application.CQRS.Bookings.Queries.GetAllBooking
 
         public async Task<ApiResult<PageList<BookingListDto>>> Handle(GetAllBookingQuery request, CancellationToken cancellationToken)
         {
-            var query = _unitOfWork.BookingRepository.GetByCondition().AsNoTracking();
+            var booking = _unitOfWork.BookingRepository.GetByCondition().AsNoTracking();
 
             if (request.TripType.HasValue)
-                query = query.Where(b => b.TripType == (int)request.TripType);
+                booking = booking.Where(b => b.TripType == request.TripType);
             if (request.ClassId.HasValue)
-                query = query.Where(b => b.ClassId == request.ClassId);
+                booking = booking.Where(b => b.ClassId == request.ClassId);
             if (request.BookingDate.HasValue)
-                query = query.Where(b => b.BookingDate.Date == request.BookingDate.Value.Date);
+                booking = booking.Where(b => b.BookingDate.Date == request.BookingDate.Value.Date);
 
             if (request.Status.HasValue)
-                query = query.Where(a => a.Status == request.Status.Value);
+                booking = booking.Where(a => a.Status == request.Status.Value);
 
-            query = query.OrderByDescending(b => b.BookingDate);
+            booking = booking.OrderByDescending(b => b.BookingDate);
 
             var pagedList = await PageList<BookingListDto>.ToPagedListAsync(
-                query.ProjectToType<BookingListDto>(),
+                booking.ProjectToType<BookingListDto>(),
                 request.PageIndex,
                 request.PageSize,
                 cancellationToken

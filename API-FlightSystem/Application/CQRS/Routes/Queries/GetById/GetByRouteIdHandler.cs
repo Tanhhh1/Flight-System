@@ -26,8 +26,8 @@ namespace Application.CQRS.Routes.Queries.GetById
 
             if (route == null)
                 return ApiResult<RouteDto>.Failure("Tuyến bay không tồn tại");
-
-            return ApiResult<RouteDto>.Success(route.Adapt<RouteDto>());
+            var routeDto = route.Adapt<RouteDto>();
+            return ApiResult<RouteDto>.Success(routeDto);
         }
     }
 }

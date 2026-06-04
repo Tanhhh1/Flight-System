@@ -22,8 +22,8 @@ namespace Application.CQRS.Services.Commands.Update
                 return ApiResult<ServiceDto>.Failure("Dịch vụ không tồn tại");
             request.Adapt(service);
             _unitOfWork.ServiceRepository.Update(service);
-            var result = service.Adapt<ServiceDto>();
-            return ApiResult<ServiceDto>.Success(result);
+            var serviceDto = service.Adapt<ServiceDto>();
+            return ApiResult<ServiceDto>.Success(serviceDto);
         }
     }
 }

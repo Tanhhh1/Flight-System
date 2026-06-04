@@ -28,8 +28,8 @@ namespace Application.CQRS.Profile.Queries.GetById
             if (user is null)
                 return ApiResult<UserProfileDto>.Failure("Không tìm thấy người dùng");
 
-            var dto = user.Adapt<UserProfileDto>();
-            return ApiResult<UserProfileDto>.Success(dto);
+            var userDto = user.Adapt<UserProfileDto>();
+            return ApiResult<UserProfileDto>.Success(userDto);
         }
     }
 }

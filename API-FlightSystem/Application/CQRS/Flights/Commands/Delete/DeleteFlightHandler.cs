@@ -40,11 +40,11 @@ namespace Application.CQRS.Flights.Commands.Delete
             if (now >= flight.DepartureTime.AddHours(-24))
                 return ApiResult<FlightDto>.Failure("Không thể xóa chuyến bay trong vòng 24 giờ trước khởi hành");
 
-            var hasPaidBooking = await _unitOfWork.BookingRepository
+            var paidBooking = await _unitOfWork.BookingRepository
                 .GetByCondition(b => b.BookingDetails.Any(bd => bd.FlightId == request.FlightId)
                                   && b.Status == BookingStatus.Confirmed)
                 .AnyAsync(cancellationToken);
-            if (hasPaidBooking)
+            if (paidBooking)
                 return ApiResult<FlightDto>.Failure("Không thể xóa chuyến bay đang có đặt chỗ");
 
             flight.Status = FlightStatus.Inactive;

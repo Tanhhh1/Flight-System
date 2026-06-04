@@ -34,6 +34,7 @@ namespace Application.CQRS.Accounts.Commands.Update
             var currentRoles = await _userManager.GetRolesAsync(user);
             if (currentRoles.Contains("user"))
                 return ApiResult<AccountDto>.Failure("Không thể chỉnh sửa tài khoản người dùng thông thường.");
+
             var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
             if (!removeResult.Succeeded)
                 return ApiResult<AccountDto>.Failure(string.Join(", ", removeResult.Errors.Select(e => e.Description)));

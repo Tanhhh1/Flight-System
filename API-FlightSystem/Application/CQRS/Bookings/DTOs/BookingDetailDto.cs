@@ -25,7 +25,29 @@ namespace Application.CQRS.Bookings.DTOs
         public string PlaneModel { get; set; } = string.Empty;
         public string OriginAirport { get; set; } = string.Empty;
         public string DestinationAirport { get; set; } = string.Empty;
+        public List<BookingSegmentDto> Segments { get; set; } = [];
+        public List<PassengerDetailDto> Passengers { get; set; } = [];
+    }
+
+    public class BookingSegmentDto
+    {
+        public int SegmentOrder { get; set; }
+        public string OriginAirport { get; set; } = string.Empty;
+        public string OriginAirportName { get; set; } = string.Empty;
+        public string DestinationAirport { get; set; } = string.Empty;
+        public string DestinationAirportName { get; set; } = string.Empty;
+        public DateTime DepartureTime { get; set; }
+        public DateTime ArrivalTime { get; set; }
+        public int FlightDuration { get; set; }
+    }
+
+    public class PassengerDetailDto
+    {
+        public int TypeId { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string Gender { get; set; } = string.Empty;
+        public DateTime Birthday { get; set; }
+        public string Country { get; set; } = string.Empty;
         public decimal UnitPrice { get; set; }
-        public List<PassengerDto> Passengers { get; set; } = [];
     }
 }

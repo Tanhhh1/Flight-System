@@ -16,7 +16,7 @@ namespace Application.CQRS.Planes.Commands.Update
         {
             _unitOfWork = unitOfWork;
         }
-        
+
         public async Task<ApiResult<PlaneDto>> Handle(UpdatePlaneCommand request, CancellationToken cancellationToken)
         {
             var airline = await _unitOfWork.AirlineRepository.GetByIdAsync(request.AirlineId);
@@ -24,21 +24,20 @@ namespace Application.CQRS.Planes.Commands.Update
                 return ApiResult<PlaneDto>.Failure("Hãng bay không tồn tại");
 
             var plane = await _unitOfWork.PlaneRepository.GetByIdAsync(request.PlaneId);
-            if (plane == null) 
+            if (plane == null)
                 return ApiResult<PlaneDto>.Failure("Máy bay không tồn tại");
 
-            var isChangingAirline = plane.AirlineId != request.AirlineId;
-            if (isChangingAirline)
-            {
-                var hasActiveFlight = await _unitOfWork.FlightRepository
-                    .GetByCondition(f => f.PlaneId == request.PlaneId && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
-                    .AnyAsync();
-                if (hasActiveFlight)
-                    return ApiResult<PlaneDto>.Failure("Không thể chuyển hãng khi máy bay đang có chuyến bay hoạt động");
-            }
+            var unfinishedFlight = await _unitOfWork.FlightRepository
+                .GetByCondition(f => f.PlaneId == request.PlaneId
+                                  && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
+                .AnyAsync(cancellationToken);
+
+            if (unfinishedFlight)
+                return ApiResult<PlaneDto>.Failure("Không thể cập nhật thông tin máy bay vì vẫn còn chuyến bay chưa hoàn thành");
 
             request.Adapt(plane);
             _unitOfWork.PlaneRepository.Update(plane);
+
             var planeDto = plane.Adapt<PlaneDto>();
             return ApiResult<PlaneDto>.Success(planeDto);
         }

@@ -11,8 +11,8 @@ namespace Application.CQRS.Planes.Commands.Delete
     public class DeletePlaneHandler : IRequestHandler<DeletePlaneCommand, ApiResult<PlaneDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        public DeletePlaneHandler(IUnitOfWork unitOfWork) 
-        { 
+        public DeletePlaneHandler(IUnitOfWork unitOfWork)
+        {
             _unitOfWork = unitOfWork;
         }
 
@@ -26,14 +26,15 @@ namespace Application.CQRS.Planes.Commands.Delete
             if (plane.Status == FlightStatus.Inactive)
                 return ApiResult<PlaneDto>.Failure("Máy bay đã bị vô hiệu hóa trước đó");
 
-            var hasActiveFlight = await _unitOfWork.FlightRepository
-                .GetByCondition(f => f.PlaneId == request.PlaneId
-                                  && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
+            var unfinishedFlight = await _unitOfWork.FlightRepository
+                .GetByCondition(f => f.PlaneId == request.PlaneId && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
                 .AnyAsync(cancellationToken);
-            if (hasActiveFlight)
-                return ApiResult<PlaneDto>.Failure("Không thể vô hiệu hóa máy bay đang có chuyến bay hoạt động");
+            if (unfinishedFlight)
+                return ApiResult<PlaneDto>.Failure("Không thể vô hiệu hóa máy bay vì vẫn còn chuyến bay chưa hoàn thành");
 
             plane.Status = FlightStatus.Inactive;
+
+            _unitOfWork.PlaneRepository.Update(plane);
 
             var planeDto = plane.Adapt<PlaneDto>();
             return ApiResult<PlaneDto>.Success(planeDto);

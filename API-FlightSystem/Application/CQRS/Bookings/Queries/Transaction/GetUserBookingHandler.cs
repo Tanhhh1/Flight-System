@@ -24,13 +24,13 @@ namespace Application.CQRS.Bookings.Queries.Transaction
             if (!_currentUser.IsAuthenticated || _currentUser.Id is null)
                 return ApiResult<PageList<BookingListDto>>.Failure("Bạn cần đăng nhập để xem danh sách giao dịch");
 
-            var query = _unitOfWork.BookingRepository
+            var booking = _unitOfWork.BookingRepository
                 .GetByCondition(b => b.UserId == _currentUser.Id)
                 .OrderByDescending(b => b.BookingDate)
                 .AsNoTracking();
 
             var pagedList = await PageList<BookingListDto>.ToPagedListAsync(
-                query.ProjectToType<BookingListDto>(),
+                booking.ProjectToType<BookingListDto>(),
                 request.PageIndex,
                 request.PageSize,
                 cancellationToken

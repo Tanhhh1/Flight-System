@@ -4,7 +4,9 @@ using Application.CQRS.Flights.DTOs;
 using Application.CQRS.Planes.DTOs;
 using Application.CQRS.Reviews.DTOs;
 using Application.CQRS.Routes.DTOs;
+using Application.CQRS.SeatReverse.DTOs;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Identity;
 using Mapster;
 
@@ -89,12 +91,12 @@ namespace Application.Mappers
             config.NewConfig<Booking, BookingDto>()
                 .Map(dest => dest.Fullname, src => src.User.Fullname)
                 .Map(dest => dest.ClassName, src => src.SeatClass.ClassName)
-                .Map(dest => dest.TripType, src => src.TripType == 1 ? "Một chiều" : src.TripType == 2 ? "Khứ hồi" : src.TripType == 3 ? "Nhiều điểm đến" : "Không xác định");
+                .Map(dest => dest.TripType, src => src.TripType.ToString());
 
             config.NewConfig<Booking, BookingByIdDto>()
                 .Map(dest => dest.Fullname, src => src.User.Fullname)
                 .Map(dest => dest.ClassName, src => src.SeatClass.ClassName)
-                .Map(dest => dest.TripType, src => src.TripType == 1 ? "Một chiều" : src.TripType == 2 ? "Khứ hồi" : src.TripType == 3 ? "Nhiều điểm đến" : "Không xác định")
+                .Map(dest => dest.TripType, src => src.TripType.ToString())
                 .Map(dest => dest.Flights, src => src.BookingDetails
                     .GroupBy(bd => bd.FlightId)
                     .Select(g => new BookingFlightDto
@@ -107,34 +109,66 @@ namespace Application.Mappers
                         PlaneModel = g.First().Flight.Plane.PlaneModel,
                         OriginAirport = g.First().Flight.Route.OriginAirport.AirportCode,
                         DestinationAirport = g.First().Flight.Route.DestinationAirport.AirportCode,
-                        UnitPrice = g.First().UnitPrice,
-                        Passengers = g.Select(bd => new PassengerDto
+                        Segments = g.First().Flight.FlightSegments
+                        .OrderBy(s => s.SegmentOrder)
+                        .Select(s => new BookingSegmentDto
+                        {
+                            SegmentOrder = s.SegmentOrder,
+                            OriginAirport = s.Route.OriginAirport.AirportCode,
+                            OriginAirportName = s.Route.OriginAirport.AirportName,
+                            DestinationAirport = s.Route.DestinationAirport.AirportCode,
+                            DestinationAirportName = s.Route.DestinationAirport.AirportName,
+                            DepartureTime = s.DepartureTime,
+                            ArrivalTime = s.ArrivalTime,
+                            FlightDuration = s.Route.FlightDuration,
+                        }).ToList(),
+                        Passengers = g.Select(bd => new PassengerDetailDto
                         {
                             TypeId = bd.Passenger.TypeId,
                             FullName = bd.Passenger.FullName,
                             Gender = bd.Passenger.Gender,
                             Birthday = bd.Passenger.Birthday,
-                            Country = bd.Passenger.Country
+                            Country = bd.Passenger.Country,
+                            UnitPrice = bd.UnitPrice
                         }).ToList()
                     }).ToList());
 
             config.NewConfig<Booking, BookingListDto>()
                 .Map(dest => dest.Fullname, src => src.User.Fullname)
                 .Map(dest => dest.ClassName, src => src.SeatClass.ClassName)
-                .Map(dest => dest.TripType, src => src.TripType == 1 ? "Một chiều" : src.TripType == 2 ? "Khứ hồi" : src.TripType == 3 ? "Nhiều điểm đến" : "Không xác định");
+                .Map(dest => dest.TripType, src => src.TripType.ToString());
 
             config.NewConfig<Review, ReviewDto>()
                 .Map(dest => dest.UserName, src => src.User.UserName);
 
             config.NewConfig<Route, RouteDto>()
                 .Map(dest => dest.OriginAirportCode, src => src.OriginAirport.AirportCode)
-                .Map(dest => dest.DestinationAirportCode, src => src.DestinationAirport.AirportCode);
+                .Map(dest => dest.DestinationAirportCode, src => src.DestinationAirport.AirportCode)
+                .Map(dest => dest.OriginCity, src => src.OriginAirport.City)
+                .Map(dest => dest.DestinationCity, src => src.DestinationAirport.City);
 
             config.NewConfig<Route, DataRouteDto>()
                 .Map(dest => dest.OriginAirportCode, src => src.OriginAirport.AirportCode)
                 .Map(dest => dest.OriginAirportName, src => src.OriginAirport.AirportName)
                 .Map(dest => dest.DestinationAirportCode, src => src.DestinationAirport.AirportCode)
                 .Map(dest => dest.DestinationAirportName, src => src.DestinationAirport.AirportName);
+
+            config.NewConfig<FlightSeat, SeatLayoutDto>()
+                .Map(dest => dest.SeatNumber, src => src.SeatTemplate.SeatNumber)
+                .Map(dest => dest.RowIndex, src => src.SeatTemplate.RowIndex)
+                .Map(dest => dest.ColIndex, src => src.SeatTemplate.ColIndex)
+                .Map(dest => dest.ClassId, src => src.SeatTemplate.ClassId)
+                .Map(dest => dest.ClassName, src => src.SeatTemplate.SeatClass.ClassName)
+                .Map(dest => dest.Status, src => (int)src.Status)
+                .Map(dest => dest.LockedBy, src => src.LockedBy == 0 ? null : (int?)src.LockedBy)
+                .Map(dest => dest.LockedUntil, src => src.LockedUntil == default ? null : (DateTime?)src.LockedUntil);
+
+            config.NewConfig<BookingDetail, PassengerSeatDto>()
+                .Map(dest => dest.PassengerId, src => src.PassengerId)
+                .Map(dest => dest.FullName, src => src.Passenger.FullName)
+                .Map(dest => dest.Gender, src => src.Passenger.Gender)
+                .Map(dest => dest.FlightSeatId, src => src.FlightSeatId)
+                .Map(dest => dest.SeatNumber, src => src.FlightSeat != null ? src.FlightSeat.SeatTemplate.SeatNumber : null);
         }
     }
 }

@@ -23,21 +23,14 @@ namespace Application.CQRS.Routes.Queries.GetAll
                 .Include(r => r.DestinationAirport)
                 .AsNoTracking();
 
-            if (!string.IsNullOrEmpty(request.Search))
-                route = route.Where(r =>
-                    r.OriginAirport.AirportName.Contains(request.Search) ||
-                    r.OriginAirport.AirportCode.Contains(request.Search) ||
-                    r.DestinationAirport.AirportName.Contains(request.Search) ||
-                    r.DestinationAirport.AirportCode.Contains(request.Search));
-
             if (request.Status.HasValue)
                 route = route.Where(a => a.Status == request.Status.Value);
 
-            if (!string.IsNullOrEmpty(request.OriginCity))
-                route = route.Where(r => r.OriginAirport.City == request.OriginCity);
+            if (!string.IsNullOrWhiteSpace(request.OriginAirportCode))
+                route = route.Where(r => r.OriginAirport.AirportCode == request.OriginAirportCode);
 
-            if (!string.IsNullOrEmpty(request.DestinationCity))
-                route = route.Where(r => r.DestinationAirport.City == request.DestinationCity);
+            if (!string.IsNullOrWhiteSpace(request.DestinationAirportCode))
+                route = route.Where(r => r.DestinationAirport.AirportCode == request.DestinationAirportCode);
 
             route = route.OrderBy(r => r.RouteId);
 

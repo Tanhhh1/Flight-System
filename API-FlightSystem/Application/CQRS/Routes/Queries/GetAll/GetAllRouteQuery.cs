@@ -12,9 +12,8 @@ namespace Application.CQRS.Routes.Queries.GetAll
         public CacheProfile GetCacheProfile() => CacheProfile.Of("Route", 30);
         public int PageIndex { get; set; } = 1;
         public int PageSize { get; set; } = 10;
-        public string? Search { get; set; }
-        public string? OriginCity { get; set; }
-        public string? DestinationCity { get; set; }
+        public string? OriginAirportCode { get; set; }
+        public string? DestinationAirportCode { get; set; }
         public FlightStatus? Status { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace Domain.Entities
         public int UserId { get; set; }
         public int ClassId { get; set; }
         public DateTime BookingDate { get; set; }
-        public int TripType { get; set; }
+        public TripType TripType { get; set; }
         public decimal TotalPrice { get; set; }
         public BookingStatus Status { get; set; }
         public User User { get; set; } = null!;
