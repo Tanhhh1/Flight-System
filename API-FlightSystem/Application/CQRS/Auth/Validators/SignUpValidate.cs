@@ -30,9 +30,6 @@ namespace Application.CQRS.Auth.Validators
                 .Matches(@"[a-z]").WithMessage("Mật khẩu phải có ít nhất 1 chữ thường.")
                 .Matches(@"[0-9]").WithMessage("Mật khẩu phải có ít nhất 1 chữ số.")
                 .Matches(@"[^a-zA-Z0-9]").WithMessage("Mật khẩu phải có ít nhất 1 ký tự đặc biệt.");
-
-            RuleFor(x => x.ConfirmPassword)
-                .NotEmpty().WithMessage("Xác nhận mật khẩu không được để trống.");
         }
     }
 }

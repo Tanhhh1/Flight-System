@@ -3,6 +3,7 @@ using Application.Common;
 using Application.CQRS.Reviews.Commands.Send;
 using Application.CQRS.Reviews.DTOs;
 using Application.CQRS.Reviews.Queries.GetAll;
+using Application.CQRS.Reviews.Queries.GetById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,17 @@ namespace API_FlightSystem.Controllers.V1.Client
         [ProducesResponseType(typeof(ApiResult<PageList<ReviewDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<PageList<ReviewDto>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAll([FromQuery] GetAllReviewQuery query)
+        {
+            var result = await _mediator.Send(query);
+            if (!result.Succeeded)
+                return BadRequest(result);
+            return Ok(result);
+        }
+
+        [HttpGet("my-review")]
+        [ProducesResponseType(typeof(ApiResult<PageList<ReviewDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResult<PageList<ReviewDto>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetMyReviews([FromQuery] GetReviewByUserQuery query)
         {
             var result = await _mediator.Send(query);
             if (!result.Succeeded)
