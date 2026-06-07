@@ -38,8 +38,6 @@ namespace Application.CQRS.Flights.Queries.Search
             query = query.Where(f =>
                 f.FlightSeatPrices.Any(sp => sp.ClassId == request.ClassId && sp.AvailableSeats > 0));
 
-            query = query.Where(f => f.FlightSeatPrices.Any(sp => sp.ClassId == request.ClassId));
-             
             if (request.StopCount.HasValue)
                 query = query.Where(f => f.FlightSegments.Count - 1 == request.StopCount.Value);
 
@@ -74,7 +72,12 @@ namespace Application.CQRS.Flights.Queries.Search
                 flight.SeatClasses = flight.SeatClasses
                     .Where(sc => sc.ClassId == request.ClassId)
                     .ToList();
+
+                flight.Segments = flight.Segments
+                    .OrderBy(s => s.StopOrder)
+                    .ToList();
             }
+
             return ApiResult<PageList<FlightSearchDto>>.Success(result);
         }
     }

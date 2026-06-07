@@ -79,10 +79,12 @@ namespace Application.Mappers
                 .Map(dest => dest.DestinationAirportCode, src => src.Route.DestinationAirport.AirportCode)
                 .Map(dest => dest.DestinationCity, src => src.Route.DestinationAirport.City)
                 .Map(dest => dest.FlightDuration, src => (int)(src.ArrivalTime - src.DepartureTime).TotalMinutes)
-                .Map(dest => dest.StopCount, src => src.FlightSegments.Count)
-                .Map(dest => dest.SeatClasses, src => src.FlightSeatPrices)
+                .Map(dest => dest.StopCount, src => src.FlightSegments.Count - 1)
                 .Map(dest => dest.IsRefund, src => src.Policy.IsRefund)
-                .Map(dest => dest.IsChange, src => src.Policy.IsChange);
+                .Map(dest => dest.IsChange, src => src.Policy.IsChange)
+                .Map(dest => dest.SeatClasses, src => src.FlightSeatPrices)
+                .Map(dest => dest.Segments, src => src.FlightSegments.OrderBy(s => s.SegmentOrder))
+                .Map(dest => dest.Services, src => src.FlightServices.Select(fs => fs.Service));
 
             config.NewConfig<FlightSeatPrice, FlightSeatClassDto>()
                 .Map(dest => dest.ClassName, src => src.SeatClass.ClassName)
@@ -139,7 +141,8 @@ namespace Application.Mappers
                 .Map(dest => dest.TripType, src => src.TripType.ToString());
 
             config.NewConfig<Review, ReviewDto>()
-                .Map(dest => dest.UserName, src => src.User.UserName);
+                .Map(dest => dest.UserName, src => src.User.UserName)
+                .Map(dest => dest.UserEmail, src => src.User.Email);
 
             config.NewConfig<Route, RouteDto>()
                 .Map(dest => dest.OriginAirportCode, src => src.OriginAirport.AirportCode)

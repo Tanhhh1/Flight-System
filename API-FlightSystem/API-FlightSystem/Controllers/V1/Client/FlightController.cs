@@ -26,16 +26,5 @@ namespace API_FlightSystem.Controllers.V1.Client
                 return BadRequest(result);
             return Ok(result);
         }
-
-        [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ApiResult<FlightDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResult<FlightDto>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var result = await _mediator.Send(new GetByFlightIdQuery { FlightId = id });
-            if (!result.Succeeded)
-                return NotFound(result);
-            return Ok(result);
-        }
     }
 }

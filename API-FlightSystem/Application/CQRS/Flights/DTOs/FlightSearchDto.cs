@@ -1,4 +1,6 @@
-﻿namespace Application.CQRS.Flights.DTOs
+﻿using Application.CQRS.Flights.DTOs;
+
+namespace Application.CQRS.Flights.DTOs
 {
     public class FlightSearchDto
     {
@@ -15,8 +17,11 @@
         public int StopCount { get; set; }
         public bool IsRefund { get; set; }
         public bool IsChange { get; set; }
+        public List<FlightDetailSegmentDto> Segments { get; set; } = new();
+        public List<FlightDetailServiceDto> Services { get; set; } = new();
         public List<FlightSeatClassDto> SeatClasses { get; set; } = new();
     }
+
     public class FlightSeatClassDto
     {
         public int ClassId { get; set; }

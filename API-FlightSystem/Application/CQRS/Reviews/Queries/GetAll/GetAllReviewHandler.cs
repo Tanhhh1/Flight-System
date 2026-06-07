@@ -19,7 +19,6 @@ namespace Application.CQRS.Reviews.Queries.GetAll
         {
             var review = _unitOfWork.ReviewRepository
                 .GetByCondition()
-                .Include(r => r.User)
                 .AsNoTracking();
 
             if (!string.IsNullOrEmpty(request.Search))
@@ -28,7 +27,7 @@ namespace Application.CQRS.Reviews.Queries.GetAll
             if (request.IsHidden.HasValue)
                 review = review.Where(a => a.IsHidden == request.IsHidden.Value);
 
-            review = review.OrderBy(a => a.ReviewId);
+            review = review.OrderBy(a => a.CreatedAt);
 
             var pagedList = await PageList<ReviewDto>.ToPagedListAsync(
                 review.ProjectToType<ReviewDto>(),

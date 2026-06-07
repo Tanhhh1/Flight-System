@@ -30,6 +30,7 @@ namespace API_FlightSystem.Controllers.V1.Client
         }
 
         [HttpGet("my-review")]
+        [Authorize(Roles = "user")]
         [ProducesResponseType(typeof(ApiResult<PageList<ReviewDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<PageList<ReviewDto>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetMyReviews([FromQuery] GetReviewByUserQuery query)
