@@ -1,0 +1,216 @@
+.auth_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.4);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.auth_modal_card {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 480px;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    position: relative;
+    box-sizing: border-box;
+    animation: authPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.auth_header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.auth_brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.auth_brand :is(.brand_icon, span) {
+    color: #5277b4;
+}
+
+.auth_brand .brand_icon {
+    font-size: 1.8rem;
+}
+
+.auth_brand span {
+    font-size: 1.4rem;
+    font-weight: 400;
+    font-family: "Black Ops One", system-ui;
+}
+
+.auth_header h2 {
+    font-size: 1.4rem;
+    color: #1e293b;
+    font-weight: 700;
+    margin: 0 0 0.35rem 0;
+}
+
+.auth_header p {
+    font-size: 0.88rem;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.auth_close_btn {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    background: #f1f5f9;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #64748b;
+    font-size: 1.3rem;
+    transition: all 0.2s;
+}
+
+.auth_close_btn:hover {
+    background-color: #e2e8f0;
+    color: #0f172a;
+}
+
+.auth_form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.auth_form_group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.label_flex_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.auth_form_group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.auth_input_wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input_icon {
+    position: absolute;
+    left: 1rem;
+    font-size: 1.2rem;
+    color: #94a3b8;
+}
+
+.auth_input_wrapper input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.7rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    outline: none;
+    background-color: #f8fafc;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+
+.auth_input_wrapper input:focus {
+    border-color: #5277b4;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(30, 41, 59, 0.1);
+}
+
+.auth_form_scrollable {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+
+.auth_form_scrollable::-webkit-scrollbar {
+    display: none;
+}
+
+.auth_submit_btn {
+    background-color: #5277b4;
+    color: #fff;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: background 0.2s;
+    margin-top: 0.5rem;
+}
+
+.auth_submit_btn:hover:not(:disabled) {
+    background-color: #3d5d93;
+}
+
+.auth_submit_btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.auth_footer_text {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.88rem;
+    color: #475569;
+}
+
+.auth_switch_btn {
+    background: none;
+    border: none;
+    color: #5277b4;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.88rem;
+}
+
+.auth_switch_btn:hover {
+    text-decoration: underline;
+}
+
+@keyframes authPop {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@media (max-width: 500px) {
+    .auth-modal-card { padding: 1.5rem; }
+}

@@ -1,0 +1,55 @@
+.flight_cell_airport {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.airport_code {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.airport_city {
+    font-size: 12px;
+}
+
+.flight_cell_datetime {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.time_block {
+    text-align: center;
+    min-width: 60px;
+}
+
+.flight_time {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.flight_date {
+    font-size: 12px;
+    margin-top: 1px;
+}
+
+.flight_arrow {
+    color: #94a3b8;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.flight_cell_plane,
+.flight_cell_airline {
+    font-size: 13px;
+}
+
+.flight_cell_airline {
+    font-weight: 500;
+}
+
+.flight_cell_plane {
+    font-size: 12px;
+}

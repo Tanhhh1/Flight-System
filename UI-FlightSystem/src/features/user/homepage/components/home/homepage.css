@@ -1,0 +1,105 @@
+.home_container {
+    width: 100%;
+    overflow: hidden;
+    background-color: #f8f9fa;
+}
+
+.section {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.section_header {
+    margin-bottom: 2.5rem;
+}
+
+.section_header.text_center_wrapper,
+.section_title.text_center,
+.section_subtitle.text_center {
+    text-align: center;
+}
+
+.section_title {
+    font-size: 2rem;
+    color: #111c30;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.section_subtitle {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+/* ── Hero ── */
+.hero_section {
+    position: relative;
+    background-image: url('@/assets/images/banner.webp');
+    background-size: cover;
+    background-position: center;
+    padding: 5rem 1.5rem;
+}
+
+.hero_overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1;
+}
+
+.hero_content {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.hero_title {
+    color: #fff;
+    font-size: 3rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-family: "Black Ops One", system-ui;
+}
+
+.hero_subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+/* ── Features ── */
+.features_section {
+    background-color: #fff;
+    padding: 5rem 1.5rem;
+    max-width: 100%;
+}
+
+.features_inner_container { max-width: 1200px; margin: 0 auto; }
+
+.features_grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    margin-top: 3rem;
+}
+
+.feature_card { text-align: center; }
+
+.feature_icon_box {
+    width: 60px; height: 60px;
+    background-color: #e6f2ff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.25rem auto;
+}
+
+.feature_icon_box i { font-size: 1.8rem; color: #5277b4; }
+.feature_card_title { font-size: 1.15rem; color: #111c30; margin-bottom: 0.5rem; font-weight: 600; }
+.feature_card_desc { font-size: 0.95rem; color: #6c757d; line-height: 1.6; }
+
+@media (max-width: 768px) {
+    .features_grid { grid-template-columns: 1fr; }
+}

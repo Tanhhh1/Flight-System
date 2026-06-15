@@ -1,0 +1,234 @@
+.trip_summary_panel {
+    background: #fff;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    padding: 1rem 1.25rem .75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+}
+
+.trip_summary_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    font-size: .95rem;
+    font-weight: 700;
+    color: #0f172a;
+    padding-bottom: .75rem;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: .25rem;
+}
+
+.trip_summary_header i {
+    font-size: 1.25rem;
+    color: #5277b4;
+}
+
+.trip_summary_leg_btn {
+    display: flex;
+    align-items: flex-start;
+    gap: .85rem;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: .65rem .5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: background .15s;
+}
+
+.trip_summary_leg_btn:hover:not(:disabled) {
+    background: #f8fafc;
+}
+
+.trip_summary_leg_btn.active {
+    background: #eff6ff;
+}
+
+.trip_summary_leg_btn.locked {
+    cursor: not-allowed;
+    opacity: .5;
+}
+
+.trip_leg_index {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #64748b;
+    font-size: .8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: .15rem;
+    transition: background .15s, color .15s;
+}
+
+.trip_leg_index.active {
+    background: #5277b4;
+    color: #fff;
+}
+
+.trip_leg_index.done {
+    background: #16a34a;
+    color: #fff;
+}
+
+.trip_leg_index.done i {
+    font-size: .95rem;
+}
+
+.trip_leg_info {
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+    min-width: 0;
+}
+
+.trip_leg_date {
+    font-size: .78rem;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trip_leg_route {
+    font-size: .92rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.trip_leg_route.locked_txt {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+.trip_leg_selected_info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: .78rem;
+    font-weight: 500;
+}
+
+.trip_leg_selected_info i {
+    font-size: .9rem;
+}
+
+.trip_leg_pending {
+    font-size: .76rem;
+    color: #94a3b8;
+    font-style: italic;
+}
+
+.btn_reselect {
+    background: none;
+    border: none;
+    color: #5277b4;
+    font-size: .75rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: opacity .15s;
+    flex-shrink: 0;
+}
+
+.btn_reselect:hover {
+    opacity: .7;
+}
+
+.modify_search_btn{
+    cursor: pointer;
+}
+
+.search_popup_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.search_popup_content {
+    background-color: #0f172a;
+    width: 92%;
+    max-width: 1100px;
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    animation: searchPopIn 0.2s ease-out;
+}
+
+.search_popup_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.search_popup_header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #f8fafc;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search_popup_header h3 i {
+    color: #5277b4;
+    font-size: 1.3rem;
+}
+
+.close_popup_btn {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    color: #94a3b8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.15s ease;
+}
+
+.close_popup_btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.search_popup_body {
+    max-height: 82vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+.search_popup_body .search_box_container {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+@keyframes searchPopIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+}

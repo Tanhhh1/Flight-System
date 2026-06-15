@@ -1,0 +1,207 @@
+.profile_container {
+    width: 100%;
+    background-color: #f0f5fc;
+    min-height: calc(100vh - 70px);
+    padding: 2rem 1rem;
+    font-size: 14px;
+}
+
+.profile_inner_layout {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.profile_sidebar, .profile_content, .setting_card_panel {
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #dde5f0;
+    box-shadow: 0 2px 8px rgba(0, 60, 180, 0.08);
+}
+
+.profile_sidebar {
+    padding: 1.5rem 0;
+}
+
+.profile_user_card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 1.5rem 1.25rem 1.5rem;
+}
+
+.profile_avatar_circle, .tier_content, .menu_item, .panel_header h4, .btn_primary_save, .btn_accent_save {
+    display: flex;
+    align-items: center;
+}
+
+.profile_avatar_circle {
+    width: 56px;
+    height: 56px;
+    background-color: #f1f3f4;
+    border: 1px solid #dde5f0;
+    border-radius: 50%;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #3a4a60;
+}
+
+.profile_fullname {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f1a2e;
+}
+
+.profile_auth_provider {
+    font-size: 0.85rem;
+    color: #6b7d96;
+}
+
+.profile_tier_badge {
+    background: linear-gradient(135deg, #b08d57 0%, #8c6d39 100%);
+    padding: 0.85rem 1rem;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.tier_content {
+    gap: 0.65rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.tier_icon { font-size: 1.2rem; }
+.arrow_icon { font-size: 1rem; opacity: 0.8; }
+
+.profile_menu, .menu_section, .form_group_full, .form_group, .panel_body {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile_menu {
+    gap: 0rem;
+}
+
+.menu_item {
+    gap: 1rem;
+    padding: 0.75rem 1.5rem;
+    color: #0f1a2e;
+    font-size: 0.95rem;
+    font-weight: 400;
+    transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    cursor: pointer;
+}
+
+.menu_item i {
+    font-size: 1.35rem;
+    color: #5277b4;
+    width: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.menu_item:hover { background-color: #edf2f8; }
+
+.menu_item.active {
+    background-color: #5277b4;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.menu_item.active i { color: #ffffff; }
+
+.menu_divider {
+    height: 1px;
+    background-color: #edf2f8;
+    margin: 0.5rem 0;
+}
+
+.logout_btn i { color: #ef4444; }
+.logout_btn:hover {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+.profile_content {
+    min-height: 470px;
+    min-width: 400px;
+}
+
+.setting_card_panel {
+    overflow: hidden;
+}
+
+.panel_header {
+    background-color: #edf2f8;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dde5f0;
+}
+
+.panel_header h4 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f1a2e;
+    gap: 0.5rem;
+}
+
+.panel_header h4 i { color: #0057ff; }
+
+.panel_body {
+    padding: 1.75rem 1.5rem;
+    gap: 1.5rem;
+}
+
+.form_group_full, .form_group {
+    gap: 0.5rem;
+}
+
+.form_label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #3a4a60;
+}
+
+.form_actions_footer {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #edf2f8;
+    padding-top: 1.5rem;
+}
+
+.btn_primary_save, .btn_accent_save {
+    color: #ffffff;
+    padding: 0.7rem 1.75rem;
+    border-radius: 6px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    gap: 0.5rem;
+    border: none;
+    cursor: pointer;
+    background-color: #5277b4;
+    transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn_primary_save:hover, .btn_accent_save:hover {
+    background-color: #3d5d93;
+}
+
+@media (max-width: 960px) {
+    .profile_inner_layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+    .profile_container { padding: 1rem 0.5rem; }
+    .form_row_grid_2col { grid-template-columns: 1fr; gap: 1.25rem; }
+}
