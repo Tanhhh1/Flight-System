@@ -33,3 +33,9 @@ export const BE_FIELD_MAP = {
     FlightDuration: "flightDuration",
     Status: "status",
 };
+
+export const COMMON_RULES = {
+    originAirportId: { required: "Vui lòng chọn sân bay khởi hành" },
+    destinationAirportId: { required: "Vui lòng chọn sân bay đến" },
+    flightDuration: { required: "Vui lòng nhập thời gian bay" },
+};

@@ -10,10 +10,14 @@ export const SEAT_STATUS_LABEL = {
     [SEAT_STATUS.BOOKED]: "Đã đặt",
 };
 
-export const SEAT_LOCK_DURATION = 15 * 60;
+export const SEAT_REVERSE_HUB_URL = `${import.meta.env.VITE_HUB_URL}/hubs/seat-reverse`;
 
-export const SEAT_CLASS_COLOR = {
-    1: "#1e40af", 
-    2: "#7e22ce",
-    3: "#b45309",
+export const SEAT_REVERSE_STORAGE_KEY = "seat_reverse_booking";
+
+export const SEAT_LOCK_MINUTES = 10;
+
+export const HUB_EVENTS = {
+    SEAT_STATUS_CHANGED: "SeatStatusChanged",
+    JOIN_FLIGHT: "JoinFlight",
+    LEAVE_FLIGHT: "LeaveFlight",
 };

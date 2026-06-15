@@ -1,4 +1,4 @@
-export const TABLE_HEADS = ["#", "Điểm đi", "Điểm đến", "Thời gian", "Hãng / Máy bay", "Thời lượng", "Trạng thái", "Hành động"];
+export const TABLE_HEADS = ["STT", "Điểm đi", "Điểm đến", "Thời gian", "Hãng / Máy bay", "Thời lượng", "Trạng thái", "Hành động"];
 
 export const FLIGHT_STATUS_LABEL = {
     Active: "Hoạt động",
@@ -23,15 +23,15 @@ export const EDIT_STATUS_OPTIONS = [
 ];
 
 export const SEAT_CLASSES = [
-    { classId: 1, className: "Economy Class" },
-    { classId: 2, className: "Premium Economy" },
-    { classId: 3, className: "Business Class" },
-    { classId: 4, className: "First Class" },
+    { classId: 1, className: "Phổ thông" },
+    { classId: 2, className: "Phổ thông đặc biệt" },
+    { classId: 3, className: "Thương gia" },
+    { classId: 4, className: "Hạng nhất" },
 ];
 
-export const FLIGHT_VALIDATION_RULES = {
-    planeId: { required: "Vui lòng chọn máy bay" },
-    routeId: { required: "Vui lòng chọn tuyến bay" },
+export const COMMON_RULES = {
+    planeId: { required: "Máy bay không được để trống" },
+    routeId: { required: "Tuyến bay không được để trống" },
     departureTime: { required: "Vui lòng nhập giờ khởi hành" },
 };
 

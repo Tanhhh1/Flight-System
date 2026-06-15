@@ -21,18 +21,18 @@ export const adminPaths = {
     }
 };
 
-const Dashboard = lazy(() => import("@/features/admin/dashboard/dashboard"));
-const AccountList = lazy(() => import("@/features/admin/account_management/account_list"));
-const ServiceList = lazy(() => import("@/features/admin/service_management/service_list"));
-const ReviewList = lazy(() => import("@/features/admin/review_management/review_list"));
-const AirlineList = lazy(() => import("@/features/admin/airline_management/airline_list"));
-const AirportList = lazy(() => import("@/features/admin/airport_management/airport_list"));
-const PlaneList = lazy(() => import("@/features/admin/plane_management/plane_list"));
-const RouteList = lazy(() => import("@/features/admin/route_management/route_list"));
-const BookingList = lazy(() => import("@/features/admin/booking_management/booking_list"));
-const BookingDetail = lazy(() => import("@/features/admin/booking_management/booking_detail"));
-const FlightList = lazy(() => import("@/features/admin/flight_management/flight_list"));
-const FlightForm = lazy(() => import("@/features/admin/flight_management/flight_form"));
+const Dashboard = lazy(() => import("@/features/admin/dashboard/components/dashboard"));
+const AccountList = lazy(() => import("@/features/admin/account_management/components/account_list"));
+const ServiceList = lazy(() => import("@/features/admin/service_management/components/service_list"));
+const ReviewList = lazy(() => import("@/features/admin/review_management/components/review_list"));
+const AirlineList = lazy(() => import("@/features/admin/airline_management/components/airline_list"));
+const AirportList = lazy(() => import("@/features/admin/airport_management/components/airport_list"));
+const PlaneList = lazy(() => import("@/features/admin/plane_management/components/plane_list"));
+const RouteList = lazy(() => import("@/features/admin/route_management/components/route_list"));
+const BookingList = lazy(() => import("@/features/admin/booking_management/components/booking_list"));
+const BookingDetail = lazy(() => import("@/features/admin/booking_management/components/detail/booking_detail"));
+const FlightList = lazy(() => import("@/features/admin/flight_management/components/list/flight_list"));
+const FlightForm = lazy(() => import("@/features/admin/flight_management/components/form/flight_form"));
 const Profile = lazy(() => import("@/features/admin/profile_management/profile"));
 
 export const adminPrivateRoutes = [

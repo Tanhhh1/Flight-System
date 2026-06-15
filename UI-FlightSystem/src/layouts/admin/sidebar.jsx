@@ -67,7 +67,7 @@ function Sidebar() {
                         <i className={open ? "bx bx-chevron-up arrow_icon" : "bx bx-chevron-down arrow_icon"} />
                     </div>
                     {open && active && (
-                        <ul className="dropdown_menu">
+                        <ul className="sidebar_dropdown_menu">
                             <li>
                                 <Link to="/admin/airlines">
                                     <i className="bx bxs-plane-take-off" />

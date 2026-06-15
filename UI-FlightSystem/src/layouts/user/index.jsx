@@ -6,7 +6,7 @@ import LoginModal from "@/features/user/authentication/login";
 import RegisterModal from "@/features/user/authentication/register";
 import "./layout.css";
 
-const ClientLayout = () => {
+function ClientLayout() {
     const [authMode, setAuthMode] = useState(null);
 
     const closeAuth = () => setAuthMode(null);
@@ -14,9 +14,9 @@ const ClientLayout = () => {
     const openRegister = () => setAuthMode("register");
 
     return (
-        <div className="client-layout">
+        <div className="client_layout">
             <Header onOpenLogin={openLogin} />
-            <main className="client-main">
+            <main className="client_main">
                 <Outlet /> 
             </main>
             <Footer />

@@ -17,4 +17,5 @@ export const DataSearch = {
     Services: 2,
     Planes: 3,
     Routes: 4,
+    PassengerType: 5
 };

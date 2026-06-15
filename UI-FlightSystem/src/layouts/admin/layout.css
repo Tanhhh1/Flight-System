@@ -1,29 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
-
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
-
-body{
-    position: relative;
-    min-height: 100vh;
-    width: 100%;
-    overflow-x: hidden;
-    background-color: #f5f5f9;
-}
-
 .admin_layout_wrapper {
     position: relative;
     min-height: 100vh;
     width: 100%;
 }
 
-.sidebar{
+.sidebar {
     position: fixed;
     top: 0;
     left: 0;
@@ -36,7 +20,7 @@ body{
     flex-shrink: 0;
 }
 
-.sidebar.active{
+.sidebar.active {
     width: 260px;
 }
 
@@ -48,52 +32,53 @@ body{
     align-items: center;
 }
 
-.sidebar .logo_content .logo{
+.sidebar .logo_content .logo {
     color: #fff;
     display: flex;
     align-items: center;
     opacity: 0;
     pointer-events: none;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease;
 }
 
-.sidebar.active .logo_content .logo{
+.sidebar.active .logo_content .logo {
     opacity: 1;
     pointer-events: auto;
 }
 
-.logo_content .logo i{
+.logo_content .logo i {
     font-size: 24px;
     margin-right: 10px;
 }
 
-.logo_content .logo .logo_name{
+.logo_content .logo .logo_name {
     font-size: 20px;
     font-weight: 400;
     font-family: "Black Ops One", system-ui;
 }
 
-.sidebar #btn{
+.sidebar #btn {
     position: absolute;
-    color: #fff;
     left: 50%;
     top: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
     font-size: 22px;
     height: 40px;
     width: 40px;
     text-align: center;
     line-height: 40px;
-    transform: translate(-50%, -50%);
     cursor: pointer;
     border-radius: 8px;
+    transition: left 0.3s ease, background 0.3s ease;
+}
+
+.sidebar.active #btn {
+    left: 90%;
 }
 
 .sidebar #btn:hover {
     background: rgba(255, 255, 255, 0.1);
-}
-
-.sidebar.active #btn{
-    left: 90%;
 }
 
 .sidebar ul.nav_list {
@@ -103,7 +88,7 @@ body{
 }
 
 .sidebar ul.nav_list::-webkit-scrollbar {
-    width: 0px;
+    width: 0;
 }
 
 .sidebar ul li {
@@ -115,7 +100,8 @@ body{
     height: 45px;
 }
 
-.sidebar ul li a, .dropdown_btn {
+.sidebar ul li a,
+.dropdown_btn {
     color: #fff;
     display: flex;
     align-items: center;
@@ -123,10 +109,11 @@ body{
     height: 45px;
     border-radius: 8px;
     white-space: nowrap;
-    transition: all 0.3s ease;
+    transition: color 0.3s ease, background 0.3s ease;
 }
 
-.sidebar ul li a:hover, .dropdown_btn:hover {
+.sidebar ul li a:hover,
+.dropdown_btn:hover {
     color: #11101d;
     background: #fff;
     cursor: pointer;
@@ -143,8 +130,8 @@ body{
 .sidebar .links_name {
     opacity: 0;
     pointer-events: none;
-    transition: all 0.3s ease;
     font-size: 15px;
+    transition: opacity 0.3s ease;
 }
 
 .sidebar.active .links_name {
@@ -165,43 +152,43 @@ body{
 
 .arrow_icon {
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease;
 }
 
 .sidebar.active .arrow_icon {
     opacity: 1;
 }
 
-.dropdown_menu {
+.sidebar_dropdown_menu {
     padding-left: 15px;
     margin-top: 4px;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 8px;
 }
 
-.dropdown_menu li {
+.sidebar_dropdown_menu li {
     height: 45px !important;
 }
 
-.dropdown_menu li a {
+.sidebar_dropdown_menu li a {
     font-size: 15px;
     height: 100% !important;
 }
 
-.dropdown_menu li i {
-    font-size: 18px; 
+.sidebar_dropdown_menu li i {
+    font-size: 18px;
 }
 
-.sidebar:not(.active) .dropdown_menu {
+.sidebar:not(.active) .sidebar_dropdown_menu {
     display: none;
 }
 
 .sidebar .profile_content {
     position: absolute;
-    color: #fff;
     bottom: 0;
     left: 0;
     width: 100%;
+    color: #fff;
 }
 
 .sidebar .profile_content .profile {
@@ -233,8 +220,8 @@ body{
     margin-left: 10px;
     opacity: 0;
     pointer-events: none;
-    transition: all 0.3s ease;
     white-space: nowrap;
+    transition: opacity 0.3s ease;
 }
 
 .sidebar.active .profile .profile_details .name_job {
@@ -256,12 +243,12 @@ body{
     color: #fff;
     font-size: 20px;
     cursor: pointer;
-    transition: all 0.3s ease;
     width: 40px;
     height: 40px;
     line-height: 40px;
     text-align: center;
     border-radius: 8px;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 .profile #log_out:hover {
@@ -279,24 +266,4 @@ body{
 
 .sidebar.active ~ .section_container {
     margin-left: 240px;
-}
-
-.error_alert {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    background: rgba(220, 38, 38, 0.2);
-    border: 1px solid rgba(220, 38, 38, 0.4);
-    color: #d53434;
-    text-align: left;
-    margin-top: -0.5rem;
-    margin-bottom: 1rem;
-}
-
-.error_alert i {
-    font-size: 1.1rem;
-    flex-shrink: 0;
 }

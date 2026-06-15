@@ -28,3 +28,9 @@ export const BE_FIELD_MAP = {
     Country: "country",
     Status: "status",
 };
+
+export const COMMON_RULES = {
+    airlineName: { required: "Tên hãng hàng không không được để trống" },
+    airlineCode: { required: "Mã hãng không được để trống" },
+    country: { required: "Quốc gia không được để trống" },
+};

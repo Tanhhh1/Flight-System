@@ -27,3 +27,13 @@ export const BE_FIELD_MAP = {
     Fullname: "fullname", PhoneNumber: "phoneNumber",
     Gender: "gender", RoleNames: "roleNames", Password: "password",
 };
+
+export const COMMON_RULES = {
+    email: {required: "Địa chỉ Email không được để trống" },
+    fullname: { required: "Họ và tên không được để trống" },
+};
+
+export const CREATE_ONLY_RULES = {
+    userName: { required: "Tên đăng nhập không được để trống" },
+    password: { required: "Mật khẩu không được để trống" },
+};

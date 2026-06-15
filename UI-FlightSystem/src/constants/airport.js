@@ -30,3 +30,10 @@ export const BE_FIELD_MAP = {
     City: "city",
     Country: "country",
 };
+
+export const COMMON_RULES = {
+    airportCode: { required: "Mã sân bay không được để trống" },
+    airportName: { required: "Tên sân bay không được để trống" },
+    city: { required: "Thành phố không được để trống" },
+    country: { required: "Quốc gia không được để trống" },
+};

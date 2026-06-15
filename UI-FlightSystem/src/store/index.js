@@ -12,6 +12,11 @@ import bookingReducer from "@/features/admin/booking_management/booking_slice";
 import bookingDetailReducer from "@/features/admin/booking_management/booking_detail_slice";
 import dashboardReducer from "@/features/admin/dashboard/dashboard_slice";
 
+import myReviewReducer from "@/features/user/profile/review_slice";
+import myBookingsReducer from "@/features/user/booking/booking_slice";
+import homepageReducer from "@/features/user/homepage/homepage_slice"
+import searchResultsReducer from "@/features/user/flight_search/search_results_slice";
+import seatSelectionReducer from "@/features/user/seat_selection/seat_selection_slice";
 
 export const store = configureStore({
   reducer: {
@@ -27,6 +32,12 @@ export const store = configureStore({
     booking: bookingReducer,
     bookingDetail: bookingDetailReducer,
     dashboard: dashboardReducer,
+
+    myReviews: myReviewReducer,
+    myBookings: myBookingsReducer,
+    homepage: homepageReducer,
+    searchResults: searchResultsReducer,
+    seatReverse: seatSelectionReducer
   },
 });
 
