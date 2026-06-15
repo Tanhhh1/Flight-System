@@ -29,13 +29,11 @@ namespace Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ICurrentUser, CurrentUser>();
-            services.AddScoped<IPaymentGateway, VNPayGatewayService>();
-            services.AddScoped<IPaymentGateway, MoMoGatewayService>();
-            services.AddScoped<IPaymentGateway, StripeGatewayService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IPaymentGateway, VNPayGateway>();
             services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
             services.AddHostedService<FlightStatusUpdateService>();
-
+            services.AddHostedService<SeatLockExpiryService>();
 
             return services;
         }

@@ -38,7 +38,7 @@ namespace API_FlightBooking.Registers
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.MapControllers();
-            app.MapHub<SeatHub>("/hubs/seat");
+            app.MapHub<SeatHub>("/hubs/seat-reverse");
         }
 
         private static void VersionApiInjection(this IServiceCollection services)
@@ -110,7 +110,7 @@ namespace API_FlightBooking.Registers
                     {
                         var accessToken = context.Request.Query["access_token"];
                         var path = context.HttpContext.Request.Path;
-                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/seat"))
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/seat-reverse"))
                         {
                             context.Token = accessToken;
                         }
