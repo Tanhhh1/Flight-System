@@ -17,9 +17,9 @@ namespace Application.CQRS.Flights.DTOs
         public int StopCount { get; set; }
         public bool IsRefund { get; set; }
         public bool IsChange { get; set; }
-        public List<FlightDetailSegmentDto> Segments { get; set; } = new();
-        public List<FlightDetailServiceDto> Services { get; set; } = new();
-        public List<FlightSeatClassDto> SeatClasses { get; set; } = new();
+        public List<FlightDetailSegmentDto> Segments { get; set; } = [];
+        public List<FlightDetailServiceDto> Services { get; set; } = [];
+        public List<FlightSeatClassDto> SeatClasses { get; set; } = [];
     }
 
     public class FlightSeatClassDto

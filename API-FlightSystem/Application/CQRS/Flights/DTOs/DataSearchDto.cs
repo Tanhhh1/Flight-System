@@ -7,6 +7,7 @@
         public List<DataServiceDto>? Services { get; set; }
         public List<DataPlaneDto>? Planes { get; set; }
         public List<DataRouteDto>? Routes { get; set; }
+        public List<DataPassengerTypeDto>? PassengerTypes { get; set; }
     }
     public class DataAirportDto
     {
@@ -44,5 +45,12 @@
         public string OriginAirportName { get; set; } = string.Empty;
         public string DestinationAirportCode { get; set; } = string.Empty;
         public string DestinationAirportName { get; set; } = string.Empty;
+    }
+
+    public class DataPassengerTypeDto
+    {
+        public int TypeId { get; set; }
+        public string TypeName { get; set; } = string.Empty;
+        public decimal DiscountRate { get; set; }
     }
 }

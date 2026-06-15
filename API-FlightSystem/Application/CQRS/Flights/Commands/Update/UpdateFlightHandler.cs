@@ -41,7 +41,7 @@ namespace Application.CQRS.Flights.Commands.Update
                 return ApiResult<FlightDto>.Failure("Không thể cập nhật chuyến bay trong vòng 24 giờ trước khởi hành");
 
             var paidBooking = await _unitOfWork.BookingRepository
-                .GetByCondition(b => b.BookingDetails.Any(bd => bd.FlightId == request.FlightId)
+                .GetByCondition(b => b.BookingDetails.Any(bd => bd.BookingFlightId == request.FlightId)
                                   && b.Status == BookingStatus.Confirmed)
                 .AnyAsync(cancellationToken);
             if (paidBooking)

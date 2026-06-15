@@ -19,49 +19,54 @@ namespace Application.CQRS.Flights.Queries.Search
 
         public async Task<ApiResult<PageList<FlightSearchDto>>> Handle(SearchFlightQuery request, CancellationToken cancellationToken)
         {
-            var query = _unitOfWork.FlightRepository
+            var search = _unitOfWork.FlightRepository
                 .GetByCondition()
                 .Where(f => f.Status == FlightStatus.Active)
                 .AsNoTracking();
 
-            query = query.Where(f =>
+            search = search.Where(f =>
                 f.Route.OriginAirport.City.Contains(request.OriginCity) ||
                 f.Route.OriginAirport.AirportCode.Contains(request.OriginCity));
 
-            query = query.Where(f =>
+            search = search.Where(f =>
                 f.Route.DestinationAirport.City.Contains(request.DestinationCity) ||
                 f.Route.DestinationAirport.AirportCode.Contains(request.DestinationCity));
 
-            query = query.Where(f =>
+            search = search.Where(f =>
                 f.DepartureTime.Date == request.DepartureDate.Date);
 
-            query = query.Where(f =>
+            search = search.Where(f =>
                 f.FlightSeatPrices.Any(sp => sp.ClassId == request.ClassId && sp.AvailableSeats > 0));
 
             if (request.StopCount.HasValue)
-                query = query.Where(f => f.FlightSegments.Count - 1 == request.StopCount.Value);
+            {
+                if (request.StopCount.Value == 0)
+                    search = search.Where(f => !f.FlightSegments.Any() || f.FlightSegments.Count == 1);
+                else
+                    search = search.Where(f => f.FlightSegments.Count - 1 == request.StopCount.Value);
+            }
 
             if (request.AirlineId.HasValue)
-                query = query.Where(f => f.Plane.AirlineId == request.AirlineId.Value);
+                search = search.Where(f => f.Plane.AirlineId == request.AirlineId.Value);
 
             if (request.ServiceIds != null && request.ServiceIds.Any())
-                query = query.Where(f => request.ServiceIds
+                search = search.Where(f => request.ServiceIds
                     .All(sid => f.FlightServices.Any(fs => fs.ServiceId == sid)));
 
             if (request.DepartureFromHour.HasValue)
-                query = query.Where(f => f.DepartureTime.Hour >= request.DepartureFromHour.Value);
+                search = search.Where(f => f.DepartureTime.Hour >= request.DepartureFromHour.Value);
 
             if (request.DepartureToHour.HasValue)
-                query = query.Where(f => f.DepartureTime.Hour <= request.DepartureToHour.Value);
+                search = search.Where(f => f.DepartureTime.Hour <= request.DepartureToHour.Value);
 
             if (request.ArrivalFromHour.HasValue)
-                query = query.Where(f => f.ArrivalTime.Hour >= request.ArrivalFromHour.Value);
+                search = search.Where(f => f.ArrivalTime.Hour >= request.ArrivalFromHour.Value);
 
             if (request.ArrivalToHour.HasValue)
-                query = query.Where(f => f.ArrivalTime.Hour <= request.ArrivalToHour.Value);
+                search = search.Where(f => f.ArrivalTime.Hour <= request.ArrivalToHour.Value);
 
             var result = await PageList<FlightSearchDto>.ToPagedListAsync(
-                query.OrderBy(f => f.DepartureTime).ProjectToType<FlightSearchDto>(),
+                search.OrderBy(f => f.DepartureTime).ProjectToType<FlightSearchDto>(),
                 request.PageIndex,
                 request.PageSize,
                 cancellationToken
@@ -76,8 +81,9 @@ namespace Application.CQRS.Flights.Queries.Search
                 flight.Segments = flight.Segments
                     .OrderBy(s => s.StopOrder)
                     .ToList();
-            }
 
+                flight.StopCount = flight.Segments.Any() ? flight.Segments.Count - 1 : 0;
+            }
             return ApiResult<PageList<FlightSearchDto>>.Success(result);
         }
     }

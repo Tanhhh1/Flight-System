@@ -6,6 +6,7 @@
         Airlines,
         Services,
         Planes,
-        Routes
+        Routes,
+        PassengerType
     }
 }

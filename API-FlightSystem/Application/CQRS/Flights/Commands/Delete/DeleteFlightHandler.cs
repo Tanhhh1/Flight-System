@@ -41,7 +41,7 @@ namespace Application.CQRS.Flights.Commands.Delete
                 return ApiResult<FlightDto>.Failure("Không thể xóa chuyến bay trong vòng 24 giờ trước khởi hành");
 
             var paidBooking = await _unitOfWork.BookingRepository
-                .GetByCondition(b => b.BookingDetails.Any(bd => bd.FlightId == request.FlightId)
+                .GetByCondition(b => b.BookingDetails.Any(bd => bd.BookingFlightId == request.FlightId)
                                   && b.Status == BookingStatus.Confirmed)
                 .AnyAsync(cancellationToken);
             if (paidBooking)
@@ -50,8 +50,8 @@ namespace Application.CQRS.Flights.Commands.Delete
             flight.Status = FlightStatus.Inactive;
 
             _unitOfWork.FlightRepository.Update(flight);
-
-            return ApiResult<FlightDto>.Success(flight.Adapt<FlightDto>());
+            var flightDto = flight.Adapt<FlightDto>();
+            return ApiResult<FlightDto>.Success(flightDto);
         }
     }
 }

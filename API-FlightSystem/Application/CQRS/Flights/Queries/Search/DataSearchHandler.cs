@@ -61,6 +61,13 @@ namespace Application.CQRS.Flights.Queries.Search
                     .ToListAsync(cancellationToken)
                 : null;
 
+            var passengerType = inc.Contains(DataSearch.PassengerType)
+                ? await _unitOfWork.PassengerTypeRepository.GetByCondition()
+                    .AsNoTracking()
+                    .ProjectToType<DataPassengerTypeDto>()
+                    .ToListAsync(cancellationToken)
+                : null;
+
             return ApiResult<DataSearchDto>.Success(new DataSearchDto
             {
                 Airports = airports,
@@ -68,6 +75,7 @@ namespace Application.CQRS.Flights.Queries.Search
                 Services = services,
                 Planes = planes,
                 Routes = routes,
+                PassengerTypes = passengerType
             });
         }
     }

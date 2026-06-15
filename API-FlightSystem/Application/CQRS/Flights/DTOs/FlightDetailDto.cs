@@ -18,9 +18,9 @@
         public bool IsRefund { get; set; }
         public bool IsChange { get; set; }
 
-        public List<FlightDetailSegmentDto> Segments { get; set; } = new();
-        public List<FlightDetailServiceDto> Services { get; set; } = new();
-        public List<FlightDetailSeatPriceDto> SeatPrices { get; set; } = new();
+        public List<FlightDetailSegmentDto> Segments { get; set; } = [];
+        public List<FlightDetailServiceDto> Services { get; set; } = [];
+        public List<FlightDetailSeatPriceDto> SeatPrices { get; set; } = [];
     }
 
     public class FlightDetailSegmentDto
