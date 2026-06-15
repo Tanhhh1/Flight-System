@@ -47,7 +47,7 @@ namespace Infrastructure.Persistences.Configuration
 
             builder.HasMany(x => x.BookingDetails)
                 .WithOne(d => d.Flight)
-                .HasForeignKey(d => d.FlightId)
+                .HasForeignKey(d => d.BookingFlightId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasIndex(x => new { x.DepartureTime, x.RouteId })

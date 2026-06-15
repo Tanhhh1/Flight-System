@@ -17,10 +17,6 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(x => x.Description)
                 .HasMaxLength(500);
 
-            builder.Property(x => x.Price)
-                .HasPrecision(18, 2)
-                .IsRequired();
-
             builder.Property(x => x.IsActive)
                 .HasDefaultValue(true);
 

@@ -10,6 +10,5 @@ namespace Application.CQRS.Services.Commands.Create
         public IEnumerable<string> InvalidatePrefixes => ["Service"];
         public string ServiceName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public decimal Price { get; set; }
     }
 }
