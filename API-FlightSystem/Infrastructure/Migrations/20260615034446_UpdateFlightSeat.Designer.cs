@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Persistences;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260615034446_UpdateFlightSeat")]
+    partial class UpdateFlightSeat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,14 +166,14 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BookingDetailId"));
 
-                    b.Property<int>("BookingFlightId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("BookingId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("FlightId")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("FlightSeatId")
                         .HasColumnType("integer");
@@ -187,10 +190,10 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("BookingDetailId");
 
-                    b.HasIndex("BookingFlightId")
-                        .HasDatabaseName("IX_BookingDetail_Flight");
-
                     b.HasIndex("BookingId");
+
+                    b.HasIndex("FlightId")
+                        .HasDatabaseName("IX_BookingDetail_Flight");
 
                     b.HasIndex("FlightSeatId")
                         .IsUnique();
@@ -702,6 +705,10 @@ namespace Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
                     b.Property<string>("ServiceName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -1078,16 +1085,16 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.BookingDetail", b =>
                 {
-                    b.HasOne("Domain.Entities.Flight", "Flight")
-                        .WithMany("BookingDetails")
-                        .HasForeignKey("BookingFlightId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.Booking", "Booking")
                         .WithMany("BookingDetails")
                         .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Flight", "Flight")
+                        .WithMany("BookingDetails")
+                        .HasForeignKey("FlightId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.FlightSeat", "FlightSeat")
