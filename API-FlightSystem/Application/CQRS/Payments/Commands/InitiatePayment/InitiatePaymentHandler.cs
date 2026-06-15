@@ -11,20 +11,17 @@ namespace Application.CQRS.Payments.Commands.InitiatePayment
     public class InitiatePaymentHandler : IRequestHandler<InitiatePaymentCommand, ApiResult<InitiateDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IEnumerable<IPaymentGateway> _gateways;
+        private readonly IPaymentGateway _gateway;
 
-        public InitiatePaymentHandler(IUnitOfWork unitOfWork, IEnumerable<IPaymentGateway> gateways)
+        public InitiatePaymentHandler(IUnitOfWork unitOfWork, IPaymentGateway gateway)
         {
             _unitOfWork = unitOfWork;
-            _gateways = gateways;
+            _gateway = gateway;
         }
 
-        public async Task<ApiResult<InitiateDto>> Handle(
-            InitiatePaymentCommand request,
-            CancellationToken cancellationToken)
+        public async Task<ApiResult<InitiateDto>> Handle(InitiatePaymentCommand request, CancellationToken cancellationToken)
         {
-            var booking = await _unitOfWork.BookingRepository
-                .GetByIdAsync(request.BookingId);
+            var booking = await _unitOfWork.BookingRepository.GetByIdAsync(request.BookingId);
 
             if (booking is null)
                 return ApiResult<InitiateDto>.Failure("Không tìm thấy booking");
@@ -32,18 +29,14 @@ namespace Application.CQRS.Payments.Commands.InitiatePayment
             if (booking.Status != BookingStatus.Pending)
                 return ApiResult<InitiateDto>.Failure("Booking không ở trạng thái chờ thanh toán");
 
-            var gateway = _gateways.FirstOrDefault(g => g.Method == request.Method);
-
-            if (gateway is null)
-                return ApiResult<InitiateDto>.Failure("Phương thức thanh toán không được hỗ trợ");
-
-            var result = await gateway.CreatePaymentUrlAsync(new PaymentRequest(
+            var result = await _gateway.CreatePaymentUrlAsync(new PaymentRequest(
                 BookingId: booking.BookingId,
                 BookingCode: booking.BookingCode,
                 Amount: booking.TotalPrice,
                 Description: $"Thanh toan booking {booking.BookingCode}",
                 ReturnUrl: request.ReturnUrl,
-                IpAddress: request.ClientIp
+                IpAddress: request.ClientIp,
+                Method: request.Method
             ));
 
             if (!result.Success)

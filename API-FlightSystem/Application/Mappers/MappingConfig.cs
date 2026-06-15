@@ -6,7 +6,6 @@ using Application.CQRS.Reviews.DTOs;
 using Application.CQRS.Routes.DTOs;
 using Application.CQRS.SeatReverse.DTOs;
 using Domain.Entities;
-using Domain.Enums;
 using Domain.Identity;
 using Mapster;
 
@@ -100,7 +99,7 @@ namespace Application.Mappers
                 .Map(dest => dest.ClassName, src => src.SeatClass.ClassName)
                 .Map(dest => dest.TripType, src => src.TripType.ToString())
                 .Map(dest => dest.Flights, src => src.BookingDetails
-                    .GroupBy(bd => bd.FlightId)
+                    .GroupBy(bd => bd.BookingFlightId)
                     .Select(g => new BookingFlightDto
                     {
                         FlightId = g.Key,
@@ -110,7 +109,10 @@ namespace Application.Mappers
                         AirlineName = g.First().Flight.Plane.Airline.AirlineName,
                         PlaneModel = g.First().Flight.Plane.PlaneModel,
                         OriginAirport = g.First().Flight.Route.OriginAirport.AirportCode,
+                        OriginAirportName = g.First().Flight.Route.OriginAirport.AirportName,
                         DestinationAirport = g.First().Flight.Route.DestinationAirport.AirportCode,
+                        DestinationAirportName = g.First().Flight.Route.DestinationAirport.AirportName,
+                        FlightDuration = g.First().Flight.Route.FlightDuration,
                         Segments = g.First().Flight.FlightSegments
                         .OrderBy(s => s.SegmentOrder)
                         .Select(s => new BookingSegmentDto
@@ -155,23 +157,6 @@ namespace Application.Mappers
                 .Map(dest => dest.OriginAirportName, src => src.OriginAirport.AirportName)
                 .Map(dest => dest.DestinationAirportCode, src => src.DestinationAirport.AirportCode)
                 .Map(dest => dest.DestinationAirportName, src => src.DestinationAirport.AirportName);
-
-            config.NewConfig<FlightSeat, SeatLayoutDto>()
-                .Map(dest => dest.SeatNumber, src => src.SeatTemplate.SeatNumber)
-                .Map(dest => dest.RowIndex, src => src.SeatTemplate.RowIndex)
-                .Map(dest => dest.ColIndex, src => src.SeatTemplate.ColIndex)
-                .Map(dest => dest.ClassId, src => src.SeatTemplate.ClassId)
-                .Map(dest => dest.ClassName, src => src.SeatTemplate.SeatClass.ClassName)
-                .Map(dest => dest.Status, src => (int)src.Status)
-                .Map(dest => dest.LockedBy, src => src.LockedBy == 0 ? null : (int?)src.LockedBy)
-                .Map(dest => dest.LockedUntil, src => src.LockedUntil == default ? null : (DateTime?)src.LockedUntil);
-
-            config.NewConfig<BookingDetail, PassengerSeatDto>()
-                .Map(dest => dest.PassengerId, src => src.PassengerId)
-                .Map(dest => dest.FullName, src => src.Passenger.FullName)
-                .Map(dest => dest.Gender, src => src.Passenger.Gender)
-                .Map(dest => dest.FlightSeatId, src => src.FlightSeatId)
-                .Map(dest => dest.SeatNumber, src => src.FlightSeat != null ? src.FlightSeat.SeatTemplate.SeatNumber : null);
         }
     }
 }

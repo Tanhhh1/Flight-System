@@ -9,7 +9,7 @@ namespace Application.CQRS.Payments.Commands.RetryPayment
     {
         public int BookingId { get; set; }
         public PaymentMethod Method { get; set; }
-        public string ClientIp { get; set; } = string.Empty;
         public string ReturnUrl { get; set; } = string.Empty;
+        public string ClientIp { get; set; } = string.Empty;
     }
 }

@@ -21,7 +21,6 @@ namespace Infrastructure.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("FlightStatusUpdateService started");
             while (!stoppingToken.IsCancellationRequested)
             {
                 await UpdateCompletedFlightsAsync(stoppingToken);

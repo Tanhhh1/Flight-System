@@ -9,16 +9,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Payments.Commands.RetryPayment
 {
-    internal class RetryPaymentHandler : IRequestHandler<RetryPaymentCommand, ApiResult<InitiateDto>>
+    public class RetryPaymentHandler : IRequestHandler<RetryPaymentCommand, ApiResult<InitiateDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IEnumerable<IPaymentGateway> _gateways;
+        private readonly IPaymentGateway _gateway;
         private const int MaxRetryCount = 3;
 
-        public RetryPaymentHandler(IUnitOfWork unitOfWork, IEnumerable<IPaymentGateway> gateways)
+        public RetryPaymentHandler(IUnitOfWork unitOfWork, IPaymentGateway gateway)
         {
             _unitOfWork = unitOfWork;
-            _gateways = gateways;
+            _gateway = gateway;
         }
 
         public async Task<ApiResult<InitiateDto>> Handle(RetryPaymentCommand request, CancellationToken cancellationToken)
@@ -39,10 +39,18 @@ namespace Application.CQRS.Payments.Commands.RetryPayment
             if (failedCount >= MaxRetryCount)
                 return ApiResult<InitiateDto>.Failure($"Đã vượt quá số lần thanh toán tối đa ({MaxRetryCount} lần)");
 
-            var gateway = _gateways.FirstOrDefault(g => g.Method == request.Method);
+            var result = await _gateway.CreatePaymentUrlAsync(new PaymentRequest(
+                BookingId: booking.BookingId,
+                BookingCode: booking.BookingCode,
+                Amount: booking.TotalPrice,
+                Description: $"Thanh toan lai booking {booking.BookingCode}",
+                ReturnUrl: request.ReturnUrl,
+                IpAddress: request.ClientIp,
+                Method: request.Method
+            ));
 
-            if (gateway is null)
-                return ApiResult<InitiateDto>.Failure("Phương thức thanh toán không được hỗ trợ");
+            if (!result.Success)
+                return ApiResult<InitiateDto>.Failure(result.ErrorMessage!);
 
             booking.Status = BookingStatus.Pending;
             _unitOfWork.BookingRepository.Update(booking);
@@ -56,18 +64,6 @@ namespace Application.CQRS.Payments.Commands.RetryPayment
             });
 
             await _unitOfWork.SaveChangesAsync();
-
-            var result = await gateway.CreatePaymentUrlAsync(new PaymentRequest(
-                BookingId: booking.BookingId,
-                BookingCode: booking.BookingCode,
-                Amount: booking.TotalPrice,
-                Description: $"Thanh toan lai booking {booking.BookingCode}",
-                ReturnUrl: request.ReturnUrl,
-                IpAddress: request.ClientIp
-            ));
-
-            if (!result.Success)
-                return ApiResult<InitiateDto>.Failure(result.ErrorMessage!);
 
             return ApiResult<InitiateDto>.Success(new InitiateDto { PaymentUrl = result.PaymentUrl });
         }

@@ -8,7 +8,8 @@ namespace Application.Interfaces.Services
         decimal Amount,
         string Description,
         string ReturnUrl,
-        string IpAddress
+        string IpAddress,
+        PaymentMethod Method 
     );
 
     public record PaymentUrlResult(
@@ -28,7 +29,6 @@ namespace Application.Interfaces.Services
 
     public interface IPaymentGateway
     {
-        PaymentMethod Method { get; }
         Task<PaymentUrlResult> CreatePaymentUrlAsync(PaymentRequest request);
         Task<PaymentCallbackResult> ProcessCallbackAsync(Dictionary<string, string> parameters);
     }
