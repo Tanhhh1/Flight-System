@@ -2,6 +2,7 @@
 using Application.Common;
 using Application.CQRS.Bookings.Commands.Booking;
 using Application.CQRS.Bookings.DTOs;
+using Application.CQRS.Bookings.Queries.GetById;
 using Application.CQRS.Bookings.Queries.Transaction;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -26,6 +27,16 @@ namespace API_FlightSystem.Controllers.V1.Client
             var result = await _mediator.Send(command);
             if (!result.Succeeded)
                 return BadRequest(result);
+            return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ApiResult<BookingByIdDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResult<BookingByIdDto>), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var result = await _mediator.Send(new GetByBookingIdQuery { BookingId = id });
+            if (!result.Succeeded) return NotFound(result);
             return Ok(result);
         }
 

@@ -6,7 +6,7 @@ namespace Domain.Entities
     {
         public int BookingDetailId { get; set; }
         public int BookingId { get; set; }
-        public int FlightId { get; set; }
+        public int BookingFlightId { get; set; }
         public int PassengerId { get; set; }
         public int? FlightSeatId { get; set; }
         public decimal UnitPrice { get; set; }

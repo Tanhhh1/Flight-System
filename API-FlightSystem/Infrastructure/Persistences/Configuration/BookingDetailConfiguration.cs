@@ -22,7 +22,7 @@ namespace Infrastructure.Persistences.Configuration
 
             builder.HasOne(x => x.Flight)
                 .WithMany(f => f.BookingDetails)
-                .HasForeignKey(x => x.FlightId)
+                .HasForeignKey(x => x.BookingFlightId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.Passenger)
@@ -36,7 +36,7 @@ namespace Infrastructure.Persistences.Configuration
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasIndex(x => x.FlightId)
+            builder.HasIndex(x => x.BookingFlightId)
                 .HasDatabaseName("IX_BookingDetail_Flight");
         }
     }

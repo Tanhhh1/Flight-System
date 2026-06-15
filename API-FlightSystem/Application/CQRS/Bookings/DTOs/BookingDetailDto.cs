@@ -24,7 +24,10 @@ namespace Application.CQRS.Bookings.DTOs
         public string AirlineName { get; set; } = string.Empty;
         public string PlaneModel { get; set; } = string.Empty;
         public string OriginAirport { get; set; } = string.Empty;
+        public string OriginAirportName { get; set; } = string.Empty;
         public string DestinationAirport { get; set; } = string.Empty;
+        public string DestinationAirportName { get; set; } = string.Empty;
+        public int FlightDuration { get; set; }
         public List<BookingSegmentDto> Segments { get; set; } = [];
         public List<PassengerDetailDto> Passengers { get; set; } = [];
     }

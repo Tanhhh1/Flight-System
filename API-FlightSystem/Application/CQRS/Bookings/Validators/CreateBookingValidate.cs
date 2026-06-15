@@ -11,28 +11,20 @@ namespace Application.CQRS.Bookings.Validators
             RuleFor(x => x.ClassId)
                 .GreaterThan(0).WithMessage("ClassId không hợp lệ");
 
-            RuleFor(x => x.TripType)
-                .InclusiveBetween(1, 2).WithMessage("TripType phải là 1 (một chiều) hoặc 2 (khứ hồi)");
+            RuleFor(x => x.FlightIds)
+                .NotEmpty().WithMessage("Danh sách chuyến bay không được để trống")
+                .Must(ids => ids.Distinct().Count() == ids.Count)
+                .WithMessage("Danh sách chuyến bay không được trùng lặp")
+                .Must(ids => ids.Count <= 3)
+                .WithMessage("Không được đặt quá 3 chuyến bay trong một booking");
 
-            RuleFor(x => x.Details)
-                .NotEmpty().WithMessage("Danh sách hành khách không được để trống")
-                .Must(details => details.Select(d => d.FlightId).Distinct().Count() <= 2)
-                .WithMessage("Không được đặt quá 2 chuyến bay trong một booking");
-
-            RuleForEach(x => x.Details)
-                .SetValidator(new BookingDetailDtoValidator());
-        }
-    }
-
-    public class BookingDetailDtoValidator : AbstractValidator<BookingDetailDto>
-    {
-        public BookingDetailDtoValidator()
-        {
-            RuleFor(x => x.FlightId)
+            RuleForEach(x => x.FlightIds)
                 .GreaterThan(0).WithMessage("FlightId không hợp lệ");
 
-            RuleFor(x => x.Passenger)
-                .NotNull().WithMessage("Thông tin hành khách không được để trống")
+            RuleFor(x => x.Passengers)
+                .NotEmpty().WithMessage("Danh sách hành khách không được để trống");
+
+            RuleForEach(x => x.Passengers)
                 .SetValidator(new PassengerDtoValidator());
         }
     }
