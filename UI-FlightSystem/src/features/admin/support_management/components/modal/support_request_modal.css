@@ -1,0 +1,45 @@
+.modal_status_row {
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.modal_section_block {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 2px solid #f0f4ff;
+}
+
+.section_subtitle {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section_subtitle i {
+    color: #5277b4;
+}
+
+.detail_loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.form_modal_footer .btn_cancel.btn_reject_custom {
+    color: #dc2626;
+    border-color: #fee2e2;
+    background-color: #fff;
+    transition: all 0.2s ease;
+}
+
+.form_modal_footer .btn_cancel.btn_reject_custom:hover:not(:disabled) {
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+}
