@@ -17,6 +17,7 @@ function FlightResult() {
     const { filters, searchMeta, selectedLegs } = useSelector((s) => s.searchResults);
     const type = searchParams.get("type") ?? "one-way";
     const [activeLegView, setActiveLegView] = useState(0);
+    const searchParamsString = searchParams.toString();
     const totalLegs = (() => {
         if (type === "one-way") return 1;
         if (type === "round-trip") return 2;
@@ -37,7 +38,7 @@ function FlightResult() {
         dispatch(setSearchMeta({ type, classId, seatClass }));
         dispatch(resetSelectedLegs());
         dispatch(resetFilters());
-    }, [searchParams]);
+    }, [searchParamsString]);
 
     useEffect(() => {
         const { type: t, classId } = searchMeta;
@@ -60,7 +61,7 @@ function FlightResult() {
             if (!currentLegData) return;
             dispatch(fetchLeg({ activeLegView, payload: { leg: currentLegData, classId, filters } }));
         }
-    }, [filters, activeLegView, searchMeta, searchParams]);
+    }, [filters, activeLegView, searchMeta.type, searchMeta.classId, searchParamsString]);
 
     const handleFlightSelected = (flight) => {
         dispatch(selectLegFlight({ legIndex: activeLegView, flight }));

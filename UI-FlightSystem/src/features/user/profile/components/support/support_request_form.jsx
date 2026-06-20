@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createSupportRequest, resetCreate } from "@/features/user/support/use_support_form";
 import { flightSearchService } from "@/features/user/flight_search/flight_search_service";
-import { formatDate } from "@/utils/date_utils";
-import { REQUEST_TYPE_ENUM } from "@/constants/support_request"
+import { formatDate, formatTime } from "@/utils/date_utils";
+import { REQUEST_TYPE_ENUM } from "@/constants/support_request";
+import AlertModal from "@/components/error/alert_modal";
 import "./support_request_form.css";
 
 const REQUEST_TYPES = [
@@ -29,6 +30,10 @@ function SupportRequestForm() {
     const [selectedFlightId, setSelectedFlightId] = useState(null);
     const [searchError, setSearchError] = useState("");
 
+    const [alertState, setAlertState] = useState({ isOpen: false, message: "", type: "success" });
+    const showAlert = (message, type = "error") => setAlertState({ isOpen: true, message, type });
+    const closeAlert = () => setAlertState({ isOpen: false, message: "", type: "success" });
+
     useEffect(() => {
         setReason("");
         setFlightSearchResults([]);
@@ -39,9 +44,9 @@ function SupportRequestForm() {
 
     useEffect(() => {
         if (success) {
-            alert("Gửi yêu cầu hỗ trợ thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.");
+            showAlert("Gửi yêu cầu hỗ trợ thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất", "success");
             dispatch(resetCreate());
-            navigate(-1);
+            setTimeout(() => navigate(-1), 1500);
         }
     }, [success, dispatch, navigate]);
 
@@ -78,11 +83,11 @@ function SupportRequestForm() {
 
     const handleSubmit = () => {
         if (requestType === "Refund" && !reason.trim()) {
-            alert("Vui lòng nhập lý do hoàn vé.");
+            showAlert("Vui lòng nhập lý do hoàn vé.");
             return;
         }
         if (requestType === "Reschedule" && !selectedFlightId) {
-            alert("Vui lòng chọn chuyến bay thay thế.");
+            showAlert("Vui lòng chọn chuyến bay thay thế.");
             return;
         }
 
@@ -146,42 +151,31 @@ function SupportRequestForm() {
                             </div>
                         </div>
                     </div>
+
                     <div className="support_form_section">
                         <label className="support_form_label">
                             <i className="bx bx-list-ul" /> Loại yêu cầu
                         </label>
                         <div className="support_type_tabs">
                             {REQUEST_TYPES.map((t) => (
-                                <button
-                                    key={t.value}
-                                    className={`support_type_tab ${requestType === t.value ? "active" : ""}`}
-                                    onClick={() => setRequestType(t.value)}
-                                >
-                                    {t.value === "Refund"
-                                        ? <i className="bx bx-transfer-alt" />
-                                        : <i className="bx bx-calendar-edit" />}
-                                    {t.label}
+                                <button key={t.value} className={`support_type_tab ${requestType === t.value ? "active" : ""}`} onClick={() => setRequestType(t.value)}>
+                                    {t.value === "Refund" ? <i className="bx bx-transfer-alt" /> : <i className="bx bx-calendar-edit" />} {t.label}
                                 </button>
                             ))}
                         </div>
                     </div>
+
                     {requestType === "Refund" && (
                         <div className="support_form_section">
                             <label className="support_form_label" htmlFor="refund_reason">
                                 <i className="bx bx-comment-detail" /> Lý do hoàn vé
                                 <span className="support_required">*</span>
                             </label>
-                            <textarea
-                                id="refund_reason"
-                                className="support_textarea"
-                                rows={5}
-                                placeholder="Mô tả lý do bạn muốn hoàn vé..."
-                                value={reason}
-                                onChange={(e) => setReason(e.target.value)}
-                            />
+                            <textarea id="refund_reason" className="support_textarea" rows={5} placeholder="Mô tả lý do bạn muốn hoàn vé..." value={reason}  onChange={(e) => setReason(e.target.value)}/>
                             <span className="support_char_count">{reason.length} ký tự</span>
                         </div>
                     )}
+
                     {requestType === "Reschedule" && (
                         <>
                             <div className="support_form_section">
@@ -193,21 +187,9 @@ function SupportRequestForm() {
                                     <strong>{booking.originAirport} → {booking.destinationAirport}</strong>.
                                 </p>
                                 <div className="support_search_row">
-                                    <input
-                                        type="date"
-                                        className="support_date_input"
-                                        value={searchDate}
-                                        min={new Date().toISOString().split("T")[0]}
-                                        onChange={(e) => setSearchDate(e.target.value)}
-                                    />
-                                    <button
-                                        className="btn_search_flight"
-                                        onClick={handleSearchFlights}
-                                        disabled={isSearching}
-                                    >
-                                        {isSearching
-                                            ? <><i className="bx bx-loader-alt bx-spin" /> Đang tìm...</>
-                                            : <><i className="bx bx-search" /> Tìm chuyến bay</>}
+                                    <input type="date" className="support_date_input" value={searchDate} min={new Date().toISOString().split("T")[0]} onChange={(e) => setSearchDate(e.target.value)}/>
+                                    <button className="btn_search_flight" onClick={handleSearchFlights} disabled={isSearching}>
+                                        {isSearching ? <><i className="bx bx-loader-alt bx-spin" /> Đang tìm...</> : <><i className="bx bx-search" /> Tìm chuyến bay</>}
                                     </button>
                                 </div>
                                 {searchError && (
@@ -218,25 +200,15 @@ function SupportRequestForm() {
                             </div>
 
                             {flightSearchResults.map((flight) => (
-                                <div
-                                    key={flight.flightId}
-                                    className={`support_flight_card ${selectedFlightId === flight.flightId ? "selected" : ""}`}
-                                    onClick={() => setSelectedFlightId(flight.flightId)}
-                                >
+                                <div key={flight.flightId} className={`support_flight_card ${selectedFlightId === flight.flightId ? "selected" : ""}`} onClick={() => setSelectedFlightId(flight.flightId)}>
                                     <div className="flight_card_radio">
                                         <div className={`radio_dot ${selectedFlightId === flight.flightId ? "active" : ""}`} />
                                     </div>
                                     <div className="flight_card_info">
                                         <div className="flight_card_route">
-                                            <span className="flight_time">
-                                                {new Date(flight.departureTime).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
-                                            </span>
-                                            <span className="flight_arrow">
-                                                <i className="bx bx-right-arrow-alt" />
-                                            </span>
-                                            <span className="flight_time">
-                                                {new Date(flight.arrivalTime).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
-                                            </span>
+                                            <span className="flight_time">{formatTime(flight.departureTime)}</span>
+                                            <span className="flight_arrow"><i className="bx bx-right-arrow-alt" /></span>
+                                            <span className="flight_time">{formatTime(flight.arrivalTime)}</span>
                                             <span className="flight_duration">({flight.flightDuration} phút)</span>
                                         </div>
                                         <div className="flight_card_meta">
@@ -252,19 +224,13 @@ function SupportRequestForm() {
                                     </div>
                                 </div>
                             ))}
+
                             <div className="support_form_section">
                                 <label className="support_form_label" htmlFor="reschedule_reason">
                                     <i className="bx bx-comment" /> Ghi chú thêm
                                     <span className="support_optional">(tuỳ chọn)</span>
                                 </label>
-                                <textarea
-                                    id="reschedule_reason"
-                                    className="support_textarea"
-                                    rows={3}
-                                    placeholder="Thêm ghi chú nếu cần..."
-                                    value={reason}
-                                    onChange={(e) => setReason(e.target.value)}
-                                />
+                                <textarea id="reschedule_reason" className="support_textarea" rows={3} placeholder="Thêm ghi chú nếu cần..." value={reason} onChange={(e) => setReason(e.target.value)} />
                             </div>
                         </>
                     )}
@@ -277,19 +243,16 @@ function SupportRequestForm() {
                         <button className="btn_cancel" onClick={() => navigate(-1)}>
                             Huỷ
                         </button>
-                        <button
-                            className="btn_submit_support"
-                            onClick={handleSubmit}
-                            disabled={isLoading}
-                        >
-                            {isLoading
-                                ? <><i className="bx bx-loader-alt bx-spin" /> Đang gửi...</>
-                                : <><i className="bx bx-send" /> Gửi yêu cầu</>}
+                        <button className="btn_submit_support" onClick={handleSubmit} disabled={isLoading}>
+                            {isLoading ? <><i className="bx bx-loader-alt bx-spin" /> Đang gửi...</> : <><i className="bx bx-send" /> Gửi yêu cầu</>}
                         </button>
                     </div>
-
                 </div>
             </div>
+
+            {alertState.isOpen && (
+                <AlertModal type={alertState.type} message={alertState.message} onClose={closeAlert}/>
+            )}
         </div>
     );
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { formatTime, formatDateShort } from "@/utils/date_utils";
 import { formatDuration } from "@/utils/duration_utils";
+import { SEAT_CLASS_OPTIONS } from "@/constants/booking";
 import "./flight_card.css";
 
 function FlightCard({ flight, onSelect, isSelected }) {
@@ -98,8 +99,8 @@ function FlightCard({ flight, onSelect, isSelected }) {
 }
 
 function FlightDetailTimeline({ flight, seatClass }) {
-    const segments = flight.segments && flight.segments.length > 0 
-        ? flight.segments 
+    const segments = flight.segments && flight.segments.length > 0
+        ? flight.segments
         : [{
             stopOrder: 1,
             originCity: flight.originCity,
@@ -114,11 +115,25 @@ function FlightDetailTimeline({ flight, seatClass }) {
     return (
         <div className="flight_detail_wrapper">
             <div className="detail_class_header">
-                <span className="detail_class_badge"><i className="bx bx-diamond" /> {seatClass?.className ?? "—"}</span>
-                {seatClass && (
-                    <span className={`detail_seats_remain${seatClass.availableSeats <= 5 ? " seats_low" : ""}`}>
-                        <i className="bx bx-chair" /> Còn {seatClass.availableSeats} ghế trống
-                    </span>
+                <div className="flight_class_badge">
+                    <span className="detail_class_badge"><i className="bx bx-diamond" /> {seatClass?.className ? (SEAT_CLASS_OPTIONS[seatClass.className] ?? seatClass.className) : "—"}</span>
+                    {seatClass && (
+                        <span className={`detail_seats_remain${seatClass.availableSeats <= 5 ? " seats_low" : ""}`}>
+                            <i className="bx bx-chair" /> Còn {seatClass.availableSeats} ghế trống
+                        </span>
+                    )}
+                </div>
+                {flight.services && flight.services.length > 0 && (
+                    <div className="flight_services_row">
+                        <span className="services_row_label"><i className="bx bx-gift" /> Dịch vụ đi kèm</span>
+                        <div className="services_tags">
+                            {flight.services.map((sv) => (
+                                <span key={sv.serviceId} className="service_tag">
+                                    <i className="bx bx-check-circle" /> {sv.serviceName}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
                 )}
             </div>
             <div className="flow_vertical_timeline">

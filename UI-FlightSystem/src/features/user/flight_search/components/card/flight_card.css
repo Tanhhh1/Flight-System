@@ -214,12 +214,47 @@
     gap: 1rem;
 }
 
-.detail_class_header {
+.detail_class_header{
+    display: flex;
+    flex-direction: column;
+        border-bottom: 1px solid #f1f5f9;
+
+}
+
+.flight_class_badge {
     display: flex;
     align-items: center;
     gap: .75rem;
     padding-bottom: .75rem;
-    border-bottom: 1px solid #f1f5f9;
+}
+
+.flight_services_row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0px;
+    flex-wrap: wrap;
+}
+
+.services_row_label {
+    font-size: 13px;
+    color: var(--text-secondary, #666);
+    white-space: nowrap;
+}
+
+.services_tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.service_tag {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: #f0f7ff;
+    color: #1a73e8;
+    border: 1px solid #cce0ff;
 }
 
 .detail_class_badge {
