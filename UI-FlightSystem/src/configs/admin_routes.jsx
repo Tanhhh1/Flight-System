@@ -18,6 +18,7 @@ export const adminPaths = {
         flightNew: "flights/add",
         flightEdit: "flights/edit/:id",
         profile: "profile",
+        support: "support-requests",
     }
 };
 
@@ -34,6 +35,7 @@ const BookingDetail = lazy(() => import("@/features/admin/booking_management/com
 const FlightList = lazy(() => import("@/features/admin/flight_management/components/list/flight_list"));
 const FlightForm = lazy(() => import("@/features/admin/flight_management/components/form/flight_form"));
 const Profile = lazy(() => import("@/features/admin/profile_management/profile"));
+const SupportList = lazy(() => import("@/features/admin/support_management/components/support_list"));
 
 export const adminPrivateRoutes = [
     { path: adminPaths.admin.dashboard, element: <Dashboard /> },
@@ -50,4 +52,5 @@ export const adminPrivateRoutes = [
     { path: adminPaths.admin.flightNew, element: <FlightForm /> },
     { path: adminPaths.admin.flightEdit, element: <FlightForm /> },
     { path: adminPaths.admin.profile, element: <Profile /> },
+    { path: adminPaths.admin.support, element: <SupportList /> },
 ];

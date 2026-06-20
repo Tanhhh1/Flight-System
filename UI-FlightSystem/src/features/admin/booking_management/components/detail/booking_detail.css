@@ -2,18 +2,18 @@
     padding: 0 30px 0 50px;
 }
 
-.detail_header, .detail_title, .state_message, .section_title, .flight_card_header, .flight_route_summary, .segment_detail, .segment_duration {
+.detail_header {
     display: flex;
     align-items: center;
-}
-
-.detail_header {
     justify-content: space-between;
     gap: 16px;
     margin-bottom: 24px;
+    flex-wrap: wrap;
 }
 
 .detail_title {
+    display: flex;
+    align-items: center;
     flex: 1;
     gap: 16px;
     flex-wrap: wrap;
@@ -30,7 +30,10 @@
 }
 
 .state_message {
+    display: flex;
+    align-items: center;
     justify-content: center;
+    gap: 8px;
     padding: 40px;
     font-size: 16px;
     color: #64748b;
@@ -39,14 +42,20 @@
     border: 1px solid #e2e8f0;
 }
 
-.overview_card, .flight_card {
-    background: #fff;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    margin-bottom: 24px;
+.section_title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 32px 0 16px 0;
 }
 
 .overview_card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
     padding: 24px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
@@ -87,70 +96,66 @@
     width: fit-content;
 }
 
-/* Gom nhóm màu sắc các trạng thái đơn */
 .status_badge.confirmed { background: #dcfce7; color: #15803d; }
 .status_badge.pending   { background: #fef9c3; color: #a16207; }
 .status_badge.cancelled { background: #fee2e2; color: #b91c1c; }
 .status_badge.expired   { background: #f1f5f9; color: #64748b; }
 .status_badge.failed    { background: #ffedd5; color: #c2410c; }
 
-.section_title {
-    font-size: 18px;
-    color: #1e293b;
-    margin: 32px 0 16px 0;
-    font-weight: 600;
-    gap: 10px;
-}
-
 .flight_card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
     overflow: hidden;
+    margin-bottom: 24px;
 }
 
-.flight_card_header {
-    background: #f8fafc;
-    padding: 16px 24px;
+.flight_leg {
+    padding: 20px 24px;
+}
+
+.flight_leg + .flight_leg {
+    border-top: 1px dashed #e2e8f0;
+}
+
+.flight_leg_header {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #e2e8f0;
-    gap: 16px;
+    gap: 12px;
+    margin-bottom: 18px;
 }
 
-.airline_info h3 {
-    margin: 0 0 4px 0;
-    font-size: 16px;
-    color: #0f172a;
-    font-weight: 600;
-}
-
-.airline_info span {
+.flight_leg_header .airline_info span {
     font-size: 13px;
     color: #64748b;
 }
 
 .flight_route_summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 16px;
     font-weight: 700;
     color: #0066cc;
-    gap: 8px;
     background: #f0f4ff;
     padding: 6px 14px;
     border-radius: 8px;
 }
 
-.flight_card_body {
-    padding: 24px;
-}
-
 .segment_timeline {
     position: relative;
     padding-left: 28px;
-    margin: 15px 0;
+    margin: 8px 0 4px;
 }
 
 .segment_timeline::before {
     content: '';
     position: absolute;
-    left: 10px; top: 8px; bottom: 8px;
+    left: 10px;
+    top: 8px;
+    bottom: 8px;
     width: 2px;
     background: #cbd5e1;
 }
@@ -167,8 +172,10 @@
 .segment_node::before {
     content: '';
     position: absolute;
-    left: -25px; top: 5px;
-    width: 12px; height: 12px;
+    left: -25px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     background: #fff;
     border: 3px solid #0066cc;
@@ -177,6 +184,8 @@
 }
 
 .segment_detail {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
     gap: 20px;
     font-size: 14px;
@@ -198,9 +207,13 @@
 }
 
 .segment_airport {
+    display: flex;
+    align-items: center;
     flex: 1;
+    gap: 4px;
     color: #334155;
     line-height: 1.5;
+    flex-wrap: wrap;
 }
 
 .segment_airport strong {
@@ -208,14 +221,15 @@
     background: #f1f5f9;
     padding: 2px 6px;
     border-radius: 4px;
-    margin-right: 4px;
 }
 
 .segment_duration {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     color: #64748b;
     font-size: 13px;
     font-weight: 500;
-    gap: 4px;
     background: #f1f5f9;
     padding: 4px 10px;
     border-radius: 6px;
@@ -223,36 +237,43 @@
 }
 
 .passenger_table_wrapper {
-    margin-top: 20px;
     border: 1px solid #e2e8f0;
     border-radius: 10px;
     overflow: hidden;
+    margin-bottom: 24px;
 }
+
 @media (max-width: 768px) {
     .info_grid { grid-template-columns: repeat(2, 1fr); }
-    .flight_card_body { padding: 16px; }
-    .segment_detail { flex-direction: column; gap: 8px; }
-    .segment_time { min-width: auto; }
-    .segment_duration { align-self: flex-start; }
-    .passenger_table_wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-    .flight_card_header {
+    .flight_leg { padding: 16px; }
+
+    .flight_leg_header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 12px;
-        padding: 16px;
+        gap: 8px;
     }
 
     .flight_route_summary {
-        align-self: flex-start;
         width: 100%;
         justify-content: center;
     }
+
+    .segment_detail {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .segment_time { min-width: auto; }
+    .segment_duration { align-self: flex-start; }
+    .passenger_table_wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
 
 @media (max-width: 480px) {
+    .detail_container { padding: 0 16px; }
     .detail_header { flex-direction: column-reverse; align-items: stretch; gap: 12px; }
-    .btn_back { justify-content: center; width: 100%; }
+    .btn_cancel { justify-content: center; width: 100%; }
     .detail_title { gap: 8px; }
     .booking_code { font-size: 18px; }
     .info_grid { grid-template-columns: 1fr; gap: 14px; }

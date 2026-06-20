@@ -11,12 +11,16 @@ import flightReducer from "@/features/admin/flight_management/flight_slice";
 import bookingReducer from "@/features/admin/booking_management/booking_slice";
 import bookingDetailReducer from "@/features/admin/booking_management/booking_detail_slice";
 import dashboardReducer from "@/features/admin/dashboard/dashboard_slice";
+import supportRequestReducer from "@/features/admin/support_management/support_slice";
+
 
 import myReviewReducer from "@/features/user/profile/review_slice";
 import myBookingsReducer from "@/features/user/booking/booking_slice";
 import homepageReducer from "@/features/user/homepage/homepage_slice"
 import searchResultsReducer from "@/features/user/flight_search/search_results_slice";
 import seatSelectionReducer from "@/features/user/seat_selection/seat_selection_slice";
+import mySupportRequestsReducer from "@/features/user/support/support_slice";
+import createSupportRequestReducer from "@/features/user/support/use_support_form";
 
 export const store = configureStore({
   reducer: {
@@ -32,12 +36,15 @@ export const store = configureStore({
     booking: bookingReducer,
     bookingDetail: bookingDetailReducer,
     dashboard: dashboardReducer,
+    supportRequest: supportRequestReducer,
 
     myReviews: myReviewReducer,
     myBookings: myBookingsReducer,
     homepage: homepageReducer,
     searchResults: searchResultsReducer,
-    seatReverse: seatSelectionReducer
+    seatReverse: seatSelectionReducer,
+    mySupportRequests: mySupportRequestsReducer,
+    createSupportRequest: createSupportRequestReducer,
   },
 });
 

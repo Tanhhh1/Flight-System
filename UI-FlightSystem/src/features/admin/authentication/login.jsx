@@ -12,7 +12,7 @@ function AdminLogin() {
         <div className="login_box">
           <div className="login_header">
             <h1>SkyJourney Admin</h1>
-            <p>Manage your flight world with elegance and precision.</p>
+            <p>Hãy sử dụng tài khoản quản trị viên để đăng nhập</p>
           </div>
           <form onSubmit={onSubmit} className="login_form">
             {errors.root && (

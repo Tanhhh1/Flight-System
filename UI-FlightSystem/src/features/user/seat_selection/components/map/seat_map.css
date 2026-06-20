@@ -1,0 +1,62 @@
+.seat_map {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.seat_map_legend {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    padding: 0.6rem 0.9rem;
+    background: #f8fafd;
+    border-radius: 8px;
+    border: 1px solid #e4ecf7;
+}
+.legend_item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: #4a5e78;
+}
+.legend_dot {
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+.legend_dot_available { background: #edf2f8; border: 1.5px solid #c5d3e8; }
+.legend_dot_mine      { background: #5277b4; border: 1.5px solid #3d5d93; }
+.legend_dot_locked    { background: #fef3c7; border: 1.5px solid #f59e0b; }
+.legend_dot_booked    { background: #fee2e2; border: 1.5px solid #fca5a5; }
+
+.seat_map_classes {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.seat_map_class_wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.seat_map_class_divider {
+    height: 1px;
+    background: #dde5f0;
+    margin: 0.85rem 0;
+}
+
+.seat_map_state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 3rem 1rem;
+    color: #6b7d96;
+    font-size: 0.95rem;
+}
+.seat_map_state_error { color: #dc2626; }
+.seat_map_state_icon { font-size: 2.5rem; }

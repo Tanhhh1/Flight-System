@@ -1,0 +1,384 @@
+.support_form_wrapper {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.support_no_booking {
+    text-align: center;
+    padding: 3rem;
+    color: #6b7d96;
+}
+
+.support_no_booking i {
+    font-size: 3rem;
+    color: #c5221f;
+    margin-bottom: 1rem;
+}
+
+/* Header */
+.panel_header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn_back_inline {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #3a4a60;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+
+.btn_back_inline:hover { background: #edf2f8; }
+
+/* Booking info box */
+.support_booking_info {
+    background: #f4f7fb;
+    border: 1px solid #dce5f0;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.support_booking_info_title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #3a4a60;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.support_booking_info_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.support_info_item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.support_info_label {
+    font-size: 0.72rem;
+    color: #6b7d96;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.support_price { color: #137333; }
+
+/* Form sections */
+.support_form_body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.support_form_section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.support_form_label {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #3a4a60;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.support_required {
+    color: #c5221f;
+    margin-left: 2px;
+}
+
+.support_optional {
+    font-size: 0.78rem;
+    color: #9aa5b4;
+    font-weight: 400;
+    margin-left: 4px;
+}
+
+/* Type tabs */
+.support_type_tabs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.support_type_tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 20px;
+    border-radius: 8px;
+    border: 1.5px solid #dce5f0;
+    background: #fff;
+    color: #3a4a60;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+}
+
+.support_type_tab:hover { border-color: #2563eb; color: #2563eb; }
+
+.support_type_tab.active {
+    border-color: #2563eb;
+    background: #2563eb;
+    color: #fff;
+}
+
+/* Textarea */
+.support_textarea {
+    width: 100%;
+    border: 1.5px solid #dce5f0;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+    color: #3a4a60;
+    resize: vertical;
+    transition: border-color 0.18s;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.support_textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.support_char_count {
+    font-size: 0.75rem;
+    color: #9aa5b4;
+    text-align: right;
+}
+
+/* Reschedule search */
+.support_hint {
+    font-size: 0.85rem;
+    color: #6b7d96;
+    margin: 0;
+}
+
+.support_search_row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.support_date_input {
+    border: 1.5px solid #dce5f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    color: #3a4a60;
+    transition: border-color 0.18s;
+}
+
+.support_date_input:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.btn_search_flight {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: 8px;
+    border: none;
+    background: #2563eb;
+    color: #fff;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s;
+}
+
+.btn_search_flight:hover:not(:disabled) { background: #1d4ed8; }
+.btn_search_flight:disabled { background: #93b4f3; cursor: not-allowed; }
+
+.support_search_error {
+    font-size: 0.84rem;
+    color: #c5221f;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+}
+
+/* Flight cards */
+.support_flight_list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.support_flight_card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1.5px solid #dce5f0;
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    cursor: pointer;
+    background: #fff;
+    transition: border-color 0.18s, background 0.18s;
+}
+
+.support_flight_card:hover { border-color: #2563eb; background: #f0f6ff; }
+
+.support_flight_card.selected {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+
+.radio_dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #c5cdd8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.18s;
+}
+
+.radio_dot::after {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: transparent;
+    transition: background 0.18s;
+}
+
+.radio_dot.active {
+    border-color: #2563eb;
+}
+
+.radio_dot.active::after { background: #2563eb; }
+
+.flight_card_info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.flight_card_route {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #3a4a60;
+}
+
+.flight_arrow { color: #9aa5b4; }
+.flight_duration { font-size: 0.78rem; color: #9aa5b4; font-weight: 400; }
+
+.flight_card_meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.8rem;
+    color: #6b7d96;
+}
+
+.flight_card_meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.flight_card_price {
+    font-size: 1rem;
+    color: #137333;
+    white-space: nowrap;
+}
+
+/* Error */
+.support_form_error {
+    background: #fce8e6;
+    color: #c5221f;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Actions */
+.support_form_actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 0.5rem;
+}
+
+.btn_cancel {
+    padding: 9px 22px;
+    border-radius: 8px;
+    border: 1.5px solid #dce5f0;
+    background: #fff;
+    color: #3a4a60;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn_cancel:hover { background: #f4f6f9; }
+
+.btn_submit_support {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 22px;
+    border-radius: 8px;
+    border: none;
+    background: #2563eb;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s;
+}
+
+.btn_submit_support:hover:not(:disabled) { background: #1d4ed8; }
+.btn_submit_support:disabled { background: #93b4f3; cursor: not-allowed; }
+
+.btn_back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 1rem;
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 1.5px solid #dce5f0;
+    background: #fff;
+    color: #3a4a60;
+    font-weight: 600;
+    cursor: pointer;
+}

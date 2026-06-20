@@ -1,0 +1,79 @@
+.seat_class_group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 0.5rem 0;
+}
+
+.seat_class_group_header {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.seat_class_group_badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #5277b4;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: #edf2f8;
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.seat_class_group_col_labels {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding-left: 28px;
+    margin-bottom: 0.1rem;
+}
+
+.seat_class_group_col_label {
+    width: 40px;
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #8a9ab5;
+    flex-shrink: 0;
+}
+
+.seat_class_group_aisle_gap {
+    width: 22px;
+    flex-shrink: 0;
+}
+
+.seat_class_group_rows {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.seat_row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+}
+
+.seat_row_index {
+    width: 22px;
+    font-size: 0.68rem;
+    color: #8a9ab5;
+    font-weight: 600;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.seat_row_seats {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}

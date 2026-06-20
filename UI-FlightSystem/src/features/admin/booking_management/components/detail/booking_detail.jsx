@@ -16,9 +16,11 @@ function BookingDetail() {
 
     useEffect(() => { dispatch(fetchBookingById(id)); return () => dispatch(clearDetail()) }, [dispatch, id]);
 
-    if (isLoadingDetail) { return null }
-    if (error) { return <div className="state_message error_alert"><i className="bx bx-error-circle" />{error}</div> }
-    if (!detail) { return <div className="state_message">Không tìm thấy dữ liệu đơn đặt vé.</div> }
+    if (isLoadingDetail) return null;
+    if (error) return <div className="state_message error_alert"><i className="bx bx-error-circle" />{error}</div>;
+    if (!detail) return <div className="state_message">Không tìm thấy dữ liệu đơn đặt vé.</div>;
+
+    const passengers = detail.flights?.[0]?.passengers ?? [];
 
     return (
         <div className="detail_container">
@@ -52,9 +54,7 @@ function BookingDetail() {
                     </div>
                     <div className="info_item">
                         <label>Tổng thanh toán</label>
-                        <span className="price_cell">
-                            {detail.totalPrice?.toLocaleString("vi-VN")}₫
-                        </span>
+                        <span className="price_cell">{detail.totalPrice?.toLocaleString("vi-VN")}₫</span>
                     </div>
                     <div className="info_item">
                         <label>Trạng thái đơn</label>
@@ -64,86 +64,69 @@ function BookingDetail() {
                     </div>
                 </div>
             </div>
-            <h3 className="section_title"><i className="bx bx-plane-take-off" />Thông tin chuyến bay & Hành khách</h3>
-            {detail.flights?.map((flight, fIndex) => (
-                <div className="flight_card" key={flight.flightId || fIndex}>
-                    <div className="flight_card_header">
-                        <div className="airline_info">
-                            <h3>{flight.airlineName} — {flight.planeModel}</h3>
+
+            <h3 className="section_title">
+                <i className="bx bx-trip" /> Lịch trình chuyến bay
+            </h3>
+
+            <div className="flight_card">
+                {detail.flights?.map((flight, fIndex) => (
+                    <div className="flight_leg" key={flight.flightId || fIndex}>
+                        <div className="flight_leg_header">
+                            <div className="flight_route_summary">
+                                {flight.originAirport} <i className="bx bx-right-arrow-alt" /> {flight.destinationAirport}
+                            </div>
+                            <div className="airline_info">
+                                <span>{flight.airlineName} — {flight.planeModel}</span>
+                            </div>
                         </div>
-                        <div className="flight_route_summary">
-                            {flight.originAirport} <i className="bx bx-right-arrow-alt" /> {flight.destinationAirport}
-                        </div>
-                    </div>
-                    <div className="flight_card_body">
-                        <h4>HÀNH TRÌNH CHI TIẾT</h4>
+
                         <div className="segment_timeline">
-                            {flight.segments?.length > 0 ? (
-                                flight.segments.map((seg, sIndex) => (
-                                    <div className="segment_node" key={seg.segmentOrder || sIndex}>
-                                        <div className="segment_detail">
-                                            <div className="segment_time">
-                                                { formatTime(seg.departureTime) }
-                                                {" - "}
-                                                { formatTime(seg.arrivalTime) }
-                                                <span>{ formatDateShort(seg.departureTime) }</span>
-                                            </div>
-                                            <div className="segment_airport">
-                                                <strong>{seg.originAirport}</strong> ({seg.originAirportName})
-                                                <i className="bx bx-right-arrow-alt" />
-                                                <strong>{seg.destinationAirport}</strong> ({seg.destinationAirportName})
-                                            </div>
-                                            <div className="segment_duration">
-                                                <i className="bx bx-time-five" /> {formatDuration(seg.flightDuration)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="segment_node">
+                            {(flight.segments?.length > 0 ? flight.segments : [flight]).map((seg, sIndex) => (
+                                <div className="segment_node" key={seg.segmentOrder || sIndex}>
                                     <div className="segment_detail">
                                         <div className="segment_time">
-                                            { formatTime(flight.departureTime) }
-                                            {" - "}
-                                            { formatTime(flight.arrivalTime) }
-                                            <span>{ formatDateShort(flight.departureTime) }</span>
+                                            {formatTime(seg.departureTime)} — {formatTime(seg.arrivalTime)}
+                                            <span>{formatDateShort(seg.departureTime)}</span>
                                         </div>
                                         <div className="segment_airport">
-                                            <strong>{flight.originAirport}</strong> ({flight.originAirportName})
+                                            <strong>{seg.originAirport}</strong> ({seg.originAirportName})
                                             <i className="bx bx-right-arrow-alt" />
-                                            <strong>{flight.destinationAirport}</strong> ({flight.destinationAirportName})
+                                            <strong>{seg.destinationAirport}</strong> ({seg.destinationAirportName})
                                         </div>
                                         <div className="segment_duration">
-                                            <i className="bx bx-time-five" /> {formatDuration(flight.flightDuration)}
+                                            <i className="bx bx-time-five" /> {formatDuration(seg.flightDuration)}
                                         </div>
                                     </div>
                                 </div>
-                            )}
-                        </div>
-
-                        <div className="passenger_table_wrapper">
-                            <Table
-                                title={`Danh sách hành khách (${flight.passengers?.length || 0})`}
-                                heads={PASSENGER_TABLE_HEADS}
-                                data={flight.passengers || []}
-                                render={(passenger, pIndex) => (
-                                    <tr key={pIndex}>
-                                        <td>{pIndex + 1}</td>
-                                        <td>{passenger.fullName}</td>
-                                        <td>{PASSENGER_TYPE_LABEL[passenger.typeId] || "Chưa xác định"}</td>
-                                        <td>{passenger.gender}</td>
-                                        <td>{formatDateShort(passenger.birthday)}</td>
-                                        <td>{passenger.country}</td>
-                                        <td className="price_cell">
-                                            {passenger.unitPrice?.toLocaleString("vi-VN")}₫
-                                        </td>
-                                    </tr>
-                                )}
-                            />
+                            ))}
                         </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
+
+            <h3 className="section_title">
+                <i className="bx bx-group" /> Danh sách hành khách
+            </h3>
+
+            <div className="passenger_table_wrapper">
+                <Table
+                    title={`${passengers.length} hành khách`}
+                    heads={PASSENGER_TABLE_HEADS}
+                    data={passengers}
+                    render={(passenger, pIndex) => (
+                        <tr key={pIndex}>
+                            <td>{pIndex + 1}</td>
+                            <td>{passenger.fullName}</td>
+                            <td>{PASSENGER_TYPE_LABEL[passenger.typeId] || "Chưa xác định"}</td>
+                            <td>{passenger.gender}</td>
+                            <td>{formatDateShort(passenger.birthday)}</td>
+                            <td>{passenger.country}</td>
+                            <td className="price_cell">{passenger.unitPrice?.toLocaleString("vi-VN")}₫</td>
+                        </tr>
+                    )}
+                />
+            </div>
         </div>
     );
 }

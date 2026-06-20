@@ -42,10 +42,10 @@ function ProfileLayout() {
                                 <i className="bx bx-receipt"></i>
                                 <span className="menu_label">Danh sách giao dịch</span>
                             </Link>
-                            <div className="menu_item">
-                                <i className="bx bx-undo"></i>
+                            <Link to={`${clientPaths.profile.root}/${clientPaths.profile.support}`} className={`menu_item ${isActive(clientPaths.profile.support) ? "active" : ""}`}>
+                                <i className="bx bx-undo" />
                                 <span className="menu_label">Hoàn vé / Đổi lịch</span>
-                            </div>
+                            </Link>
                         </div>
                         <div className="menu_section">
                             <Link to={`${clientPaths.profile.root}/${clientPaths.profile.edit}`} className={`menu_item ${isActive(clientPaths.profile.edit) ? "active" : ""}`}>

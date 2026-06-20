@@ -1,0 +1,222 @@
+.result_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 100px);
+    padding: 20px;
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.result_card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result_icon {
+    font-size: 80px;
+    display: inline-block;
+}
+
+.result_card.success .result_icon {
+    color: #2ec4b6;
+}
+
+.result_card.failed .result_icon {
+    color: #e74c3c;
+}
+
+.result_card h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #2b2d42;
+}
+
+.result_card p {
+    font-size: 15px;
+    color: #6c757d;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.result_booking_summary {
+    background-color: #f8f9fa;
+    border: 1px dashed #dee2e6;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.result_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.result_row:last-child {
+    border-bottom: none;
+}
+
+.result_row span {
+    color: #718096;
+    font-size: 14px;
+}
+
+.result_row strong {
+    color: #1a202c;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.result_method_select {
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.result_method_label {
+    font-weight: 600;
+    color: #4a5568 !important;
+    margin-bottom: 12px !important;
+    font-size: 14px;
+}
+
+.payment_method_item {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    border: 2px solid #edf2f7;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.payment_method_item:hover {
+    border-color: #cbd5e0;
+    background-color: #f7fafc;
+}
+
+.payment_method_item.active_method {
+    border-color: #3182ce;
+    background-color: #ebf8ff;
+}
+
+.method_radio_input {
+    margin-right: 12px;
+    accent-color: #3182ce;
+    width: 18px;
+    height: 18px;
+}
+
+.method_icon_box {
+    font-size: 20px;
+    margin-right: 12px;
+    color: #4a5568;
+    display: flex;
+    align-items: center;
+}
+
+.payment_method_item.active_method .method_icon_box {
+    color: #3182ce;
+}
+
+.method_title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2d3748;
+}
+
+.result_actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.result_actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.result_actions button i {
+    font-size: 18px;
+}
+
+.btn_primary {
+    background-color: #2ec4b6;
+    color: #ffffff;
+}
+
+.btn_primary:hover {
+    background-color: #24a195;
+}
+
+.btn_retry {
+    background-color: #e74c3c;
+    color: #ffffff;
+}
+
+.btn_retry:hover:not(:disabled) {
+    background-color: #c0392b;
+}
+
+.btn_retry:disabled {
+    background-color: #f39c12;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.btn_secondary {
+    background-color: #ffffff;
+    color: #4a5568;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.btn_secondary:hover {
+    background-color: #edf2f7;
+    color: #2d3748;
+}
+
+@media (max-width: 480px) {
+    .result_card {
+        padding: 24px 16px;
+    }
+    
+    .result_icon {
+        font-size: 64px;
+    }
+
+    .result_card h2 {
+        font-size: 20px;
+    }
+}

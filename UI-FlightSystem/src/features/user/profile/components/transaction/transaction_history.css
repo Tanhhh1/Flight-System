@@ -17,6 +17,10 @@
 
 .transaction_list { gap: 1rem; }
 
+.transaction_empty_box{
+    text-align: center;
+}
+
 .transaction_card {
     border: 1px solid #edf2f8;
     border-radius: 8px;
@@ -95,3 +99,41 @@
 .status-cancelled { background: #fce8e6; color: #c5221f; }
 .status-failed    { background: #fce8e6; color: #c5221f; }
 .status-expired   { background: #f1f3f4; color: #5f6368; }
+
+
+.transaction_item_footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid #edf2f8;
+    background: #fafbfd;
+}
+
+.btn_support_request {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-size: 0.845rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: #5277b4;
+    color: #f4f6f9;
+    border: 1px solid transparent;
+    transition: 0.2s;
+}
+
+.btn_support_request:hover:not(:disabled):not(.btn_support_disabled) {
+    background: #416299;
+    color: #ffffff;
+}
+
+.btn_support_request:disabled,
+.btn_support_request.btn_support_disabled {
+    background: #f4f6f9;
+    color: #9aa5b4;
+    border-color: #c5cdd8;
+    cursor: not-allowed;
+    box-shadow: none;
+}

@@ -1,0 +1,389 @@
+.payment_container {
+    width: 100%;
+    background-color: #f1f5f9;
+    min-height: calc(100vh - 70px);
+    padding: 2rem 1rem;
+}
+
+.payment_inner_layout {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 2rem;
+    align-items: start;
+}
+
+.payment_step_title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0f1a2e;
+    margin-bottom: 0.25rem;
+}
+
+.payment_step_subtitle, 
+.method_desc, 
+.payment_agreement_box p {
+    font-size: 0.88rem;
+    color: #6b7d96;
+    line-height: 1.4;
+}
+
+.payment_step_subtitle {
+    margin-bottom: 2rem;
+}
+
+.payment_methods_panel, 
+.summary_panel {
+    border: 1px solid #dde5f0;
+    border-radius: 12px;
+    background-color: #ffffff;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 60, 180, 0.08);
+    margin-bottom: 1.5rem;
+    padding: 25px;
+}
+
+.payment_methods_panel .panel_header {
+    background-color: #edf2f8;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dde5f0;
+}
+
+.payment_methods_panel .panel_header h4, 
+.payment_method_item, 
+.method_radio_wrapper, 
+.method_icon_box, 
+.summary_date_text, 
+.secure_payment_note, 
+.summary_total_row,
+.summary_meta_row,
+.summary_flight_detail {
+    display: flex;
+    align-items: center;
+}
+
+.payment_methods_panel .panel_header h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f1a2e;
+    gap: 0.5rem;
+}
+
+.method_list_body, 
+.method_details, 
+.summary_body, 
+.summary_flight_info,
+.summary_booking_info,
+.summary_flight_item,
+.summary_passengers_list {
+    display: flex;
+    flex-direction: column;
+}
+
+.method_list_body {
+    padding: 1.5rem;
+    gap: 1rem; 
+}
+
+.payment_method_item {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    border: 1px solid #dde5f0;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #ffffff;
+    user-select: none;
+    transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.payment_method_item:hover {
+    border-color: #9cafc6;
+    background-color: #fafcfe;
+}
+
+.payment_method_item.active_method {
+    border-color: #5277b4;
+    background-color: #e8efff;
+}
+
+.method_radio_wrapper {
+    justify-content: center;
+}
+
+.method_radio_input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #5277b4;
+}
+
+.method_icon_box {
+    width: 44px;
+    height: 44px;
+    background-color: #edf2f8;
+    border-radius: 8px;
+    justify-content: center;
+    transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.method_icon_box i {
+    font-size: 1.5rem;
+    color: #3a4a60;
+}
+
+.payment_method_item.active_method .method_icon_box {
+    background-color: #ffffff;
+}
+
+.payment_method_item.active_method .method_icon_box i {
+    color: #5277b4;
+}
+
+.method_details {
+    gap: 0.25rem;
+}
+
+.method_title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f1a2e;
+}
+
+.payment_agreement_box {
+    margin: 1.5rem 0;
+    padding: 0 0.5rem;
+}
+
+.payment_agreement_box p {
+    line-height: 1.5;
+}
+
+.payment_agreement_box a {
+    color: #5277b4;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.payment_agreement_box a:hover {
+    text-decoration: underline;
+}
+
+.form_submit_row {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn_confirm_payment {
+    background-color: #ff6b2b;
+    color: #ffffff;
+    padding: 0.9rem 2.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: 0 4px 14px rgba(255, 107, 43, 0.3);
+    transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn_confirm_payment:hover {
+    background-color: #e05020;
+    transform: translateY(-1px);
+}
+
+.payment_summary_sidebar {
+    position: sticky;
+    top: 90px;
+}
+
+.summary_body, .summary_booking_info {
+    gap: 1rem;
+}
+
+.summary_flight_info {
+    gap: 0.4rem;
+}
+
+.flight_badge_code {
+    align-self: flex-start;
+    background-color: #0f1a2e;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.summary_route_text, .summary_flight_route {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f1a2e;
+}
+
+.summary_flight_route {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.summary_date_text, .summary_flight_detail {
+    font-size: 0.85rem;
+    color: #6b7d96;
+    gap: 0.25rem;
+}
+
+.summary_flight_detail {
+    font-size: 0.83rem;
+    gap: 0.4rem;
+}
+
+.summary_flight_detail i {
+    font-size: 0.95rem;
+    color: #5277b4;
+    flex-shrink: 0;
+}
+
+.payment_summary_divider {
+    height: 1px;
+    background-color: #edf2f8;
+    margin: 0.25rem 0;
+}
+
+.breakdown_title, .summary_flight_label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b7d96;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.summary_flight_label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0;
+}
+
+.summary_row_item, .summary_meta_row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.92rem;
+    color: #0f1a2e;
+    margin-bottom: 0.4rem;
+}
+
+.summary_meta_row {
+    font-size: 0.88rem;
+    margin-bottom: 0;
+}
+
+.summary_row_item:last-child {
+    margin-bottom: 0;
+}
+
+.summary_financial_breakdown .label_text {
+    color: #3a4a60;
+}
+
+.summary_financial_breakdown .value_text, .summary_flight_value {
+    font-weight: 600;
+}
+
+.summary_flight_value {
+    font-size: 0.88rem;
+    color: #0f1a2e;
+}
+
+.summary_total_row {
+    justify-content: space-between;
+    margin-top: 0.25rem;
+}
+
+.total_label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0f1a2e;
+}
+
+.total_value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #ff6b2b;
+}
+
+.secure_payment_note {
+    font-size: 0.78rem;
+    color: #137333;
+    gap: 0.3rem;
+    line-height: 1.4;
+    margin-top: 0.5rem;
+}
+
+.summary_flight_item {
+    gap: 0.35rem;
+    padding: 0.75rem 0;
+}
+
+.summary_flight_item:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.payment_loading_state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 300px;
+    font-size: 1rem;
+    color: #6b7d96;
+}
+
+.payment_loading_state i {
+    font-size: 1.4rem;
+    color: #5277b4;
+}
+
+.error_alert {
+    display: flex;
+    gap: 1rem;
+    background-color: #fef2f2;
+    border: 1px solid #fee2e2;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    color: #991b1b;
+}
+
+.error_alert i {
+    font-size: 1.25rem;
+    margin-top: 0.1rem;
+}
+
+@media (max-width: 960px) {
+    .payment_inner_layout {
+        grid-template-columns: 1fr;
+    }
+    .payment_summary_sidebar {
+        position: static;
+    }
+}
+
+@media (max-width: 500px) {
+    .payment_method_item {
+        grid-template-columns: auto 1fr;
+        gap: 1rem;
+    }
+    .method_radio_wrapper, .method_icon_box {
+        grid-column: 1 / 2;
+    }
+    .method_details {
+        grid-column: 2 / 3;
+    }
+}
