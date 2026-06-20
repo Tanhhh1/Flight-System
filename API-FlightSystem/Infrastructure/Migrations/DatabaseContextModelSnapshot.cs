@@ -285,6 +285,10 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("SeatId");
 
+                    b.HasIndex("FlightId", "SeatId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_FlightSeat_Unique");
+
                     b.HasIndex("FlightId", "Status")
                         .HasDatabaseName("IX_FlightSeat_Availability");
 
@@ -729,7 +733,7 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("NewFlightId")
+                    b.Property<int?>("NewFlightId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Reason")
@@ -1298,8 +1302,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Flight", "NewFlight")
                         .WithMany()
                         .HasForeignKey("NewFlightId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Booking");
 
