@@ -26,6 +26,10 @@ namespace Infrastructure.Persistences.Configuration
                 .HasForeignKey(x => x.SeatId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasIndex(x => new { x.FlightId, x.SeatId })
+                .IsUnique()
+                .HasDatabaseName("IX_FlightSeat_Unique");
+
             builder.HasIndex(x => new { x.FlightId, x.Status })
                 .HasDatabaseName("IX_FlightSeat_Availability");
         }

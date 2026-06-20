@@ -25,11 +25,12 @@ namespace Infrastructure.Uow
         private ISeatTemplateRepository? _seatTemplateRepository;
         private IBookingRepository? _bookingRepository;
         private IFlightSeatPriceRepository? _flightSeatPriceRepository;
-        private IBookingDetailRepository _bookingDetailRepository;
-        private IPassengerRepository _passengerRepository;
-        private IPassengerTypeRepository _passengerTypeRepository;
-        private IPaymentRepository _paymentRepository;
-        private IFlightSeatRepository _flightSeatRepository;
+        private IBookingDetailRepository? _bookingDetailRepository;
+        private IPassengerRepository? _passengerRepository;
+        private IPassengerTypeRepository? _passengerTypeRepository;
+        private IPaymentRepository? _paymentRepository;
+        private IFlightSeatRepository? _flightSeatRepository;
+        private ISupportRequestRepository? _supportRequestRepository;
         public UnitOfWork(DatabaseContext dbContext)
         {
             _dbContext = dbContext;
@@ -54,7 +55,7 @@ namespace Infrastructure.Uow
         public IPassengerTypeRepository PassengerTypeRepository => _passengerTypeRepository ??= new PassengerTypeRepository(_dbContext);
         public IPaymentRepository PaymentRepository => _paymentRepository ??= new PaymentRepository(_dbContext);
         public IFlightSeatRepository FlightSeatRepository => _flightSeatRepository ??= new FlightSeatRepository(_dbContext);
-
+        public ISupportRequestRepository SupportRequestRepository => _supportRequestRepository ??= new SupportRequestRepository(_dbContext);
         public async Task BeginTransactionAsync()
         {
             if (_dbContext.Database.CurrentTransaction == null)

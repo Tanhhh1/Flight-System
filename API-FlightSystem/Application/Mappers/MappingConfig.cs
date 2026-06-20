@@ -4,7 +4,7 @@ using Application.CQRS.Flights.DTOs;
 using Application.CQRS.Planes.DTOs;
 using Application.CQRS.Reviews.DTOs;
 using Application.CQRS.Routes.DTOs;
-using Application.CQRS.SeatReverse.DTOs;
+using Application.CQRS.Support.DTOs;
 using Domain.Entities;
 using Domain.Identity;
 using Mapster;
@@ -138,9 +138,15 @@ namespace Application.Mappers
                     }).ToList());
 
             config.NewConfig<Booking, BookingListDto>()
-                .Map(dest => dest.Fullname, src => src.User.Fullname)
-                .Map(dest => dest.ClassName, src => src.SeatClass.ClassName)
-                .Map(dest => dest.TripType, src => src.TripType.ToString());
+                 .Map(dest => dest.Fullname, src => src.User.Fullname)
+                 .Map(dest => dest.ClassName, src => src.SeatClass.ClassName)
+                 .Map(dest => dest.TripType, src => src.TripType.ToString())
+                 .Map(dest => dest.OriginAirport, src => src.BookingDetails
+                     .Select(bd => bd.Flight.Route.OriginAirport.AirportCode)
+                     .FirstOrDefault() ?? string.Empty)
+                 .Map(dest => dest.DestinationAirport, src => src.BookingDetails
+                     .Select(bd => bd.Flight.Route.DestinationAirport.AirportCode)
+                     .FirstOrDefault() ?? string.Empty);
 
             config.NewConfig<Review, ReviewDto>()
                 .Map(dest => dest.UserName, src => src.User.UserName)
@@ -157,6 +163,25 @@ namespace Application.Mappers
                 .Map(dest => dest.OriginAirportName, src => src.OriginAirport.AirportName)
                 .Map(dest => dest.DestinationAirportCode, src => src.DestinationAirport.AirportCode)
                 .Map(dest => dest.DestinationAirportName, src => src.DestinationAirport.AirportName);
+
+            config.NewConfig<SupportRequest, SupportRequestDto>()
+                .Map(dest => dest.BookingCode, src => src.Booking.BookingCode)
+                .Map(dest => dest.Fullname, src => src.Booking.User.Fullname)
+                .Map(dest => dest.RequestType, src => src.RequestType.ToString())
+                .Map(dest => dest.Status, src => src.Status.ToString());
+
+            config.NewConfig<SupportRequest, SupportRequestDetailDto>()
+                .Map(dest => dest.BookingCode, src => src.Booking.BookingCode)
+                .Map(dest => dest.CustomerName, src => src.Booking.User.Fullname)
+                .Map(dest => dest.RequestType, src => src.RequestType.ToString())
+                .Map(dest => dest.Status, src => src.Status.ToString())
+                .Map(dest => dest.NewFlight, src => src.NewFlight);
+
+            config.NewConfig<Flight, NewFlightInfoDto>()
+                .Map(dest => dest.OriginAirport, src => src.Route.OriginAirport.AirportCode)
+                .Map(dest => dest.OriginAirportName, src => src.Route.OriginAirport.AirportName)
+                .Map(dest => dest.DestinationAirport, src => src.Route.DestinationAirport.AirportCode)
+                .Map(dest => dest.DestinationAirportName, src => src.Route.DestinationAirport.AirportName);
         }
     }
 }

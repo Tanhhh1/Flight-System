@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.Services;
 using Application.Interfaces.UnitOfWork;
+using Application.Interfaces.Hubs;
 using Application.Services;
 using Infrastructure.Caching;
 using Infrastructure.Database;
@@ -32,6 +33,7 @@ namespace Infrastructure
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IPaymentGateway, VNPayGateway>();
             services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
+            services.AddScoped<ISeatNotificationService, SeatNotificationService>();
             services.AddHostedService<FlightStatusUpdateService>();
             services.AddHostedService<SeatLockExpiryService>();
 

@@ -1,12 +1,14 @@
 ﻿using API_FlightSystem.Controllers.Common;
+using Application.Common;
 using Application.CQRS.Payments.Commands.InitiatePayment;
 using Application.CQRS.Payments.Commands.ProcessPaymentCallback;
 using Application.CQRS.Payments.Commands.RetryPayment;
+using Application.CQRS.Payments.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API_FlightSystem.Controllers
+namespace API_FlightSystem.Controllers.V1.Client
 {
     [Authorize]
     public class PaymentController : ApiController
@@ -21,6 +23,8 @@ namespace API_FlightSystem.Controllers
         }
 
         [HttpPost("initiate")]
+        [ProducesResponseType(typeof(ApiResult<InitiateDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResult<InitiateDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Initiate([FromBody] InitiatePaymentCommand command)
         {
             command.ReturnUrl = Url.Action(
@@ -38,6 +42,8 @@ namespace API_FlightSystem.Controllers
         }
 
         [HttpPost("retry")]
+        [ProducesResponseType(typeof(ApiResult<InitiateDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResult<InitiateDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Retry([FromBody] RetryPaymentCommand command)
         {
             command.ReturnUrl = Url.Action(
@@ -56,6 +62,7 @@ namespace API_FlightSystem.Controllers
 
         [AllowAnonymous]
         [HttpGet("callback")]
+        [ProducesResponseType(StatusCodes.Status302Found)]
         public async Task<IActionResult> Callback([FromQuery] Dictionary<string, string> parameters)
         {
             var feBaseUrl = _configuration.GetSection("ServerSetting:WithOrigins").Get<string[]>()?.FirstOrDefault();

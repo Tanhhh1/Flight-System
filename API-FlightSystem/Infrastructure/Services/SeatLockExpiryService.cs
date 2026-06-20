@@ -1,8 +1,6 @@
-﻿using Application.Hubs;
-using Application.Interfaces.Hubs;
+﻿using Application.Interfaces.Hubs;
 using Application.Interfaces.UnitOfWork;
 using Domain.Enums;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,14 +11,14 @@ namespace Infrastructure.Services
     public class SeatLockExpiryService : BackgroundService
     {
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly IHubContext<SeatHub, ISeatHubClient> _hubContext;
         private readonly ILogger<SeatLockExpiryService> _logger;
         private readonly TimeSpan _interval = TimeSpan.FromMinutes(1);
 
-        public SeatLockExpiryService(IServiceScopeFactory scopeFactory, IHubContext<SeatHub, ISeatHubClient> hubContext, ILogger<SeatLockExpiryService> logger)
+        public SeatLockExpiryService(
+            IServiceScopeFactory scopeFactory,
+            ILogger<SeatLockExpiryService> logger)
         {
             _scopeFactory = scopeFactory;
-            _hubContext = hubContext;
             _logger = logger;
         }
 
@@ -39,23 +37,22 @@ namespace Infrastructure.Services
             {
                 using var scope = _scopeFactory.CreateScope();
                 var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+                var seatNotification = scope.ServiceProvider.GetRequiredService<ISeatNotificationService>();
+
                 var expiredSeats = await unitOfWork.FlightSeatRepository
-                    .GetByCondition(fs => fs.Status == SeatStatus.Locked && fs.LockedUntil < DateTime.UtcNow)
+                    .GetByCondition(fs =>
+                        fs.Status == SeatStatus.Locked &&
+                        fs.LockedUntil < DateTime.UtcNow)
                     .ToListAsync(cancellationToken);
 
                 if (!expiredSeats.Any()) return;
 
                 await unitOfWork.BeginTransactionAsync();
-
                 try
                 {
                     foreach (var seat in expiredSeats)
-                    {
-                        seat.Status = SeatStatus.Available;
-                        seat.LockedBy = 0;
-                        seat.LockedUntil = DateTime.MinValue;
-                        unitOfWork.FlightSeatRepository.Update(seat);
-                    }
+                        unitOfWork.FlightSeatRepository.Delete(seat);
+
                     await unitOfWork.CommitTransactionAsync();
                 }
                 catch
@@ -64,28 +61,19 @@ namespace Infrastructure.Services
                     throw;
                 }
 
-                _logger.LogInformation("Đã tự động unlock {Count} ghế hết hạn lúc {Time}", expiredSeats.Count, DateTime.UtcNow);
-                var seatsByFlight = expiredSeats.GroupBy(s => s.FlightId);
-
-                foreach (var flightGroup in seatsByFlight)
+                _logger.LogInformation("Da tu dong xaa {Count} ghe het han giu luc {Time}", expiredSeats.Count, DateTime.UtcNow);
+                var groupedByFlight = expiredSeats.GroupBy(s => s.FlightId);
+                foreach (var flightGroup in groupedByFlight)
                 {
-                    var broadcastTasks = flightGroup.Select(seat =>
-                        _hubContext.Clients
-                            .Group($"flight-{flightGroup.Key}")
-                            .SeatStatusChanged(new
-                            {
-                                flightSeatId = seat.FlightSeatId,
-                                seatId = seat.SeatId,
-                                status = SeatStatus.Available,
-                                lockedByPassengerId = (int?)null,
-                            }));
-
-                    await Task.WhenAll(broadcastTasks);
+                    int flightId = flightGroup.Key;
+                    var flightSeatIds = flightGroup.Select(s => s.FlightSeatId).ToList();
+                    var seatIds = flightGroup.Select(s => s.SeatId).ToList();
+                    _ = seatNotification.NotifySeatsReleasedAsync(flightId, flightSeatIds, seatIds);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Lỗi khi xử lý expired seat locks.");
+                _logger.LogError(ex, "Loi khi xu ly expired seat locks.");
             }
         }
     }
