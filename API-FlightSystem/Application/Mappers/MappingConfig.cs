@@ -164,6 +164,9 @@ namespace Application.Mappers
                 .Map(dest => dest.DestinationAirportCode, src => src.DestinationAirport.AirportCode)
                 .Map(dest => dest.DestinationAirportName, src => src.DestinationAirport.AirportName);
 
+            config.NewConfig<Plane, DataPlaneDto>()
+                .Map(dest => dest.AirlineName, src => src.Airline.AirlineName);
+
             config.NewConfig<SupportRequest, SupportRequestDto>()
                 .Map(dest => dest.BookingCode, src => src.Booking.BookingCode)
                 .Map(dest => dest.Fullname, src => src.Booking.User.Fullname)

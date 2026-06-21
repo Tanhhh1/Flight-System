@@ -266,12 +266,6 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("LockedUntil")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea");
-
                     b.Property<int>("SeatId")
                         .HasColumnType("integer");
 

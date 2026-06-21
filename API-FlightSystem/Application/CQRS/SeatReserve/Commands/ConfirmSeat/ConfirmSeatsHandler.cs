@@ -25,14 +25,14 @@ namespace Application.CQRS.SeatReserve.Commands.ConfirmSeat
         {
             var userId = _currentUser.Id;
             if (userId == null)
-                return ApiResult<bool>.Failure("Bạn chưa đăng nhập.");
+                return ApiResult<bool>.Failure("Bạn chưa đăng nhập");
 
             var booking = await _unitOfWork.BookingRepository
                 .GetByCondition(b => b.BookingId == request.BookingId && b.UserId == userId)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (booking == null)
-                return ApiResult<bool>.Failure("Booking không tồn tại.");
+                return ApiResult<bool>.Failure("Mã đơn đặt vé không tồn tại");
 
             var now = DateTime.UtcNow;
             var notifyTasks = new List<(int FlightId, int FlightSeatId, int SeatId)>();
@@ -52,16 +52,16 @@ namespace Application.CQRS.SeatReserve.Commands.ConfirmSeat
                         .FirstOrDefault(fs => fs.FlightSeatId == assignment.FlightSeatId);
 
                     if (flightSeat == null)
-                        return ApiResult<bool>.Failure("Ghế không còn được giữ, vui lòng chọn lại.");
+                        return ApiResult<bool>.Failure("Ghế không còn được giữ, vui lòng chọn lại");
 
                     if (flightSeat.Status != SeatStatus.Locked)
-                        return ApiResult<bool>.Failure("Ghế không ở trạng thái giữ chỗ.");
+                        return ApiResult<bool>.Failure("Ghế không ở trạng thái giữ chỗ");
 
                     if (flightSeat.LockedUntil < now)
-                        return ApiResult<bool>.Failure("Phiên giữ ghế đã hết hạn, vui lòng chọn lại.");
+                        return ApiResult<bool>.Failure("Phiên giữ ghế đã hết hạn, vui lòng chọn lại");
 
                     if (flightSeat.LockedBy != assignment.PassengerId)
-                        return ApiResult<bool>.Failure("Bạn không có quyền xác nhận ghế này.");
+                        return ApiResult<bool>.Failure("Bạn không có quyền xác nhận ghế này");
 
                     var bookingDetail = await _unitOfWork.BookingDetailRepository
                         .GetByCondition(bd =>
@@ -71,7 +71,7 @@ namespace Application.CQRS.SeatReserve.Commands.ConfirmSeat
                         .FirstOrDefaultAsync(cancellationToken);
 
                     if (bookingDetail == null)
-                        return ApiResult<bool>.Failure("Hành khách không thuộc booking này.");
+                        return ApiResult<bool>.Failure("Hành khách không thuộc đơn đặt vé này");
 
                     flightSeat.Status = SeatStatus.Booked;
                     flightSeat.LockedBy = 0;

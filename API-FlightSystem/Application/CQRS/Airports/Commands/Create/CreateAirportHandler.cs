@@ -5,6 +5,7 @@ using Domain.Entities;
 using Domain.Enums;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Airports.Commands.Create
 {
@@ -19,6 +20,12 @@ namespace Application.CQRS.Airports.Commands.Create
 
         public async Task<ApiResult<AirportDto>> Handle(CreateAirportCommand request, CancellationToken cancellationToken)
         {
+            var existingAirport = await _unitOfWork.AirportRepository
+                .GetByCondition(a => a.AirportCode == request.AirportCode)
+                .AnyAsync(cancellationToken);
+
+            if (existingAirport)
+                return ApiResult<AirportDto>.Failure($"Mã sân bay '{request.AirportCode}' đã tồn tại.");
             // Adapt - map sau khi load data về memory
             var airport = request.Adapt<Airport>(); // chuyển từ command -> entity
             airport.Status = FlightStatus.Active;

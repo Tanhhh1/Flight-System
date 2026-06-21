@@ -34,7 +34,7 @@ namespace Application.CQRS.Bookings.Validators
         public PassengerDtoValidator()
         {
             RuleFor(x => x.TypeId)
-                .GreaterThan(0).WithMessage("TypeId hành khách không hợp lệ");
+                .GreaterThan(0).WithMessage("Mã loại hành khách không hợp lệ");
 
             RuleFor(x => x.FullName)
                 .NotEmpty().WithMessage("Họ tên hành khách không được để trống")

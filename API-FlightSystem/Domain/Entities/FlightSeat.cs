@@ -11,7 +11,6 @@ namespace Domain.Entities
         public SeatStatus Status { get; set; }
         public DateTime LockedUntil { get; set; }
         public int LockedBy { get; set; }
-        public byte[] RowVersion { get; set; } = null!;
         public Flight Flight { get; set; } = null!;
         public SeatTemplate SeatTemplate { get; set; } = null!;
         public BookingDetail? BookingDetail { get; set; }

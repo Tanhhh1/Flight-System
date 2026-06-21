@@ -24,10 +24,10 @@ namespace Application.CQRS.Payments.Commands.InitiatePayment
             var booking = await _unitOfWork.BookingRepository.GetByIdAsync(request.BookingId);
 
             if (booking is null)
-                return ApiResult<InitiateDto>.Failure("Không tìm thấy booking");
+                return ApiResult<InitiateDto>.Failure("Không tìm thấy mã đơn đặt vé");
 
             if (booking.Status != BookingStatus.Pending)
-                return ApiResult<InitiateDto>.Failure("Booking không ở trạng thái chờ thanh toán");
+                return ApiResult<InitiateDto>.Failure("Mã đơn đặt vé không ở trạng thái chờ thanh toán");
 
             var result = await _gateway.CreatePaymentUrlAsync(new PaymentRequest(
                 BookingId: booking.BookingId,

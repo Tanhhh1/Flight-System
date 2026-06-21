@@ -10,9 +10,6 @@ namespace Infrastructure.Persistences.Configuration
         {
             builder.HasKey(x => x.FlightSeatId);
 
-            builder.Property(x => x.RowVersion)
-                .IsRowVersion();
-
             builder.Property(x => x.Status)
                 .IsRequired();
 

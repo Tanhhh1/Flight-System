@@ -38,7 +38,7 @@ namespace Application.CQRS.Payments.Commands.ProcessPaymentCallback
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (booking is null)
-                return ApiResult<ProcessCallbackDto>.Failure("Không tìm thấy booking");
+                return ApiResult<ProcessCallbackDto>.Failure("Không tìm thấy mã đơn đặt vé");
 
             var payment = await _unitOfWork.PaymentRepository
                 .GetByCondition(

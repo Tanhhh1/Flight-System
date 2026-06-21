@@ -36,7 +36,7 @@ namespace Application.CQRS.SeatReserve.Commands.HoldSeat
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (booking == null)
-                return ApiResult<HoldSeatDto>.Failure("Booking không tồn tại.");
+                return ApiResult<HoldSeatDto>.Failure("Mã đơn đặt vé không tồn tại");
 
             var bookingDetail = await _unitOfWork.BookingDetailRepository
                 .GetByCondition(bd =>
@@ -46,7 +46,7 @@ namespace Application.CQRS.SeatReserve.Commands.HoldSeat
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (bookingDetail == null)
-                return ApiResult<HoldSeatDto>.Failure("Hành khách hoặc chuyến bay không thuộc booking này.");
+                return ApiResult<HoldSeatDto>.Failure("Hành khách hoặc chuyến bay không thuộc đơn đặt vé này");
 
             var seatTemplate = await _unitOfWork.SeatTemplateRepository
                 .GetByCondition(st => st.SeatId == request.SeatId)
@@ -56,8 +56,16 @@ namespace Application.CQRS.SeatReserve.Commands.HoldSeat
             if (seatTemplate == null)
                 return ApiResult<HoldSeatDto>.Failure("Ghế không tồn tại.");
 
+            string seatClassName = seatTemplate.SeatClass.ClassName switch
+            {
+                "Economy Class" => "Hạng Phổ thông",
+                "Premium Economy" => "Hạng Phổ thông đặc biệt",
+                "Business Class" => "Hạng Thương gia",
+                "First Class" => "Hạng Nhất",
+                _ => seatTemplate.SeatClass.ClassName
+            };
             if (seatTemplate.ClassId != booking.ClassId)
-                return ApiResult<HoldSeatDto>.Failure($"Ghế {seatTemplate.SeatNumber} thuộc {seatTemplate.SeatClass.ClassName}, " + $"không khớp với hạng vé của bạn.");
+                return ApiResult<HoldSeatDto>.Failure($"Ghế {seatTemplate.SeatNumber} thuộc {seatClassName}, " + $"không khớp với hạng vé của bạn");
 
             var existingFlightSeat = await _unitOfWork.FlightSeatRepository
                 .GetByCondition(fs =>
@@ -68,12 +76,12 @@ namespace Application.CQRS.SeatReserve.Commands.HoldSeat
             if (existingFlightSeat != null)
             {
                 if (existingFlightSeat.Status == SeatStatus.Booked)
-                    return ApiResult<HoldSeatDto>.Failure("Ghế này đã được đặt.");
+                    return ApiResult<HoldSeatDto>.Failure("Ghế này đã được đặt");
 
                 if (existingFlightSeat.Status == SeatStatus.Locked &&
                     existingFlightSeat.LockedUntil > DateTime.UtcNow &&
                     existingFlightSeat.LockedBy != request.PassengerId)
-                    return ApiResult<HoldSeatDto>.Failure("Ghế này đang được người khác giữ.");
+                    return ApiResult<HoldSeatDto>.Failure("Ghế này đang được người khác giữ");
             }
 
             try
@@ -109,12 +117,12 @@ namespace Application.CQRS.SeatReserve.Commands.HoldSeat
             catch (DbUpdateConcurrencyException)
             {
                 return ApiResult<HoldSeatDto>.Failure(
-                    "Ghế vừa được người khác chọn, vui lòng chọn ghế khác.");
+                    "Ghế vừa được người khác chọn, vui lòng chọn ghế khác");
             }
             catch (DbUpdateException)
             {
                 return ApiResult<HoldSeatDto>.Failure(
-                    "Ghế vừa được người khác chọn, vui lòng chọn ghế khác.");
+                    "Ghế vừa được người khác chọn, vui lòng chọn ghế khác");
             }
         }
     }

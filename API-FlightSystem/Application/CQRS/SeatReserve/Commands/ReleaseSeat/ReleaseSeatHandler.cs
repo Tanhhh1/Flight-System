@@ -25,7 +25,7 @@ namespace Application.CQRS.SeatReserve.Commands.ReleaseSeat
         {
             var userId = _currentUser.Id;
             if (userId == null)
-                return ApiResult<bool>.Failure("Bạn chưa đăng nhập.");
+                return ApiResult<bool>.Failure("Bạn chưa đăng nhập");
 
             var flightSeat = await _unitOfWork.FlightSeatRepository
                 .GetByCondition(fs =>
@@ -35,10 +35,10 @@ namespace Application.CQRS.SeatReserve.Commands.ReleaseSeat
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (flightSeat == null)
-                return ApiResult<bool>.Failure("Ghế không tồn tại hoặc bạn không có quyền bỏ chọn ghế này.");
+                return ApiResult<bool>.Failure("Ghế không tồn tại hoặc bạn không có quyền bỏ chọn ghế này");
 
             if (flightSeat.Status == SeatStatus.Booked)
-                return ApiResult<bool>.Failure("Ghế đã được đặt, không thể bỏ chọn.");
+                return ApiResult<bool>.Failure("Ghế đã được đặt, không thể bỏ chọn");
 
             var bookingDetail = await _unitOfWork.BookingDetailRepository
                 .GetByCondition(bd =>
@@ -48,7 +48,7 @@ namespace Application.CQRS.SeatReserve.Commands.ReleaseSeat
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (bookingDetail == null)
-                return ApiResult<bool>.Failure("Hành khách không thuộc booking này.");
+                return ApiResult<bool>.Failure("Hành khách không thuộc đơn đặt vé này");
 
             var seatId = flightSeat.SeatId;
             _unitOfWork.FlightSeatRepository.Delete(flightSeat);

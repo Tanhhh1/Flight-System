@@ -23,7 +23,7 @@ namespace Application.CQRS.Airlines.Commands.Create
                 .GetByCondition(a => a.AirlineCode == request.AirlineCode)
                 .AnyAsync(cancellationToken);
 
-            if (existingAirline != null)
+            if (existingAirline)
                 return ApiResult<AirlineDto>.Failure($"Mã hãng hàng không '{request.AirlineCode}' đã tồn tại.");
 
             var airline = request.Adapt<Airline>();

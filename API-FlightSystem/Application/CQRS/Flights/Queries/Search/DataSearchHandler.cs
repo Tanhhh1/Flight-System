@@ -48,6 +48,7 @@ namespace Application.CQRS.Flights.Queries.Search
             var planes = inc.Contains(DataSearch.Planes)
                 ? await _unitOfWork.PlaneRepository.GetByCondition()
                     .AsNoTracking()
+                    .Include(p => p.Airline)
                     .Where(a => a.Status == FlightStatus.Active)
                     .ProjectToType<DataPlaneDto>()
                     .ToListAsync(cancellationToken)

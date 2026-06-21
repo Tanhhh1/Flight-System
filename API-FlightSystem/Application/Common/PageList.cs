@@ -27,7 +27,7 @@ namespace Application.Common
         public static async Task<PageList<T>> ToPagedListAsync(IQueryable<T> source, int pageIndex, int pageSize, CancellationToken cancellationToken = default)
         {
             if (pageIndex < 1) pageIndex = 1;
-            if (pageSize < 1) pageSize = 10;
+            if (pageSize < 1) pageSize = 7;
 
             var count = await source.CountAsync(cancellationToken);
 

@@ -33,6 +33,7 @@
     {
         public int PlaneId { get; set; }
         public string PlaneModel { get; set; } = string.Empty;
+        public string AirlineName { get; set; } = string.Empty;
     }
 
     public class DataRouteDto

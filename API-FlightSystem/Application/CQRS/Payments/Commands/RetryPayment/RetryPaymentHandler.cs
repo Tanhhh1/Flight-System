@@ -27,10 +27,10 @@ namespace Application.CQRS.Payments.Commands.RetryPayment
                 .GetByIdAsync(request.BookingId);
 
             if (booking is null)
-                return ApiResult<InitiateDto>.Failure("Không tìm thấy booking");
+                return ApiResult<InitiateDto>.Failure("Không tìm thấy mã đơn đặt vé");
 
             if (booking.Status != BookingStatus.Failed)
-                return ApiResult<InitiateDto>.Failure("Booking không đủ điều kiện để thanh toán lại");
+                return ApiResult<InitiateDto>.Failure("Mã đơn đặt vé không đủ điều kiện để thanh toán lại");
 
             var failedCount = await _unitOfWork.PaymentRepository
                 .GetByCondition(p => p.BookingId == request.BookingId && p.Status == PaymentStatus.Failed)
