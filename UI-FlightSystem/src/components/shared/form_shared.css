@@ -122,6 +122,7 @@
 .form_group textarea {
     resize: vertical;
     min-height: 148px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .checkbox_group label {

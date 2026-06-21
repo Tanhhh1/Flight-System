@@ -8,6 +8,7 @@ import SeatMap from "../map/seat_map";
 import AlertModal from "@/components/error/alert_modal";
 import { clientPaths } from "@/configs/client_routes";
 import { resetConfirmed } from "../../seat_selection_slice";
+import { SEAT_CLASSES_NAMES } from "@/constants/booking";
 import "./seat_selection.css";
 
 function ConfirmDialog({ message, onConfirm, onCancel }) {
@@ -94,7 +95,7 @@ function SeatSelection() {
     const handleConfirmWithDialog = useCallback(() => {
         const totalPending = Object.values(allPending).flat().filter(a => !a.isBooked).length;
         if (totalPending === 0) return;
-        setDialog({message: `Xác nhận đặt ${totalPending} ghế cho booking này?`, onConfirm: () => { setDialog(null); handleConfirm(); }});
+        setDialog({message: `Xác nhận đặt ${totalPending} ghế cho đơn đặt vé này?`, onConfirm: () => { setDialog(null); handleConfirm(); }});
     }, [allPending, handleConfirm]);
 
     if (!bookingInfo) {
@@ -137,7 +138,7 @@ function SeatSelection() {
                         Mã đặt vé: <strong>{bookingInfo.bookingCode}</strong>
                     </span>
                 </div>
-                <span className="seat_selection_class_badge">{bookingInfo.className}</span>
+                <span className="seat_selection_class_badge">{SEAT_CLASSES_NAMES[bookingInfo.className]}</span>
             </div>
             {flights.length > 1 && (
                 <div className="seat_selection_flight_tabs">

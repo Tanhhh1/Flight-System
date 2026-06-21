@@ -175,7 +175,6 @@ const authSlice = createSlice({
             .addCase(signIn.fulfilled, (state) => {
                 state.isLoading = false;
                 state.error = null;
-                state.showLoginModal = false;
             })
             .addCase(signIn.rejected, (state, action) => {
                 state.isLoading = false;

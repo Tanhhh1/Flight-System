@@ -84,6 +84,14 @@
     background: #f8fafc;
 }
 
+td.truncate_cell {
+    white-space: normal;
+    word-break: break-word;
+    text-align: left;
+    min-width: 350px;
+    max-width: 600px;
+}
+
 .no_data {
     color: #94a3b8 !important;
     text-align: center !important;

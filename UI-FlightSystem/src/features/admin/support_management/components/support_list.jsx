@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSupportRequests, setPage, setRequestType, setStatus } from "../support_slice";
-import { REQUEST_TYPE_LABEL, REQUEST_TYPE_OPTIONS, SUPPORT_STATUS_CLASS, TABLE_HEADS } from "@/constants/support_request";
-import { formatDate, currentDate } from "@/utils/date_utils";
+import { REQUEST_TYPE_LABEL, REQUEST_TYPE_OPTIONS, SUPPORT_STATUS_CLASS, SUPPORT_STATUS_LABEL, TABLE_HEADS } from "@/constants/support_request";import { formatDate, currentDate } from "@/utils/date_utils";
 import Table from "@/components/table/table";
 import Pagination from "@/components/pagination/pagination";
 import SupportRequestModal from "./modal/support_request_modal";

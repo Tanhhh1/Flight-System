@@ -2,15 +2,22 @@ import { useState, useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { clientPaths } from "@/configs/client_routes";
 import { profileService } from "@/features/shared/profile/profile_service";
+import { logout } from "@/features/shared/auth/auth_slice";
 import { formatDate } from "@/utils/date_utils";
+import { useDispatch } from "react-redux";
 import "./profile_layout.css";
 
 function ProfileLayout() {
     const location = useLocation();
+    const dispatch = useDispatch();
     const [profile, setProfile] = useState(null);
 
     useEffect(() => { profileService.getProfile().then(({ data }) => { if (data.succeeded && data.result) { setProfile(data.result) } }) }, []);
     const isActive = (path) => { return location.pathname === `${clientPaths.profile.root}/${path}` };
+
+    const handleLogout = () => {
+        dispatch(logout());
+    };
 
     return (
         <div className="profile_container">
@@ -57,7 +64,7 @@ function ProfileLayout() {
                                 <span className="menu_label">Đánh giá hệ thống</span>
                             </Link>
                             <div className="menu_divider"></div>
-                            <button className="menu_item logout_btn">
+                            <button className="menu_item logout_btn" onClick={handleLogout}>
                                 <i className="bx bx-power-off"></i>
                                 <span className="menu_label">Đăng xuất</span>
                             </button>

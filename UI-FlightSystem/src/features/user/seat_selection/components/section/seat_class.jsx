@@ -1,5 +1,6 @@
 import React from "react";
 import SeatCell from "../cell/seat_cell";
+import { SEAT_CLASSES_NAMES } from "@/constants/booking";
 import "./seat_class.css";
 
 const AISLE_AFTER_COL = 3;
@@ -11,7 +12,7 @@ function SeatClassGroup({ group, selectedPassengerId, getPendingPassengerForSeat
     return (
         <div className="seat_class_group">
             <div className="seat_class_group_header">
-                <span className="seat_class_group_badge">{group.className}</span>
+                <span className="seat_class_group_badge">{SEAT_CLASSES_NAMES[group.className]}</span>
             </div>
 
             <div className="seat_class_group_col_labels">

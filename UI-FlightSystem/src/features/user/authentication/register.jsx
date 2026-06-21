@@ -6,7 +6,7 @@ import AlertModal from "@/components/error/alert_modal";
 function Register({ isOpen, onClose, onSwitchToLogin }) {
   const [alertState, setAlertState] = useState({ isOpen: false, message: "", type: "success" });
 
-  const { register, onSubmit, formState, isLoading } = useRegisterForm({
+  const { register, onSubmit, formState, isLoading, reset } = useRegisterForm({
     onSuccess: () => {
       setAlertState({
         isOpen: true,
@@ -99,14 +99,13 @@ function Register({ isOpen, onClose, onSwitchToLogin }) {
             Đăng nhập ngay
           </button>
         </div>
-
       </div>
 
       {alertState.isOpen && (
-        <AlertModal type={alertState.type} message={alertState.message} onClose={handleCloseAlert}/>
+        <AlertModal type={alertState.type} message={alertState.message} onClose={handleCloseAlert} />
       )}
     </div>
   );
 }
 
-export default Register
+export default Register;

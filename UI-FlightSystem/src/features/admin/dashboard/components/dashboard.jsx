@@ -6,7 +6,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import Table from "@/components/table/table";
 import { fetchDashboardSummary, fetchRevenueByYear } from "../dashboard_slice";
 import { fetchBookings } from "@/features/admin/booking_management/booking_slice";
-import { BOOKING_STATUS_LABEL, TRIP_TYPE_LABEL } from "@/constants/booking";
+import { BOOKING_STATUS_LABEL, TRIP_TYPE_LABEL, SEAT_CLASSES_NAMES } from "@/constants/booking";
 import { DASHBOARD_YEAR_OPTIONS, DASHBOARD_CHART_LABELS, DASHBOARD_TABLE_HEADS, DASHBOARD_CARDS } from "@/constants/dashboard";
 import { adminPaths } from "@/configs/admin_routes";
 import { currentDate } from "@/utils/date_utils";
@@ -91,7 +91,7 @@ function Dashboard() {
                                 <td>{index + 1}</td>
                                 <td>{item.bookingCode}</td>
                                 <td>{item.fullname}</td>
-                                <td>{item.className}</td>
+                                <td>{SEAT_CLASSES_NAMES[item.className] ?? item.className}</td>
                                 <td>{new Date(item.bookingDate).toLocaleDateString("vi-VN")}</td>
                                 <td>{TRIP_TYPE_LABEL[item.tripType] ?? item.tripType}</td>
                                 <td className="price_cell">{item.totalPrice.toLocaleString("vi-VN")}₫</td>

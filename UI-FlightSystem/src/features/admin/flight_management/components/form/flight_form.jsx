@@ -48,7 +48,7 @@ function FlightFormPage() {
   const isRefund = watch("isRefund");
   const isChange = watch("isChange");
 
-  const planeOptions = useMemo(() => planes.map((p) => ({ id: String(p.planeId), name: p.planeModel })), [planes]);
+  const planeOptions = useMemo(() => planes.map((p) => ({ id: String(p.planeId), name: `${p.planeModel} - ${p.airlineName}` })), [planes]);
   const routeOptions = useMemo(() => routes.map((r) => ({ id: String(r.routeId), name: `${r.originAirportCode} (${r.originAirportName}) → ${r.destinationAirportCode} (${r.destinationAirportName})` })), [routes]);
   const segmentRouteOptions = useMemo(() => routes.map((r) => ({ id: String(r.routeId), name: `${r.originAirportCode} → ${r.destinationAirportCode}` })), [routes]);
 

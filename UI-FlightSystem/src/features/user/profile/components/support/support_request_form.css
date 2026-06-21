@@ -17,7 +17,6 @@
     margin-bottom: 1rem;
 }
 
-/* Header */
 .panel_header {
     display: flex;
     align-items: center;
@@ -39,7 +38,6 @@
 
 .btn_back_inline:hover { background: #edf2f8; }
 
-/* Booking info box */
 .support_booking_info {
     background: #f4f7fb;
     border: 1px solid #dce5f0;
@@ -82,7 +80,6 @@
 
 .support_price { color: #137333; }
 
-/* Form sections */
 .support_form_body {
     display: flex;
     flex-direction: column;
@@ -93,6 +90,12 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+
+.support_form_header{
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .support_form_label {
@@ -116,7 +119,6 @@
     margin-left: 4px;
 }
 
-/* Type tabs */
 .support_type_tabs {
     display: flex;
     gap: 10px;
@@ -146,7 +148,6 @@
     color: #fff;
 }
 
-/* Textarea */
 .support_textarea {
     width: 100%;
     border: 1.5px solid #dce5f0;
@@ -171,7 +172,6 @@
     text-align: right;
 }
 
-/* Reschedule search */
 .support_hint {
     font-size: 0.85rem;
     color: #6b7d96;
@@ -226,7 +226,6 @@
     margin: 0;
 }
 
-/* Flight cards */
 .support_flight_list {
     display: flex;
     flex-direction: column;
@@ -317,7 +316,6 @@
     white-space: nowrap;
 }
 
-/* Error */
 .support_form_error {
     background: #fce8e6;
     color: #c5221f;
@@ -329,7 +327,6 @@
     gap: 8px;
 }
 
-/* Actions */
 .support_form_actions {
     display: flex;
     justify-content: flex-end;

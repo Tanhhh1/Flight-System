@@ -19,6 +19,13 @@ export const TRIP_TYPE_LABEL = {
     "MultiCity": "Nhiều chặng"
 };
 
+export const SEAT_CLASSES_NAMES = {
+    "Economy Class": "Phổ thông",
+    "Premium Economy": "Phổ thông đặc biệt",
+    "Business Class": "Thương gia" ,
+    "First Class": "Hạng nhất",
+};
+
 export const PASSENGER_TYPE_LABEL = {
     1: "Người lớn",
     2: "Trẻ em",

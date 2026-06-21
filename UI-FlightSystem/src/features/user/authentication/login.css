@@ -150,7 +150,7 @@
     margin-bottom: 15px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
     scrollbar-width: none; 
     -ms-overflow-style: none; 
 }

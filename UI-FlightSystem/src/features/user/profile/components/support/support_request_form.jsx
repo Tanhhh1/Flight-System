@@ -171,7 +171,7 @@ function SupportRequestForm() {
                                 <i className="bx bx-comment-detail" /> Lý do hoàn vé
                                 <span className="support_required">*</span>
                             </label>
-                            <textarea id="refund_reason" className="support_textarea" rows={5} placeholder="Mô tả lý do bạn muốn hoàn vé..." value={reason}  onChange={(e) => setReason(e.target.value)}/>
+                            <textarea id="refund_reason" className="support_textarea" rows={5} placeholder="Mô tả lý do bạn muốn hoàn vé..." value={reason} onChange={(e) => setReason(e.target.value)} />
                             <span className="support_char_count">{reason.length} ký tự</span>
                         </div>
                     )}
@@ -179,15 +179,17 @@ function SupportRequestForm() {
                     {requestType === "Reschedule" && (
                         <>
                             <div className="support_form_section">
-                                <label className="support_form_label">
-                                    <i className="bx bx-search-alt" /> Tìm chuyến bay thay thế
-                                </label>
-                                <p className="support_hint">
-                                    Chọn ngày khởi hành mới để tìm các chuyến bay cùng tuyến{" "}
-                                    <strong>{booking.originAirport} → {booking.destinationAirport}</strong>.
-                                </p>
+                                <div className="support_form_header">
+                                    <label className="support_form_label">
+                                        <i className="bx bx-search-alt" /> Tìm chuyến bay thay thế
+                                    </label>
+                                    <p className="support_hint">
+                                        Chọn ngày khởi hành mới để tìm các chuyến bay cùng tuyến{" "}
+                                        <strong>{booking.originAirport} → {booking.destinationAirport}</strong>.
+                                    </p>
+                                </div>
                                 <div className="support_search_row">
-                                    <input type="date" className="support_date_input" value={searchDate} min={new Date().toISOString().split("T")[0]} onChange={(e) => setSearchDate(e.target.value)}/>
+                                    <input type="date" className="support_date_input" value={searchDate} min={new Date().toISOString().split("T")[0]} onChange={(e) => setSearchDate(e.target.value)} />
                                     <button className="btn_search_flight" onClick={handleSearchFlights} disabled={isSearching}>
                                         {isSearching ? <><i className="bx bx-loader-alt bx-spin" /> Đang tìm...</> : <><i className="bx bx-search" /> Tìm chuyến bay</>}
                                     </button>
@@ -251,7 +253,7 @@ function SupportRequestForm() {
             </div>
 
             {alertState.isOpen && (
-                <AlertModal type={alertState.type} message={alertState.message} onClose={closeAlert}/>
+                <AlertModal type={alertState.type} message={alertState.message} onClose={closeAlert} />
             )}
         </div>
     );

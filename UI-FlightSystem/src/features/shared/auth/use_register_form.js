@@ -15,7 +15,7 @@ export function useRegisterForm({ onSuccess }) {
     const dispatch = useDispatch();
     const { isLoading } = useSelector((state) => state.auth);
 
-    const { register, handleSubmit, setError, watch, formState } = useForm({
+    const { register, handleSubmit, setError, formState, reset } = useForm({
         defaultValues: { fullName: "", email: "", password: "", confirmPassword: ""},
     });
 
@@ -30,6 +30,7 @@ export function useRegisterForm({ onSuccess }) {
         const { confirmPassword, ...registerPayload } = values;
         const result = await dispatch(signUp(registerPayload));
         if (signUp.fulfilled.match(result)) {
+            reset();
             if (onSuccess) {
                 onSuccess();
             }
@@ -44,5 +45,5 @@ export function useRegisterForm({ onSuccess }) {
 
     const enhancedRegister = (name) => register(name, VALIDATION_RULES[name]);
 
-    return { register: enhancedRegister, onSubmit, formState, isLoading };
+    return { register: enhancedRegister, onSubmit, formState, isLoading, reset };
 }

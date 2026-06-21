@@ -71,15 +71,19 @@ function Header() {
                       <i className="bx bx-list-ul"></i> Danh sách giao dịch
                     </Link>
                     <Link
+                      to={`${clientPaths.profile.root}/${clientPaths.profile.support}`}
+                      className="dropdown_item"
+                      onClick={() => setUserDropdownOpen(false)}
+                    >
+                      <i className="bx bx-undo"></i> Hoàn vé/Đổi lịch
+                    </Link>
+                    <Link
                       to={`${clientPaths.profile.root}/${clientPaths.profile.reviews}`}
                       className="dropdown_item"
                       onClick={() => setUserDropdownOpen(false)}
                     >
                       <i className="bx bx-star"></i> Đánh giá của tôi
                     </Link>
-                    <a href="#" className="dropdown_item">
-                      <i className="bx bx-bell"></i> Thông báo giá vé
-                    </a>
                     <div className="dropdown_divider"></div>
                     <button className="dropdown_item dropdown_logout" onClick={handleLogout}>
                       <i className="bx bx-log-out"></i> Đăng xuất

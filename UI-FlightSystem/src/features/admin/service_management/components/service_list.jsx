@@ -116,7 +116,7 @@ function ServiceList() {
                                 <i className="bx bxs-cog" />
                                 <div>
                                     <div className="confirm_username">{toggleActive.target.serviceName}</div>
-                                    <div className="confirm_email">{toggleActive.target.price?.toLocaleString("vi-VN")} đ</div>
+                                    <div className="confirm_email">{toggleActive.target.description}</div>
                                 </div>
                             </div>
                         </div>

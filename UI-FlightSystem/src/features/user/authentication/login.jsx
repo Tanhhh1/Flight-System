@@ -14,8 +14,9 @@ function Login({ onSwitchToRegister }) {
 
   const handleClose = () => dispatch(closeLoginModal());
 
-  const { register, onSubmit, formState, isLoading } = useLoginForm({
-    onSuccess: () => {
+  const { register, onSubmit, formState, isLoading, reset } = useLoginForm({
+    onSuccess: (user) => {
+      reset();
       if (returnTo) navigate(returnTo);
     },
     onRoleBlocked: (user, setError) => {
