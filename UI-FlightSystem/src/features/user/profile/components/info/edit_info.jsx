@@ -32,15 +32,27 @@ function EditInfo() {
           <div className="panel_body">
             <div className="form_row_grid_2col">
               <div className="form_group">
-                <label className="form_label">Tên đầy đủ</label>
-                <input {...register("fullname")} type="text" className="form_input_text" placeholder="Nhập họ và tên..." />
-                <FieldError error={infoErrors.fullname} />
+                <label className="form_label">Tên đăng nhập</label>
+                <input {...register("userName")} type="text" className="form_input_text" placeholder="Tên đăng nhập..." disabled />
               </div>
-
               <div className="form_group">
                 <label className="form_label">Địa chỉ Email</label>
                 <input {...register("email")} type="email" className="form_input_text" placeholder="nhanvien@example.com" />
                 <FieldError error={infoErrors.email} />
+              </div>
+            </div>
+
+            
+            <div className="form_row_grid_2col">
+              <div className="form_group">
+                <label className="form_label">Tên đầy đủ</label>
+                <input {...register("fullname")} type="text" className="form_input_text" placeholder="Nhập họ và tên..." />
+                <FieldError error={infoErrors.fullname} />
+              </div>
+              <div className="form_group">
+                <label className="form_label">Số điện thoại</label>
+                <input {...register("phoneNumber")} type="text" className="form_input_text" placeholder="Số điện thoại..." />
+                <FieldError error={infoErrors.phoneNumber} />
               </div>
             </div>
 
@@ -58,17 +70,6 @@ function EditInfo() {
                 <label className="form_label">Ngày sinh</label>
                 <input {...register("birthday")} type="date" className="form_input_text" />
                 <FieldError error={infoErrors.birthday} />
-              </div>
-            </div>
-            <div className="form_row_grid_2col">
-              <div className="form_group">
-                <label className="form_label">Tên đăng nhập</label>
-                <input {...register("userName")} type="text" className="form_input_text" placeholder="Tên đăng nhập..." disabled />
-              </div>
-              <div className="form_group">
-                <label className="form_label">Số điện thoại</label>
-                <input {...register("phoneNumber")} type="text" className="form_input_text" placeholder="Số điện thoại..." />
-                <FieldError error={infoErrors.phoneNumber} />
               </div>
             </div>
             <div className="form_group_full">

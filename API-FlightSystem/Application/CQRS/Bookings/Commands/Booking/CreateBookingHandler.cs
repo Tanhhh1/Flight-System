@@ -64,7 +64,7 @@ namespace Application.CQRS.Bookings.Commands.Booking
             if (notEnoughSeats.Any())
             {
                 var errors = string.Join(", ", notEnoughSeats
-                    .Select(fsp => $"Chuyến bay {fsp.FlightId} chỉ còn {fsp.AvailableSeats} chỗ trống"));
+                    .Select(fsp => $"Chuyến bay chỉ còn {fsp.AvailableSeats} chỗ trống"));
                 return ApiResult<BookingDto>.Failure(errors);
             }
             var passengers = request.Passengers.Select(p => p.Adapt<Passenger>()).ToList();

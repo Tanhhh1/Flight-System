@@ -1,12 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMySupportRequests, setPage } from "@/features/user/support/support_slice";
-import {
-    REQUEST_TYPE_LABEL,
-    SUPPORT_STATUS_LABEL,
-    SUPPORT_STATUS_CLASS,
-    SUPPORT_STATUS_ICON,
-} from "@/constants/support_request";
+import { REQUEST_TYPE_LABEL, SUPPORT_STATUS_LABEL, SUPPORT_STATUS_CLASS, SUPPORT_STATUS_ICON, } from "@/constants/support_request";
 import { formatDate } from "@/utils/date_utils";
 import Pagination from "@/components/pagination/pagination";
 import "./support_request.css";

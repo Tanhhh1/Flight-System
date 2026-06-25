@@ -44,10 +44,9 @@ namespace API_FlightSystem.Controllers.V1.Admin
         [HttpPut("{id}/approve")]
         [ProducesResponseType(typeof(ApiResult<SupportRequestDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<SupportRequestDto>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Approve([FromRoute] int id, [FromBody] ApproveSupportRequestCommand command)
+        public async Task<IActionResult> Approve(int id)
         {
-            command.RequestId = id;
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(new ApproveSupportRequestCommand { RequestId = id });
             if (!result.Succeeded)
                 return BadRequest(result);
             return Ok(result);
@@ -56,10 +55,9 @@ namespace API_FlightSystem.Controllers.V1.Admin
         [HttpPut("{id}/reject")]
         [ProducesResponseType(typeof(ApiResult<SupportRequestDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResult<SupportRequestDto>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Reject([FromRoute] int id, [FromBody] RejectSupportRequestCommand command)
+        public async Task<IActionResult> Reject(int id)
         {
-            command.RequestId = id;
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(new RejectSupportRequestCommand { RequestId = id });
             if (!result.Succeeded)
                 return BadRequest(result);
             return Ok(result);

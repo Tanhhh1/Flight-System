@@ -12,7 +12,7 @@ function SearchForm({ airports = [], isModalView = false, onSuccess }) {
     const [seatClass, setSeatClass] = useState("Economy Class");
     const [singleFlight, setSingleFlight] = useState(DEFAULT_SINGLE_FLIGHT);
     const [flights, setFlights] = useState(DEFAULT_MULTI_FLIGHTS);
-
+    const today = new Date().toLocaleDateString("en-CA");
     useEffect(() => {
         if (!isModalView) return;
         if (airports.length === 0) return;
@@ -178,7 +178,7 @@ function SearchForm({ airports = [], isModalView = false, onSuccess }) {
                             <label className="input_field_title">Ngày khởi hành</label>
                             <div className="input_field_inner">
                                 <i className="bx bx-calendar"></i>
-                                <input type="date" value={singleFlight.departureDate} onChange={(e) => setSingleFlight({ ...singleFlight, departureDate: e.target.value })} required />
+                                <input type="date" min={today} value={singleFlight.departureDate} onChange={(e) => setSingleFlight({ ...singleFlight, departureDate: e.target.value })} required />
                             </div>
                         </div>
                         {isRoundTrip && (
@@ -186,7 +186,7 @@ function SearchForm({ airports = [], isModalView = false, onSuccess }) {
                                 <label className="input_field_title">Ngày về</label>
                                 <div className="input_field_inner">
                                     <i className="bx bx-calendar-check"></i>
-                                    <input type="date" value={singleFlight.returnDate} onChange={(e) => setSingleFlight({ ...singleFlight, returnDate: e.target.value })} required />
+                                    <input type="date" min={today} value={singleFlight.returnDate} onChange={(e) => setSingleFlight({ ...singleFlight, returnDate: e.target.value })} required />
                                 </div>
                             </div>
                         )}
@@ -238,7 +238,7 @@ function SearchForm({ airports = [], isModalView = false, onSuccess }) {
                                         <label className="input_field_title">Ngày khởi hành</label>
                                         <div className="input_field_inner">
                                             <i className="bx bx-calendar"></i>
-                                            <input type="date" value={flight.departureDate} onChange={(e) => handleFlightChange(idx, "departureDate", e.target.value)} required />
+                                            <input type="date" min={today} value={flight.departureDate} onChange={(e) => handleFlightChange(idx, "departureDate", e.target.value)} required />
                                         </div>
                                     </div>
 

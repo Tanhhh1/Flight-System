@@ -50,6 +50,13 @@ function SupportRequestForm() {
         }
     }, [success, dispatch, navigate]);
 
+    useEffect(() => {
+        if (error) {
+            showAlert(error, "error");
+            dispatch(resetCreate());
+        }
+    }, [error, dispatch]);
+
     const handleSearchFlights = async () => {
         if (!searchDate) {
             setSearchError("Vui lòng chọn ngày khởi hành mới.");
@@ -230,16 +237,10 @@ function SupportRequestForm() {
                             <div className="support_form_section">
                                 <label className="support_form_label" htmlFor="reschedule_reason">
                                     <i className="bx bx-comment" /> Ghi chú thêm
-                                    <span className="support_optional">(tuỳ chọn)</span>
                                 </label>
                                 <textarea id="reschedule_reason" className="support_textarea" rows={3} placeholder="Thêm ghi chú nếu cần..." value={reason} onChange={(e) => setReason(e.target.value)} />
                             </div>
                         </>
-                    )}
-                    {error && (
-                        <div className="support_form_error">
-                            <i className="bx bx-error-circle" /> {error}
-                        </div>
                     )}
                     <div className="support_form_actions">
                         <button className="btn_cancel" onClick={() => navigate(-1)}>

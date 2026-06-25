@@ -15,6 +15,7 @@ import { dataSearchService, DataSearch } from "@/services/data_search_service";
 function RouteList() {
     const dispatch = useDispatch();
     const { items, pageIndex, pageSize, totalPages, totalCount, error, status, isLoading, isDetailLoading, originAirportCode, destinationAirportCode } = useSelector((state) => state.route) || {};
+    
     const [airports, setAirports] = useState([]);
     const [formState, setFormState] = useState({ isOpen: false, mode: "add", data: null });
 

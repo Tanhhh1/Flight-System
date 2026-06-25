@@ -1,10 +1,11 @@
 import api from "@/configs/axios_config";
 import { sharedService } from "@/services/shared_service";
 
-const base = sharedService("/admin/SupportRequest");
+const BASE_URL = "/admin/SupportRequest";
+const base = sharedService(BASE_URL);
 
 export const adminSupportRequestService = {
     ...base,
-    approve: (id, data) => api.put(`${base}/${id}/approve`, data),
-    reject: (id, data) => api.put(`${base}/${id}/reject`, data),
+    approve: (id) => api.put(`${BASE_URL}/${id}/approve`),
+    reject:  (id) => api.put(`${BASE_URL}/${id}/reject`),
 };

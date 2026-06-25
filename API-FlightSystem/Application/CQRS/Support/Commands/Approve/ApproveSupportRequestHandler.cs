@@ -48,12 +48,29 @@ namespace Application.CQRS.Support.Commands.Approve
 
         private async Task HandleRefundAsync(SupportRequest supportRequest, CancellationToken cancellationToken)
         {
-            var flightIds = supportRequest.Booking.BookingDetails
+            var bookingDetails = supportRequest.Booking.BookingDetails;
+
+            var flightIds = bookingDetails
                 .Select(bd => bd.BookingFlightId).Distinct().ToList();
 
-            var passengerCountPerFlight = supportRequest.Booking.BookingDetails
+            var passengerCountPerFlight = bookingDetails
                 .GroupBy(bd => bd.BookingFlightId)
                 .ToDictionary(g => g.Key, g => g.Count());
+
+            var flightSeatIds = bookingDetails
+                .Where(bd => bd.FlightSeatId.HasValue)
+                .Select(bd => bd.FlightSeatId!.Value)
+                .ToList();
+
+            if (flightSeatIds.Any())
+            {
+                var flightSeats = await _unitOfWork.FlightSeatRepository
+                    .GetByCondition(fs => flightSeatIds.Contains(fs.FlightSeatId))
+                    .ToListAsync(cancellationToken);
+
+                foreach (var fs in flightSeats)
+                    _unitOfWork.FlightSeatRepository.Delete(fs);
+            }
 
             var seatPrices = await _unitOfWork.FlightSeatPriceRepository
                 .GetByCondition(fsp => flightIds.Contains(fsp.FlightId) && fsp.ClassId == supportRequest.Booking.ClassId)
@@ -64,6 +81,7 @@ namespace Application.CQRS.Support.Commands.Approve
                 seatPrice.AvailableSeats += passengerCountPerFlight[seatPrice.FlightId];
                 _unitOfWork.FlightSeatPriceRepository.Update(seatPrice);
             }
+
             supportRequest.Booking.Status = BookingStatus.Cancelled;
             _unitOfWork.BookingRepository.Update(supportRequest.Booking);
         }
@@ -105,11 +123,13 @@ namespace Application.CQRS.Support.Commands.Approve
                 detail.BookingFlightId = newFlightId;
                 _unitOfWork.BookingDetailRepository.Update(detail);
             }
+
             if (oldSeatPrice is not null)
             {
                 oldSeatPrice.AvailableSeats += passengerCount;
                 _unitOfWork.FlightSeatPriceRepository.Update(oldSeatPrice);
             }
+
             newSeatPrice.AvailableSeats -= passengerCount;
             _unitOfWork.FlightSeatPriceRepository.Update(newSeatPrice);
         }

@@ -9,3 +9,6 @@ const { slice, fetchItems: fetchMySupportRequests } = sharedSlice(
 export { fetchMySupportRequests };
 export const { setPage } = slice.actions;
 export default slice.reducer;
+
+// sửa lỗi approve / reject support request
+// lỗi thanh toán bằng thẻ quốc tế, qr code

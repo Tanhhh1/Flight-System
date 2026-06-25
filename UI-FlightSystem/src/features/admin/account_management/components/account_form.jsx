@@ -37,15 +37,15 @@ function AccountForm({ isOpen, onClose, onSave, accountData, mode }) {
               <input {...register("fullname")} placeholder="Nhập đầy đủ họ tên" />
               <FieldError error={errors.fullname} />
             </div>
-            <div className="form_group">
-              <label>Ngày sinh</label>
-              <input {...register("birthday")} type="date" />
-              <FieldError error={null} />
-            </div>
             <div className={`form_group ${errors.phoneNumber ? "has_error" : ""}`}>
               <label>Số điện thoại</label>
               <input {...register("phoneNumber")} placeholder="Nhập số điện thoại" type="tel" />
               <FieldError error={errors.phoneNumber} />
+            </div>
+            <div className="form_group">
+              <label>Ngày sinh</label>
+              <input {...register("birthday")} type="date" />
+              <FieldError error={null} />
             </div>
             <div className="form_group">
               <label>Địa chỉ</label>
