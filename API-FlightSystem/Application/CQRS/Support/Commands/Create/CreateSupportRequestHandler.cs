@@ -48,7 +48,7 @@ namespace Application.CQRS.Support.Commands.Create
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (request.RequestType == RequestType.Refund && flight?.Policy.IsRefund == false)
-                return ApiResult<SupportRequestDto>.Failure("Vé này không hỗ trợ hoàn tiền");
+                return ApiResult<SupportRequestDto>.Failure("Vé này không hỗ trợ hoàn vé");
 
             if (request.RequestType == RequestType.Reschedule && flight?.Policy.IsChange == false)
                 return ApiResult<SupportRequestDto>.Failure("Vé này không hỗ trợ đổi lịch");
