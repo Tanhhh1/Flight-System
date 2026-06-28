@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: flight_system_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Tanh@0602
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./API-FlightSystem
+    ports:
+      - "6789:6789"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Urls=http://+:6789
+      - Database__Main=Host=db;Port=5432;Database=flight_system_db;Username=postgres;Password=Tanh@0602
+      - ConnectionStrings__Redis=redis:6379
+      - ServerSetting__CurrentDomain=http://localhost/api/v1
+      - ServerSetting__WithOrigins__0=http://localhost
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  frontend:
+    build:
+      context: ./UI-FlightSystem
+      args:
+        VITE_API_URL: http://localhost/api/v1
+        VITE_HUB_URL: http://localhost
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  pg_data:
