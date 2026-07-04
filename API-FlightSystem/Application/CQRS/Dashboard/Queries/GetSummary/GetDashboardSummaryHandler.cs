@@ -1,8 +1,9 @@
 ﻿using Application.Common;
 using Application.CQRS.Dashboard.DTOs;
-using Application.CQRS.Dashboard.Queries.GetSummary;
+using Domain.Identity;
 using Application.Interfaces.UnitOfWork;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Dashboard.Queries.GetSummary
@@ -10,10 +11,12 @@ namespace Application.CQRS.Dashboard.Queries.GetSummary
     public class GetDashboardSummaryHandler : IRequestHandler<GetDashboardSummaryQuery, ApiResult<DashboardSummaryDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<User> _userManager; 
 
-        public GetDashboardSummaryHandler(IUnitOfWork unitOfWork)
+        public GetDashboardSummaryHandler(IUnitOfWork unitOfWork, UserManager<User> userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         public async Task<ApiResult<DashboardSummaryDto>> Handle(GetDashboardSummaryQuery request, CancellationToken cancellationToken)
@@ -33,12 +36,8 @@ namespace Application.CQRS.Dashboard.Queries.GetSummary
                 .AsNoTracking()
                 .CountAsync(cancellationToken);
 
-            var newMembersThisMonth = await _unitOfWork.BookingRepository
-                .GetByCondition()
+            var totalAccount = await _userManager.Users
                 .AsNoTracking()
-                .Select(b => b.User)
-                .Where(u => u.CreatedAt >= startOfMonth)
-                .Distinct()
                 .CountAsync(cancellationToken);
 
             var revenueThisMonth = await _unitOfWork.BookingRepository
@@ -52,7 +51,7 @@ namespace Application.CQRS.Dashboard.Queries.GetSummary
             {
                 ActiveFlights = activeFlights,
                 TicketsSoldThisMonth = ticketsSoldThisMonth,
-                NewMembersThisMonth = newMembersThisMonth,
+                TotalAccount = totalAccount,
                 RevenueThisMonth = revenueThisMonth,
             };
 

@@ -33,8 +33,8 @@ export const DASHBOARD_CARDS = [
         format: (v) => v?.toLocaleString("vi-VN") ?? "0",
     },
     {
-        key: "newMembersThisMonth",
-        label: "Thành viên mới",
+        key: "totalAccount",
+        label: "Tổng số tài khoản",
         icon: "bx bxs-user-voice",
         color: "red",
         format: (v) => v?.toLocaleString("vi-VN") ?? "0",

@@ -442,7 +442,7 @@
     display: flex;
     align-items: center;
     gap: .5rem;
-    margin: .4rem 0 .4rem 3.5rem;
+    margin: .4rem 0 .4rem 0;
     padding: .55rem 1rem;
     background: #fef9ec;
     border: 1px dashed #fde68a;

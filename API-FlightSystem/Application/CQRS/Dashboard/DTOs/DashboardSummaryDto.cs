@@ -4,7 +4,7 @@
     {
         public int ActiveFlights { get; set; }
         public int TicketsSoldThisMonth { get; set; }
-        public int NewMembersThisMonth { get; set; }
+        public int TotalAccount { get; set; }
         public decimal RevenueThisMonth { get; set; }
     }
 

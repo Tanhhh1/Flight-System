@@ -13,6 +13,6 @@ namespace Domain.Entities
         public int LockedBy { get; set; }
         public Flight Flight { get; set; } = null!;
         public SeatTemplate SeatTemplate { get; set; } = null!;
-        public BookingDetail? BookingDetail { get; set; }
+        public BookingDetail? BookingDetail { get; set; } // 1-1
     }
 }

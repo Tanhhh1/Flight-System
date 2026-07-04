@@ -14,10 +14,10 @@ namespace Domain.Entities
         public TripType TripType { get; set; }
         public decimal TotalPrice { get; set; }
         public BookingStatus Status { get; set; }
-        public User User { get; set; } = null!;
+        public User User { get; set; } = null!; // n-1
         public SeatClass SeatClass { get; set; } = null!;
         public ICollection<SupportRequest> SupportRequests { get; set; } = new List<SupportRequest>();
-        public ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
+        public ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>(); // 1-n
         public ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }
 }
