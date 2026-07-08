@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.CQRS.SeatReserve.DTOs;
 using Application.Interfaces.UnitOfWork;
+using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +29,19 @@ namespace Application.CQRS.SeatReserve.Queries.Verify
 
             if (booking == null)
                 return ApiResult<VerifyBookingDto>.Failure("Booking code không hợp lệ.");
+            if (booking.Status != BookingStatus.Confirmed)
+            {
+                return ApiResult<VerifyBookingDto>.Failure("Đơn đặt chỗ chưa được thanh toán hoặc đã bị hủy.");
+            }
+
+            bool hasInvalidFlight = booking.BookingDetails
+                .Any(bd => bd.Flight != null &&
+                          (bd.Flight.Status == FlightStatus.Completed || bd.Flight.Status == FlightStatus.Cancelled));
+
+            if (hasInvalidFlight)
+            {
+                return ApiResult<VerifyBookingDto>.Failure("Chuyến bay đã hoàn thành hoặc đã bị hủy, không thể thực hiện đặt ghế.");
+            }
 
             var flightGroups = booking.BookingDetails
                 .GroupBy(bd => bd.BookingFlightId)

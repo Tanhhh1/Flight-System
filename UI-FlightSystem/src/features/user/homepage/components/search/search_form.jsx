@@ -153,6 +153,7 @@ function SearchForm({ airports = [], isModalView = false, onSuccess }) {
                                 displayValue={(a) => `${a.city} (${a.airportCode})`}
                                 searchFields={["city", "airportCode"]}
                                 renderItem={renderAirportItem}
+                                required
                             />
                         </div>
                         <div className="swap_btn_container">
@@ -172,6 +173,7 @@ function SearchForm({ airports = [], isModalView = false, onSuccess }) {
                                 displayValue={(a) => `${a.city} (${a.airportCode})`}
                                 searchFields={["city", "airportCode"]}
                                 renderItem={renderAirportItem}
+                                required
                             />
                         </div>
                         <div className="input_field_container">
@@ -213,6 +215,7 @@ function SearchForm({ airports = [], isModalView = false, onSuccess }) {
                                             displayValue={(a) => `${a.city} (${a.airportCode})`}
                                             searchFields={["city", "airportCode"]}
                                             renderItem={renderAirportItem}
+                                            required
                                         />
                                     </div>
                                     <div className="swap_btn_container">
@@ -232,6 +235,7 @@ function SearchForm({ airports = [], isModalView = false, onSuccess }) {
                                             displayValue={(a) => `${a.city} (${a.airportCode})`}
                                             searchFields={["city", "airportCode"]}
                                             renderItem={renderAirportItem}
+                                            required
                                         />
                                     </div>
                                     <div className="input_field_container">
