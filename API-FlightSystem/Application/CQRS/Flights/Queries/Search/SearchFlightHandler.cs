@@ -49,7 +49,7 @@ namespace Application.CQRS.Flights.Queries.Search
             if (request.AirlineId.HasValue)
                 search = search.Where(f => f.Plane.AirlineId == request.AirlineId.Value);
 
-            if (request.ServiceIds != null && request.ServiceIds.Any())
+            if (request.ServiceIds is not null && request.ServiceIds.Any())
                 search = search.Where(f => request.ServiceIds
                     .All(sid => f.FlightServices.Any(fs => fs.ServiceId == sid)));
 

@@ -58,7 +58,7 @@ namespace Infrastructure.Uow
         public ISupportRequestRepository SupportRequestRepository => _supportRequestRepository ??= new SupportRequestRepository(_dbContext);
         public async Task BeginTransactionAsync()
         {
-            if (_dbContext.Database.CurrentTransaction == null)
+            if (_dbContext.Database.CurrentTransaction is null)
             {
                 _transaction = await _dbContext.Database.BeginTransactionAsync();
             }
@@ -69,7 +69,7 @@ namespace Infrastructure.Uow
             try
             {
                 await _dbContext.SaveChangesAsync();
-                if (_transaction != null) await _transaction.CommitAsync();
+                if (_transaction is not null) await _transaction.CommitAsync();
             }
             catch
             {
@@ -84,7 +84,7 @@ namespace Infrastructure.Uow
 
         public async Task RollbackTransactionAsync()
         {
-            if (_transaction != null)
+            if (_transaction is not null)
             {
                 await _transaction.RollbackAsync();
                 await DisposeTransactionAsync();
@@ -93,7 +93,7 @@ namespace Infrastructure.Uow
 
         private async Task DisposeTransactionAsync()
         {
-            if (_transaction != null)
+            if (_transaction is not null)
             {
                 await _transaction.DisposeAsync();
                 _transaction = null;

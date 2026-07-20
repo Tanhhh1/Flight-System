@@ -20,7 +20,7 @@ namespace Infrastructure
             var section = configuration.GetSection("Database");
             services.Configure<DatabaseConfiguration>(section);
             var databaseConfig = section.Get<DatabaseConfiguration>();
-            if (databaseConfig == null) throw new Exception("Database configuration not found! Please check 'appsettings.json' file again.");
+            if (databaseConfig is null) throw new Exception("Database configuration not found! Please check 'appsettings.json' file again.");
             services
                 .AddDbContext<DatabaseContext>(options =>
                     options.UseNpgsql(

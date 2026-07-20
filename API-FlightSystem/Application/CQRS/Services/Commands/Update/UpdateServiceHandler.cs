@@ -18,7 +18,7 @@ namespace Application.CQRS.Services.Commands.Update
         public async Task<ApiResult<ServiceDto>> Handle(UpdateServiceCommand request, CancellationToken cancellationToken)
         {
             var service = await _unitOfWork.ServiceRepository.GetByIdAsync(request.ServiceId);
-            if (service == null)
+            if (service is null)
                 return ApiResult<ServiceDto>.Failure("Dịch vụ không tồn tại");
             request.Adapt(service);
             _unitOfWork.ServiceRepository.Update(service);

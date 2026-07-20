@@ -27,7 +27,7 @@ namespace Application.CQRS.Flights.Commands.Delete
                 .Include(f => f.FlightServices)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (flight == null)
+            if (flight is null)
                 return ApiResult<FlightDto>.Failure("Chuyến bay không tồn tại");
 
             var now = DateTime.UtcNow;

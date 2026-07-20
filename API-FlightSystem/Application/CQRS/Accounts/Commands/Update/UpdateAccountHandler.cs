@@ -18,32 +18,39 @@ namespace Application.CQRS.Accounts.Commands.Update
         public async Task<ApiResult<AccountDto>> Handle(UpdateAccountCommand request, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByIdAsync(request.UserId.ToString());
-            if (user == null)
-                return ApiResult<AccountDto>.Failure("Tài khoản không tồn tại");
+            if (user is null)
+                return ApiResult<AccountDto>.Failure([new FieldError(null, "Tài khoản không tồn tại")]);
 
             var existingByEmail = await _userManager.FindByEmailAsync(request.Email);
-            if (existingByEmail != null && existingByEmail.Id != request.UserId)
+            if (existingByEmail is not null && existingByEmail.Id != request.UserId)
                 return ApiResult<AccountDto>.Failure([new FieldError("Email", "Email đã tồn tại trong hệ thống")]);
 
             request.Adapt(user);
 
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
-                return ApiResult<AccountDto>.Failure(string.Join(", ", updateResult.Errors.Select(e => e.Description)));
+            {
+                var errors = updateResult.Errors.Select(e => new FieldError(null, e.Description));
+                return ApiResult<AccountDto>.Failure(errors);
+            }
 
             var currentRoles = await _userManager.GetRolesAsync(user);
             if (currentRoles.Contains("user"))
-                return ApiResult<AccountDto>.Failure("Không thể chỉnh sửa tài khoản người dùng thông thường.");
+                return ApiResult<AccountDto>.Failure([new FieldError(null, "Không thể chỉnh sửa tài khoản người dùng thông thường.")]);
 
             var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
             if (!removeResult.Succeeded)
-                return ApiResult<AccountDto>.Failure(string.Join(", ", removeResult.Errors.Select(e => e.Description)));
+            {
+                var errors = removeResult.Errors.Select(e => new FieldError(null, e.Description));
+                return ApiResult<AccountDto>.Failure(errors);
+            }
 
             var addRoleResult = await _userManager.AddToRolesAsync(user, request.RoleNames);
             if (!addRoleResult.Succeeded)
             {
                 await _userManager.AddToRolesAsync(user, currentRoles);
-                return ApiResult<AccountDto>.Failure(string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
+                var errors = addRoleResult.Errors.Select(e => new FieldError(null, e.Description));
+                return ApiResult<AccountDto>.Failure(errors);
             }
 
             var accountDto = user.Adapt<AccountDto>();

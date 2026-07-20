@@ -24,7 +24,7 @@ namespace Application.CQRS.Accounts.Queries.GetById
                 .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
                 .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
-            if (user == null)
+            if (user is null)
                 return ApiResult<AccountDto>.Failure("Tài khoản không tồn tại");
 
             var accountDto = user.Adapt<AccountDto>();

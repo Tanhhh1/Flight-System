@@ -19,7 +19,7 @@ namespace Application.CQRS.Airlines.Commands.Delete
         public async Task<ApiResult<AirlineDto>> Handle(DeleteAirlineCommand request, CancellationToken cancellationToken)
         {
             var airline = await _unitOfWork.AirlineRepository.GetByIdAsync(request.AirlineId);
-            if (airline == null)
+            if (airline is null)
                 return ApiResult<AirlineDto>.Failure("Hãng bay không tồn tại");
 
             if (airline.Status == FlightStatus.Inactive)

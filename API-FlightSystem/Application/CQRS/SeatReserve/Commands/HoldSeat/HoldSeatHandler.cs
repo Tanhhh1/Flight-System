@@ -28,14 +28,14 @@ namespace Application.CQRS.SeatReserve.Commands.HoldSeat
         public async Task<ApiResult<HoldSeatDto>> Handle(HoldSeatCommand request, CancellationToken cancellationToken)
         {
             var userId = _currentUser.Id;
-            if (userId == null)
+            if (userId is null)
                 return ApiResult<HoldSeatDto>.Failure("Bạn chưa đăng nhập.");
 
             var booking = await _unitOfWork.BookingRepository
                 .GetByCondition(b => b.BookingId == request.BookingId && b.UserId == userId)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (booking == null)
+            if (booking is null)
                 return ApiResult<HoldSeatDto>.Failure("Mã đơn đặt vé không tồn tại");
 
             var bookingDetail = await _unitOfWork.BookingDetailRepository
@@ -45,7 +45,7 @@ namespace Application.CQRS.SeatReserve.Commands.HoldSeat
                     bd.PassengerId == request.PassengerId)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (bookingDetail == null)
+            if (bookingDetail is null)
                 return ApiResult<HoldSeatDto>.Failure("Hành khách hoặc chuyến bay không thuộc đơn đặt vé này");
 
             var seatTemplate = await _unitOfWork.SeatTemplateRepository
@@ -53,7 +53,7 @@ namespace Application.CQRS.SeatReserve.Commands.HoldSeat
                 .Include(st => st.SeatClass)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (seatTemplate == null)
+            if (seatTemplate is null)
                 return ApiResult<HoldSeatDto>.Failure("Ghế không tồn tại.");
 
             string seatClassName = seatTemplate.SeatClass.ClassName switch
@@ -73,7 +73,7 @@ namespace Application.CQRS.SeatReserve.Commands.HoldSeat
                     fs.SeatId == request.SeatId)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (existingFlightSeat != null)
+            if (existingFlightSeat is not null)
             {
                 if (existingFlightSeat.Status == SeatStatus.Booked)
                     return ApiResult<HoldSeatDto>.Failure("Ghế này đã được đặt");

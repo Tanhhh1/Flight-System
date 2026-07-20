@@ -27,7 +27,7 @@ namespace Application.Behaviors
             var ttl = TimeSpan.FromMinutes(profile.TTL);
 
             // HIT
-            if (_memory.TryGet<TResponse>(key, out var cached) && cached != null)
+            if (_memory.TryGet<TResponse>(key, out var cached) && cached is not null)
             {
                 _logger.LogInformation("[Cache HIT] Key: {Key}", key);
                 return cached;

@@ -21,7 +21,7 @@ namespace Application.CQRS.Airlines.Queries.GetById
                 .GetByCondition(a => a.AirlineId == request.AirlineId)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken);
-            if (airline == null) 
+            if (airline is null) 
                 return ApiResult<AirlineDto>.Failure("Hãng bay không tồn tại");
 
             var airlineDto = airline.Adapt<AirlineDto>();

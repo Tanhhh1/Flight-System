@@ -34,7 +34,10 @@ namespace Application.CQRS.Profile.Commands.ChangePassword
             var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
 
             if (!result.Succeeded)
-                return ApiResult<string>.Failure(string.Join(", ", result.Errors.Select(e => e.Description)));
+            {
+                var errors = result.Errors.Select(e => new FieldError(null, e.Description));
+                return ApiResult<string>.Failure(errors);
+            }
 
             return ApiResult<string>.Success("Đổi mật khẩu thành công, vui lòng đăng nhập lại");
         }

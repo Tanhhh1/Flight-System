@@ -27,7 +27,7 @@ namespace Application.CQRS.SeatReserve.Queries.Verify
                 .Include(b => b.BookingDetails).ThenInclude(bd => bd.FlightSeat!).ThenInclude(fs => fs.SeatTemplate)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (booking == null)
+            if (booking is null)
                 return ApiResult<VerifyBookingDto>.Failure("Booking code không hợp lệ.");
             if (booking.Status != BookingStatus.Confirmed)
             {
@@ -35,7 +35,7 @@ namespace Application.CQRS.SeatReserve.Queries.Verify
             }
 
             bool hasInvalidFlight = booking.BookingDetails
-                .Any(bd => bd.Flight != null &&
+                .Any(bd => bd.Flight is not null &&
                           (bd.Flight.Status == FlightStatus.Completed || bd.Flight.Status == FlightStatus.Cancelled));
 
             if (hasInvalidFlight)
@@ -58,8 +58,8 @@ namespace Application.CQRS.SeatReserve.Queries.Verify
                         FullName = bd.Passenger.FullName,
                         Gender = bd.Passenger.Gender,
                         FlightSeatId = bd.FlightSeatId,
-                        SeatNumber = bd.FlightSeat != null ? bd.FlightSeat.SeatTemplate?.SeatNumber : null
-                    }).ToList()
+                        SeatNumber = bd.FlightSeat is not null ? bd.FlightSeat.SeatTemplate?.SeatNumber : null
+                    }).ToList() 
                 }).ToList();
 
             return ApiResult<VerifyBookingDto>.Success(new VerifyBookingDto

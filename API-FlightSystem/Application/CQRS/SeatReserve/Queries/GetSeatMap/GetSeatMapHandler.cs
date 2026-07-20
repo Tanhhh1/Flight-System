@@ -66,7 +66,7 @@ namespace Application.CQRS.SeatReserve.Queries.GetSeatMap
                                     int? lockedByPassengerId = null;
                                     int flightSeatId = fs?.FlightSeatId ?? 0;
 
-                                    if (fs == null)
+                                    if (fs is null)
                                     {
                                         displayStatus = SeatStatus.Available;
                                     }

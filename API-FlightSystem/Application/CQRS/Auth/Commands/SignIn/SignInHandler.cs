@@ -25,11 +25,11 @@ namespace Application.CQRS.Auth.Commands.SignIn
 
         public async Task<ApiResult<SignInDto>> Handle(SignInCommand request, CancellationToken cancellationToken)
         {
-            var user = request.LoginId.Contains('@')
-                ? await _userManager.FindByEmailAsync(request.LoginId)
-                : await _userManager.FindByNameAsync(request.LoginId);
+            var user = await _userManager.FindByNameAsync(request.LoginId);
+            if (user is null)
+                user = await _userManager.FindByEmailAsync(request.LoginId);
 
-            if (user == null)
+            if (user is null)
                 return ApiResult<SignInDto>.Failure("Email, tên đăng nhập hoặc mật khẩu không chính xác");
 
             if (!user.IsActive)

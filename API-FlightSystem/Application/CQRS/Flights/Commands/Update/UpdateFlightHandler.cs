@@ -26,7 +26,7 @@ namespace Application.CQRS.Flights.Commands.Update
                 .Include(f => f.FlightSeatPrices)
                 .Include(f => f.FlightServices)
                 .FirstOrDefaultAsync(f => f.FlightId == request.FlightId, cancellationToken);
-            if (flight == null)
+            if (flight is null)
                 return ApiResult<FlightDto>.Failure("Chuyến bay không tồn tại");
 
             if (flight.Status == FlightStatus.Cancelled)
@@ -48,13 +48,13 @@ namespace Application.CQRS.Flights.Commands.Update
                 return ApiResult<FlightDto>.Failure("Không thể cập nhật chuyến bay đang có đặt vé");
 
             var plane = await _unitOfWork.PlaneRepository.GetByIdAsync(request.PlaneId);
-            if (plane == null)
+            if (plane is null)
                 return ApiResult<FlightDto>.Failure("Máy bay không tồn tại");
             if (plane.Status == FlightStatus.Inactive)
                 return ApiResult<FlightDto>.Failure("Máy bay đang không hoạt động");
 
             var route = await _unitOfWork.RouteRepository.GetByIdAsync(request.RouteId);
-            if (route == null)
+            if (route is null)
                 return ApiResult<FlightDto>.Failure("Tuyến bay không tồn tại");
             if (route.Status == FlightStatus.Inactive)
                 return ApiResult<FlightDto>.Failure("Tuyến bay đang không hoạt động");
@@ -134,7 +134,7 @@ namespace Application.CQRS.Flights.Commands.Update
             var policy = await _unitOfWork.PolicyRepository
                 .GetByCondition(p => p.IsRefund == request.IsRefund && p.IsChange == request.IsChange)
                 .FirstOrDefaultAsync(cancellationToken);
-            if (policy == null)
+            if (policy is null)
                 return ApiResult<FlightDto>.Failure("Chính sách không tồn tại");
 
             if (request.Services.Count > 0)
@@ -179,7 +179,7 @@ namespace Application.CQRS.Flights.Commands.Update
                 if (seg.SegmentId > 0)
                 {
                     var existing = flight.FlightSegments.FirstOrDefault(s => s.SegmentId == seg.SegmentId);
-                    if (existing != null)
+                    if (existing is not null)
                     {
                         existing.RouteId = seg.RouteId;
                         existing.DepartureTime = seg.DepartureTime;
@@ -203,7 +203,7 @@ namespace Application.CQRS.Flights.Commands.Update
             foreach (var seatPrice in flight.FlightSeatPrices)
             {
                 var newPrice = request.SeatPrices.FirstOrDefault(p => p.ClassId == seatPrice.ClassId);
-                if (newPrice != null)
+                if (newPrice is not null)
                     seatPrice.Price = newPrice.Price;
             }
 

@@ -20,7 +20,7 @@ namespace Application.CQRS.Auth.Commands.RevokeToken
                 .GetByCondition(x => x.Token == request.RefreshToken)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (refreshToken == null)
+            if (refreshToken is null)
                 return ApiResult<string>.Failure("Token không tồn tại");
 
             if (refreshToken.InRevoked)

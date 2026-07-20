@@ -1,5 +1,4 @@
 ﻿using Application.Common;
-using Application.CQRS.Accounts.DTOs;
 using Domain.Identity;
 using Mapster;
 using MediatR;
@@ -18,22 +17,28 @@ namespace Application.CQRS.Auth.Commands.SignUp
         public async Task<ApiResult<string>> Handle(SignUpCommand request, CancellationToken cancellationToken)
         {
             var existingEmail = await _userManager.FindByEmailAsync(request.Email);
-            if (existingEmail != null)
+            if (existingEmail is not null)
                 return ApiResult<string>.Failure([new FieldError("Email", "Email đã được sử dụng")]);
 
             var existingUsername = await _userManager.FindByNameAsync(request.UserName);
-            if (existingUsername != null)
-                return ApiResult<string>.Failure([new FieldError("Username","Username đã được sử dụng")]);
+            if (existingUsername is not null)
+                return ApiResult<string>.Failure([new FieldError("Username", "Username đã được sử dụng")]);
 
             var user = request.Adapt<User>();
 
             var result = await _userManager.CreateAsync(user, request.Password);
             if (!result.Succeeded)
-                return ApiResult<string>.Failure(string.Join(", ", result.Errors.Select(e => e.Description)));
+            {
+                var errors = result.Errors.Select(e => new FieldError(null, e.Description));
+                return ApiResult<string>.Failure(errors);
+            }
 
             var addRoleResult = await _userManager.AddToRoleAsync(user, "User");
             if (!addRoleResult.Succeeded)
-                return ApiResult<string>.Failure(string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
+            {
+                var errors = addRoleResult.Errors.Select(e => new FieldError(null, e.Description));
+                return ApiResult<string>.Failure(errors);
+            }
 
             return ApiResult<string>.Success("Đăng ký thành công.");
         }

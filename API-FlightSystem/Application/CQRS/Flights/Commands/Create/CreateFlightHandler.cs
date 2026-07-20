@@ -19,13 +19,13 @@ namespace Application.CQRS.Flights.Commands.Create
         public async Task<ApiResult<FlightDto>> Handle(CreateFlightCommand request, CancellationToken cancellationToken)
         {
             var plane = await _unitOfWork.PlaneRepository.GetByIdAsync(request.PlaneId);
-            if (plane == null)
+            if (plane is null)
                 return ApiResult<FlightDto>.Failure("Máy bay không tồn tại");
             if (plane.Status == FlightStatus.Inactive)
                 return ApiResult<FlightDto>.Failure("Máy bay đang không hoạt động");
 
             var route = await _unitOfWork.RouteRepository.GetByIdAsync(request.RouteId);
-            if (route == null)
+            if (route is null)
                 return ApiResult<FlightDto>.Failure("Tuyến bay không tồn tại");
             if (route.Status == FlightStatus.Inactive)
                 return ApiResult<FlightDto>.Failure("Tuyến bay đang không hoạt động");
@@ -87,7 +87,7 @@ namespace Application.CQRS.Flights.Commands.Create
                 var policy = await _unitOfWork.PolicyRepository
                     .GetByCondition(p => p.IsRefund == request.IsRefund && p.IsChange == request.IsChange)
                     .FirstOrDefaultAsync(cancellationToken);
-            if (policy == null)
+            if (policy is null)
                 return ApiResult<FlightDto>.Failure("Chính sách không tồn tại");
 
             if (request.Services.Count > 0)

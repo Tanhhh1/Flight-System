@@ -24,7 +24,7 @@ namespace Application.Behaviors
             var fieldErrors = (await Task.WhenAll(
                     _validators.Select(v => v.ValidateAsync(context, cancellationToken))))
                 .SelectMany(r => r.Errors)
-                .Where(f => f != null)
+                .Where(f => f is not null)
                 .Select(f => new FieldError(f.PropertyName, f.ErrorMessage))
                 .ToArray();
 

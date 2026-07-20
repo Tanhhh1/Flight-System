@@ -7,7 +7,6 @@ using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.CQRS.Accounts.Commands.Delete
 {
@@ -26,11 +25,11 @@ namespace Application.CQRS.Accounts.Commands.Delete
         public async Task<ApiResult<AccountDto>> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
         {
             if (_currentUser.IsAuthenticated && _currentUser.Id == request.UserId)
-                return ApiResult<AccountDto>.Failure("Bạn không thể tự khóa tài khoản của chính mình");
+                return ApiResult<AccountDto>.Failure([new FieldError(null, "Bạn không thể tự khóa tài khoản của chính mình")]);
 
             var user = await _userManager.FindByIdAsync(request.UserId.ToString());
-            if (user == null)
-                return ApiResult<AccountDto>.Failure("Tài khoản không tồn tại");
+            if (user is null)
+                return ApiResult<AccountDto>.Failure([new FieldError(null, "Tài khoản không tồn tại")]);
 
             if (user.IsActive)
             {
@@ -53,7 +52,10 @@ namespace Application.CQRS.Accounts.Commands.Delete
 
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
-                return ApiResult<AccountDto>.Failure(string.Join(", ", updateResult.Errors.Select(e => e.Description)));
+            {
+                var errors = updateResult.Errors.Select(e => new FieldError(null, e.Description));
+                return ApiResult<AccountDto>.Failure(errors);
+            }
 
             var accountDto = user.Adapt<AccountDto>();
             return ApiResult<AccountDto>.Success(accountDto);

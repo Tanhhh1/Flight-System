@@ -18,24 +18,28 @@ namespace Application.CQRS.Accounts.Commands.Create
         public async Task<ApiResult<AccountDto>> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
         {
             var existingByUsername = await _userManager.FindByNameAsync(request.UserName);
-            if (existingByUsername != null)
+            if (existingByUsername is not null)
                 return ApiResult<AccountDto>.Failure([new FieldError("UserName", "Tên đăng nhập đã tồn tại trong hệ thống")]);
 
             var existingByEmail = await _userManager.FindByEmailAsync(request.Email);
-            if (existingByEmail != null)
+            if (existingByEmail is not null)
                 return ApiResult<AccountDto>.Failure([new FieldError("Email", "Email đã tồn tại trong hệ thống")]);
 
             var user = request.Adapt<User>();
 
             var createResult = await _userManager.CreateAsync(user, request.Password);
             if (!createResult.Succeeded)
-                return ApiResult<AccountDto>.Failure(string.Join(", ", createResult.Errors.Select(e => e.Description)));
+            {
+                var errors = createResult.Errors.Select(e => new FieldError(null, e.Description));
+                return ApiResult<AccountDto>.Failure(errors);
+            }
 
             var addRoleResult = await _userManager.AddToRolesAsync(user, request.RoleNames);
             if (!addRoleResult.Succeeded)
             {
                 await _userManager.DeleteAsync(user);
-                return ApiResult<AccountDto>.Failure(string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
+                var errors = addRoleResult.Errors.Select(e => new FieldError(null, e.Description));
+                return ApiResult<AccountDto>.Failure(errors);
             }
 
             var accountDto = user.Adapt<AccountDto>();

@@ -23,7 +23,7 @@ namespace Application.CQRS.Airports.Queries.GetById
                 .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (airport == null)
+            if (airport is null)
                 return ApiResult<AirportDto>.Failure("Sân bay không tồn tại");
 
             var airportDto = airport.Adapt<AirportDto>();

@@ -19,7 +19,7 @@ namespace Application.CQRS.Routes.Commands.Delete
         public async Task<ApiResult<RouteDto>> Handle(DeleteRouteCommand request, CancellationToken cancellationToken)
         {
             var route = await _unitOfWork.RouteRepository.GetByIdAsync(request.RouteId);
-            if (route == null)
+            if (route is null)
                 return ApiResult<RouteDto>.Failure("Tuyến bay không tồn tại");
 
             if (route.Status == FlightStatus.Inactive)

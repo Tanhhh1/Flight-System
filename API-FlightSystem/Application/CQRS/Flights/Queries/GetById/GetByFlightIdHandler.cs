@@ -23,7 +23,7 @@ namespace Application.CQRS.Flights.Queries.GetById
                 .ProjectToType<FlightDetailDto>()
                 .FirstOrDefaultAsync(f => f.FlightId == request.FlightId, cancellationToken);
 
-            if (flight == null)
+            if (flight is null)
                 return ApiResult<FlightDetailDto>.Failure("Không tìm thấy chuyến bay");
 
             return ApiResult<FlightDetailDto>.Success(flight);

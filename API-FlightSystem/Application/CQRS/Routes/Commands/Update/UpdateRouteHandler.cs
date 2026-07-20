@@ -22,17 +22,17 @@ namespace Application.CQRS.Routes.Commands.Update
                 return ApiResult<RouteDto>.Failure("Sân bay đi và sân bay đến không được trùng nhau");
 
             var route = await _unitOfWork.RouteRepository.GetByIdAsync(request.RouteId);
-            if (route == null)
+            if (route is null)
                 return ApiResult<RouteDto>.Failure("Tuyến bay không tồn tại");
 
             var originAirport = await _unitOfWork.AirportRepository.GetByIdAsync(request.OriginAirportId);
-            if (originAirport == null)
+            if (originAirport is null)
                 return ApiResult<RouteDto>.Failure("Sân bay đi không tồn tại");
             if (originAirport.Status == FlightStatus.Inactive)
                 return ApiResult<RouteDto>.Failure("Sân bay đi đã ngừng hoạt động");
 
             var destinationAirport = await _unitOfWork.AirportRepository.GetByIdAsync(request.DestinationAirportId);
-            if (destinationAirport == null)
+            if (destinationAirport is null)
                 return ApiResult<RouteDto>.Failure("Sân bay đến không tồn tại");
             if (destinationAirport.Status == FlightStatus.Inactive)
                 return ApiResult<RouteDto>.Failure("Sân bay đến đã ngừng hoạt động");

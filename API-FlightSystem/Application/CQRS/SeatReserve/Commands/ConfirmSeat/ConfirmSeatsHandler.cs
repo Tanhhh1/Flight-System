@@ -24,14 +24,14 @@ namespace Application.CQRS.SeatReserve.Commands.ConfirmSeat
         public async Task<ApiResult<bool>> Handle(ConfirmSeatsCommand request, CancellationToken cancellationToken)
         {
             var userId = _currentUser.Id;
-            if (userId == null)
+            if (userId is null)
                 return ApiResult<bool>.Failure("Bạn chưa đăng nhập");
 
             var booking = await _unitOfWork.BookingRepository
                 .GetByCondition(b => b.BookingId == request.BookingId && b.UserId == userId)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (booking == null)
+            if (booking is null)
                 return ApiResult<bool>.Failure("Mã đơn đặt vé không tồn tại");
 
             var now = DateTime.UtcNow;
@@ -51,7 +51,7 @@ namespace Application.CQRS.SeatReserve.Commands.ConfirmSeat
                     var flightSeat = flightSeats
                         .FirstOrDefault(fs => fs.FlightSeatId == assignment.FlightSeatId);
 
-                    if (flightSeat == null)
+                    if (flightSeat is null)
                         return ApiResult<bool>.Failure("Ghế không còn được giữ, vui lòng chọn lại");
 
                     if (flightSeat.Status != SeatStatus.Locked)
@@ -70,7 +70,7 @@ namespace Application.CQRS.SeatReserve.Commands.ConfirmSeat
                             bd.PassengerId == assignment.PassengerId)
                         .FirstOrDefaultAsync(cancellationToken);
 
-                    if (bookingDetail == null)
+                    if (bookingDetail is null)
                         return ApiResult<bool>.Failure("Hành khách không thuộc đơn đặt vé này");
 
                     flightSeat.Status = SeatStatus.Booked;

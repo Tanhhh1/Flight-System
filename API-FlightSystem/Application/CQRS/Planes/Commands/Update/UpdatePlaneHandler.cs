@@ -20,11 +20,11 @@ namespace Application.CQRS.Planes.Commands.Update
         public async Task<ApiResult<PlaneDto>> Handle(UpdatePlaneCommand request, CancellationToken cancellationToken)
         {
             var airline = await _unitOfWork.AirlineRepository.GetByIdAsync(request.AirlineId);
-            if (airline == null)
+            if (airline is null)
                 return ApiResult<PlaneDto>.Failure("Hãng bay không tồn tại");
 
             var plane = await _unitOfWork.PlaneRepository.GetByIdAsync(request.PlaneId);
-            if (plane == null)
+            if (plane is null)
                 return ApiResult<PlaneDto>.Failure("Máy bay không tồn tại");
 
             var unfinishedFlight = await _unitOfWork.FlightRepository

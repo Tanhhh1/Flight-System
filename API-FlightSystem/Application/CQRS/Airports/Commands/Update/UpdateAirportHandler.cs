@@ -20,7 +20,7 @@ namespace Application.CQRS.Airports.Commands.Update
         public async Task<ApiResult<AirportDto>> Handle(UpdateAirportCommand request, CancellationToken cancellationToken)
         {
             var airport = await _unitOfWork.AirportRepository.GetByIdAsync(request.AirportId);
-            if (airport == null)
+            if (airport is null)
                 return ApiResult<AirportDto>.Failure("Sân bay không tồn tại");
 
             var unfinishedFlight = await _unitOfWork.FlightRepository

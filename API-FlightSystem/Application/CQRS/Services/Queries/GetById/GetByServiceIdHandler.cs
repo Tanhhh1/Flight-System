@@ -21,7 +21,7 @@ namespace Application.CQRS.Services.Queries.GetById
             var service = await _unitOfWork.ServiceRepository.GetByCondition()
                  .AsNoTracking()
                  .FirstOrDefaultAsync(s => s.ServiceId == request.ServiceId, cancellationToken);
-            if (service == null)
+            if (service is null)
                 return ApiResult<ServiceDto>.Failure("Dịch vụ không tồn tại");
 
             var serviceDto = service.Adapt<ServiceDto>();

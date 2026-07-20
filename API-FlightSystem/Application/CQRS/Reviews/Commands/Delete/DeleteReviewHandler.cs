@@ -17,7 +17,7 @@ namespace Application.CQRS.Reviews.Commands.Delete
         public async Task<ApiResult<ReviewDto>> Handle(DeleteReviewCommand request, CancellationToken cancellationToken)
         {
             var review = await _unitOfWork.ReviewRepository.GetByIdAsync(request.ReviewId);
-            if (review == null)
+            if (review is null)
                 return ApiResult<ReviewDto>.Failure("Đánh giá không tồn tại");
 
             review.IsHidden = true; 

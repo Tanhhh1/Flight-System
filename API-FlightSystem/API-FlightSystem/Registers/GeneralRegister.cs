@@ -181,7 +181,7 @@ namespace API_FlightBooking.Registers
             {
                 var withOrigins = configuration.GetSection("ServerSetting:WithOrigins").Get<string[]>();
 
-                if (withOrigins == null || withOrigins.Length == 0)
+                if (withOrigins is null || withOrigins.Length == 0)
                 {
                     var singleOrigin = configuration.GetValue<string>("ServerSetting:WithOrigins");
                     if (!string.IsNullOrEmpty(singleOrigin))

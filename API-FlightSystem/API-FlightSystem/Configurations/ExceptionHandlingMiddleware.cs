@@ -35,7 +35,7 @@ namespace API_FlightBooking.Configurations
         private Task HandleException(HttpContext httpContext, Exception ex)
         {
             var statusCode = StatusCodes.Status500InternalServerError;
-            var errors = ex.Message.Split("|\n\b|").ToList();
+            var errorStrings = ex.Message.Split("|\n\b|").ToList();
             statusCode = ex switch
             {
                 NotFoundException => StatusCodes.Status404NotFound,
@@ -51,7 +51,7 @@ namespace API_FlightBooking.Configurations
             if (statusCode == StatusCodes.Status500InternalServerError)
             {
                 Logging.Error(ex, "Unhandled exception at {Path}", httpContext.Request.Path);
-                errors = new List<string> { "Server Error" };
+                errorStrings = new List<string> { "Server Error" };
             }
             else
             {
@@ -59,8 +59,9 @@ namespace API_FlightBooking.Configurations
                     httpContext.Request.Path, statusCode, ex.Message);
             }
 
+            var errors = errorStrings.Select(e => new FieldError(null, e));
             var result = JsonSerializer.Serialize(
-                ApiResult<string>.Failure(string.Join(", ", errors)),
+                ApiResult<string>.Failure(errors),
                 new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
             );
 

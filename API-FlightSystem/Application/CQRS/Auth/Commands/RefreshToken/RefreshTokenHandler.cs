@@ -6,8 +6,6 @@ using Domain.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Shared.Helpers;
-using Shared.Identity;
 
 namespace Application.CQRS.Auth.Commands.RefreshToken
 {
@@ -27,14 +25,14 @@ namespace Application.CQRS.Auth.Commands.RefreshToken
         public async Task<ApiResult<RefreshTokenDto>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
             var jwtId = _tokenService.GetJwtId(request.AccessToken);
-            if (jwtId == null)
+            if (jwtId is null)
                 return ApiResult<RefreshTokenDto>.Failure("Access token không hợp lệ");
 
             var refreshToken = await _unitOfWork.RefreshTokenRepository
                 .GetByCondition(x => x.Token == request.RefreshToken)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (refreshToken == null)
+            if (refreshToken is null)
                 return ApiResult<RefreshTokenDto>.Failure("Refresh token không tồn tại");
 
             if (refreshToken.IsUsed)
@@ -53,7 +51,7 @@ namespace Application.CQRS.Auth.Commands.RefreshToken
             _unitOfWork.RefreshTokenRepository.Update(refreshToken);
 
             var user = await _userManager.FindByIdAsync(refreshToken.UserId.ToString());
-            if (user == null)
+            if (user is null)
                 return ApiResult<RefreshTokenDto>.Failure("Người dùng không tồn tại");
 
             if (!user.IsActive)

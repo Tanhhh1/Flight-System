@@ -20,7 +20,7 @@ namespace Application.CQRS.Planes.Commands.Delete
         {
             var plane = await _unitOfWork.PlaneRepository.GetByIdAsync(request.PlaneId);
 
-            if (plane == null)
+            if (plane is null)
                 return ApiResult<PlaneDto>.Failure("Máy bay không tồn tại");
 
             if (plane.Status == FlightStatus.Inactive)

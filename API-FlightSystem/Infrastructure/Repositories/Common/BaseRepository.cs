@@ -46,9 +46,9 @@ namespace Infrastructure.Repositories.Base
             Func<IQueryable<T>, IOrderedQueryable<T>>? order = null)
         {
             IQueryable<T> query = _dbContext.Set<T>();
-            if (expression != null)
+            if (expression is not null)
                 query = query.Where(expression);
-            if (order != null)
+            if (order is not null)
                 query = order(query);
             return query;
         }

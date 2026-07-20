@@ -23,7 +23,7 @@ namespace Application.CQRS.Bookings.Commands.Booking
 
         public async Task<ApiResult<BookingDto>> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
         {
-            if (!_currentUser.IsAuthenticated || _currentUser.Id == null)
+            if (!_currentUser.IsAuthenticated || _currentUser.Id is null)
                 return ApiResult<BookingDto>.Failure("Bạn cần đăng nhập để đặt vé");
 
             var flightIds = request.FlightIds.Distinct().ToList();
@@ -63,8 +63,7 @@ namespace Application.CQRS.Bookings.Commands.Booking
 
             if (notEnoughSeats.Any())
             {
-                var errors = string.Join(", ", notEnoughSeats
-                    .Select(fsp => $"Chuyến bay chỉ còn {fsp.AvailableSeats} chỗ trống"));
+                var errors = notEnoughSeats.Select(fsp => new FieldError(null, $"Chuyến bay chỉ còn {fsp.AvailableSeats} chỗ trống"));
                 return ApiResult<BookingDto>.Failure(errors);
             }
             var passengers = request.Passengers.Select(p => p.Adapt<Passenger>()).ToList();
