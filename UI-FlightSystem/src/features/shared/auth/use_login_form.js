@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { signIn, clearCredentials, closeLoginModal  } from "./auth_slice";
+import { signIn, clearCredentials, closeLoginModal } from "./auth_slice";
 import { applyServerErrors } from "@/hooks/use_shared_form";
 
 const VALIDATION_RULES = {
-    LoginId: { required: "Vui lòng nhập email hoặc tên đăng nhập." },
+    username: { required: "Vui lòng nhập tên đăng nhập." },
     password: { required: "Vui lòng nhập mật khẩu." },
 };
 
@@ -13,7 +13,7 @@ export function useLoginForm({ onSuccess, onRoleBlocked }) {
     const { isLoading } = useSelector((state) => state.auth);
 
     const { register, handleSubmit, setError, formState, reset } = useForm({
-        defaultValues: { LoginId: "", password: "" },
+        defaultValues: { username: "", password: "" },
     });
 
     const onSubmit = handleSubmit(async (values) => {
@@ -31,10 +31,16 @@ export function useLoginForm({ onSuccess, onRoleBlocked }) {
             onSuccess(user);
             return;
         }
+
         if (signIn.rejected.match(result)) {
-            applyServerErrors(setError, {
-                errors: [{ propertyName: null, errorMessage: result.payload || "Đăng nhập thất bại." }],
-            });
+            const errorPayload = result.payload;
+            if (Array.isArray(errorPayload)) {
+                applyServerErrors(setError, { errors: errorPayload });
+            } else {
+                applyServerErrors(setError, {
+                    errors: [{ propertyName: null, errorMessage: errorPayload || "Đăng nhập thất bại." }],
+                });
+            }
         }
     });
 

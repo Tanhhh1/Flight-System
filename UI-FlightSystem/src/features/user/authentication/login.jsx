@@ -57,12 +57,12 @@ function Login({ onSwitchToRegister }) {
 
         <form onSubmit={onSubmit} className="auth_form">
           <div className="auth_form_group">
-            <label>Địa chỉ Email / Tên đăng nhập</label>
+            <label>Tên đăng nhập</label>
             <div className="auth_input_wrapper">
-              <i className="bx bx-envelope input_icon"></i>
-              <input {...register("LoginId")} placeholder="example@gmail.com" />
+              <i className="bx bx-user input_icon"></i>
+              <input {...register("username")} placeholder="Nhập tên đăng nhập của bạn" />
             </div>
-            <FieldError error={errors.LoginId} />
+            <FieldError error={errors.username} />
           </div>
 
           <div className="auth_form_group">

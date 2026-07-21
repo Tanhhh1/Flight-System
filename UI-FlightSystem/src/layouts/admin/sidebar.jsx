@@ -17,7 +17,7 @@ const ROLE_LABEL = {
 
 function Sidebar() {
     const [active, setActive] = useState(true);
-    const [openMenu, setOpenMenu] = useState(null); // "category" | "booking" | null
+    const [openMenu, setOpenMenu] = useState(null);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();

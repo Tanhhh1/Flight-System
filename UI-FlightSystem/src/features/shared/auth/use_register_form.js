@@ -5,7 +5,7 @@ import { applyServerErrors } from "@/hooks/use_shared_form";
 
 const VALIDATION_RULES = {
     fullName: { required: "Vui lòng nhập họ và tên" },
-    username: { required: "Vui lòng nhập tên đăng nhập" },
+    userName: { required: "Vui lòng nhập tên đăng nhập" },
     email: { required: "Vui lòng nhập địa chỉ email" },
     password: { required: "Vui lòng nhập mật khẩu" },
     confirmPassword: { required: "Vui lòng xác nhận lại mật khẩu" },
@@ -16,7 +16,7 @@ export function useRegisterForm({ onSuccess }) {
     const { isLoading } = useSelector((state) => state.auth);
 
     const { register, handleSubmit, setError, formState, reset } = useForm({
-        defaultValues: { fullName: "", email: "", password: "", confirmPassword: ""},
+        defaultValues: { fullName: "", userName: "", email: "", password: "", confirmPassword: "" },
     });
 
     const onSubmit = handleSubmit(async (values) => {
@@ -27,8 +27,10 @@ export function useRegisterForm({ onSuccess }) {
             });
             return;
         }
+
         const { confirmPassword, ...registerPayload } = values;
         const result = await dispatch(signUp(registerPayload));
+
         if (signUp.fulfilled.match(result)) {
             reset();
             if (onSuccess) {
@@ -36,10 +38,16 @@ export function useRegisterForm({ onSuccess }) {
             }
             return;
         }
+
         if (signUp.rejected.match(result)) {
-            applyServerErrors(setError, {
-                errors: [{ propertyName: null, errorMessage: result.payload || "Đăng ký thất bại." }],
-            });
+            const errorPayload = result.payload;
+            if (Array.isArray(errorPayload)) {
+                applyServerErrors(setError, { errors: errorPayload });
+            } else {
+                applyServerErrors(setError, {
+                    errors: [{ propertyName: null, errorMessage: errorPayload || "Đăng ký thất bại." }],
+                });
+            }
         }
     });
 

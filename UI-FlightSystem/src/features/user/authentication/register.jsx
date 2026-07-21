@@ -59,9 +59,9 @@ function Register({ isOpen, onClose, onSwitchToLogin }) {
               <label htmlFor="reg_username">Tên đăng nhập</label>
               <div className="auth_input_wrapper">
                 <i className="bx bx-user input_icon"></i>
-                <input id="reg_username" placeholder="Nhập tên đăng nhập" {...register("username")} />
+                <input id="reg_username" placeholder="Nhập tên đăng nhập" {...register("userName")} />
               </div>
-              <FieldError error={errors.username} />
+              <FieldError error={errors.userName} />
             </div>
             <div className="auth_form_group">
               <label htmlFor="reg_email">Email</label>

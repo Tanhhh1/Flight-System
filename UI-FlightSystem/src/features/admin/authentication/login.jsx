@@ -21,11 +21,12 @@ function AdminLogin() {
                 <span>{errors.root.message}</span>
               </div>
             )}
-            <div className={`login_input_group ${errors.LoginId ? "has_error" : ""}`}>
+            
+            <div className={`login_input_group ${errors.username ? "has_error" : ""}`}>
               <i className="bx bx-user" />
-              <input {...register("LoginId")} type="text" placeholder="Email hoặc tên đăng nhập" />
+              <input {...register("username")} type="text" placeholder="Tên đăng nhập" />
             </div>
-            <FieldError error={errors.LoginId} />
+            <FieldError error={errors.username} />
 
             <div className={`login_input_group ${errors.password ? "has_error" : ""}`}>
               <i className="bx bx-lock-alt" />
@@ -34,7 +35,13 @@ function AdminLogin() {
             <FieldError error={errors.password} />
 
             <button type="submit" className="login_btn" disabled={isLoading}>
-              {isLoading ? <><i className="bx bx-loader-alt bx-spin" /> Đang đăng nhập...</> : "Đăng nhập"}
+              {isLoading ? (
+                <>
+                  <i className="bx bx-loader-alt bx-spin" /> Đang đăng nhập...
+                </>
+              ) : (
+                "Đăng nhập"
+              )}
             </button>
           </form>
         </div>

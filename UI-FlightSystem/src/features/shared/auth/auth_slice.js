@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import authService from "@/features/shared/auth/auth_service";
 
 function parseUser(result) {
     try {
@@ -14,7 +14,7 @@ function parseUser(result) {
     } catch {
         return {};
     }
-}
+}   
 
 const initialState = {
     user: (() => {
@@ -36,14 +36,13 @@ export const signIn = createAsyncThunk(
     "auth/signIn",
     async (values, { dispatch, rejectWithValue }) => {
         try {
-            const { data } = await axios.post(
-                `${import.meta.env.VITE_API_URL}/Auth/sign-in`,
-                values
-            );
+            const response = await authService.signIn(values);
+            const data = response.data;
+
             if (!data.succeeded) {
-                const errorMsg = data.errors?.[0]?.errorMessage || "Đăng nhập thất bại.";
-                return rejectWithValue(errorMsg);
+                return rejectWithValue(data.errors || data.message || "Đăng nhập thất bại.");
             }
+
             const user = parseUser(data.result);
             dispatch(setCredentials({
                 user,
@@ -53,8 +52,8 @@ export const signIn = createAsyncThunk(
 
             return { user, token: data.result.accessToken, refreshToken: data.result.refreshToken };
         } catch (err) {
-            const errorMsg = err.response?.data?.errors?.[0]?.errorMessage || err.response?.data?.message || "Lỗi kết nối server.";
-            return rejectWithValue(errorMsg);
+            const errorPayload = err.response?.data?.errors || err.response?.data?.message || "Lỗi kết nối server.";
+            return rejectWithValue(errorPayload);
         }
     }
 );
@@ -63,18 +62,16 @@ export const signUp = createAsyncThunk(
     "auth/signUp",
     async (values, { rejectWithValue }) => {
         try {
-            const { data } = await axios.post(
-                `${import.meta.env.VITE_API_URL}/Auth/sign-up`,
-                values
-            );
+            const response = await authService.signUp(values);
+            const data = response.data;
+
             if (!data.succeeded) {
-                const errorMsg = data.errors?.[0]?.errorMessage || "Đăng ký thất bại.";
-                return rejectWithValue(errorMsg);
+                return rejectWithValue(data.errors || data.message || "Đăng ký thất bại.");
             }
             return data;
         } catch (err) {
-            const errorMsg = err.response?.data?.errors?.[0]?.errorMessage || err.response?.data?.message || "Lỗi kết nối server.";
-            return rejectWithValue(errorMsg);
+            const errorPayload = err.response?.data?.errors || err.response?.data?.message || "Lỗi kết nối server.";
+            return rejectWithValue(errorPayload);
         }
     }
 );
@@ -84,22 +81,17 @@ export const logout = createAsyncThunk(
     async (_, { getState }) => {
         try {
             const state = getState();
-            const token = state.auth?.token;
             const refreshToken = state.auth?.refreshToken;
 
-            if (refreshToken && token) {
+            if (refreshToken) {
                 try {
-                    await axios.post(
-                        `${import.meta.env.VITE_API_URL}/Auth/revoke`,
-                        { refreshToken },
-                        { headers: { Authorization: `Bearer ${token}` } }
-                    );
+                    await authService.revoke({ refreshToken });
                 } catch (err) {
-                    console.warn("Revoke token warning:", err.response?.data?.errors?.[0]?.errorMessage || err.message);
+                    console.warn("Revoke token warning:", err.response?.data || err.message);
                 }
             }
         } catch (err) {
-            console.warn("Logout preparation error:", err.message);
+            console.warn("Logout error:", err.message);
         }
         return { success: true };
     }
@@ -142,7 +134,7 @@ const authSlice = createSlice({
             const { fullName, email } = action.payload;
             if (!state.user) return;
             state.user.fullName = fullName;
-            state.user.email = email;
+            if (email) state.user.email = email;
             localStorage.setItem("user", JSON.stringify(state.user));
         },
         clearCredentials: (state) => {

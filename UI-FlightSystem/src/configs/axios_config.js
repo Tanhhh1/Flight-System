@@ -1,6 +1,4 @@
 import axios from "axios";
-import { store } from "@/store";
-import { updateTokens, logout } from "@/features/shared/auth/auth_slice";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -8,27 +6,44 @@ const api = axios.create({
 
 let refreshPromise = null;
 
+// Hàm đọc token từ localStorage (Không cần import store)
+const getToken = () => localStorage.getItem("token");
+const getRefreshToken = () => localStorage.getItem("refreshToken");
+
+const updateLocalStorageTokens = (token, refreshToken, expiredAt) => {
+  localStorage.setItem("token", token);
+  localStorage.setItem("refreshToken", refreshToken);
+  if (expiredAt) localStorage.setItem("tokenExpiredAt", expiredAt);
+};
+
 const getNewToken = () => {
   if (refreshPromise) return refreshPromise;
 
   refreshPromise = (async () => {
     try {
-      const { token, refreshToken } = store.getState().auth ?? {};
+      const refreshToken = getRefreshToken();
+      
+      // Backend RefreshTokenHandler.cs chỉ cần body chứa RefreshToken
       const { data } = await axios.post(
         `${import.meta.env.VITE_API_URL}/Auth/refresh`,
-        { refreshToken, accessToken: token }
+        { refreshToken }
       );
 
       if (!data.succeeded || !data.result?.accessToken) {
-        throw new Error(data.errors?.[0]?.errorMessage || "Làm mới phiên đăng nhập thất bại.");
+        throw new Error(data.errors?.[0]?.errorMessage || data.message || "Làm mới phiên đăng nhập thất bại.");
       }
 
-      store.dispatch(updateTokens({
-        token: data.result.accessToken,
-        refreshToken: data.result.refreshToken,
+      const { accessToken, refreshToken: newRefreshToken, accessTokenExpires } = data.result;
+
+      // Cập nhật lại localStorage
+      updateLocalStorageTokens(accessToken, newRefreshToken, accessTokenExpires);
+
+      // Bắn event thông báo cho Redux state sync lại nếu cần
+      window.dispatchEvent(new CustomEvent("auth:tokens-updated", {
+        detail: { token: accessToken, refreshToken: newRefreshToken }
       }));
 
-      return data.result.accessToken;
+      return accessToken;
     } finally {
       refreshPromise = null;
     }
@@ -37,29 +52,38 @@ const getNewToken = () => {
   return refreshPromise;
 };
 
-const handleRefreshFailed = () => {
-  store.dispatch(logout());
-  return Promise.reject(new Error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại."));
+const handleRefreshFailed = (err) => {
+  // Xóa storage & phát event logout
+  localStorage.removeItem("user");
+  localStorage.removeItem("token");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("tokenExpiredAt");
+
+  window.dispatchEvent(new Event("auth:logout"));
+  return Promise.reject(err || new Error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại."));
 };
 
 const isAccessTokenExpired = () => {
   const expiredAt = localStorage.getItem("tokenExpiredAt");
   if (!expiredAt) return true;
-  return Date.now() > new Date(expiredAt).getTime();
+  return Date.now() >= new Date(expiredAt).getTime();
 };
 
-const getToken = () => store.getState().auth?.token;
-const getRefreshToken = () => store.getState().auth?.refreshToken;
-
 api.interceptors.request.use(async (config) => {
-  if (!getToken()) return config;
+  // Bỏ qua Authorization cho các API auth công khai
+  if (config.url?.includes("/Auth/sign-in") || config.url?.includes("/Auth/sign-up")) {
+    return config;
+  }
+
+  const token = getToken();
+  if (!token) return config;
 
   try {
-    const token = isAccessTokenExpired() && getRefreshToken()
-      ? await getNewToken()
-      : getToken();
-
-    config.headers.Authorization = `Bearer ${token}`;
+    let currentToken = token;
+    if (isAccessTokenExpired() && getRefreshToken()) {
+      currentToken = await getNewToken();
+    }
+    config.headers.Authorization = `Bearer ${currentToken}`;
   } catch (err) {
     return handleRefreshFailed(err);
   }
@@ -72,7 +96,12 @@ api.interceptors.response.use(
   async (error) => {
     const { config: originalRequest, response } = error;
 
-    if (originalRequest._retry || response?.status !== 401 || originalRequest.url === "/Auth/refresh") {
+    if (
+      !originalRequest ||
+      originalRequest._retry ||
+      response?.status !== 401 ||
+      originalRequest.url?.includes("/Auth/refresh")
+    ) {
       return Promise.reject(error);
     }
 
