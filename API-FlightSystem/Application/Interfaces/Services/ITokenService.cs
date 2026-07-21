@@ -7,5 +7,6 @@ namespace Application.Interfaces.Services
     {
         Task<SignInDto> GenerateAsync(User user);
         string? GetJwtId(string accessToken);
+        string HashToken(string rawToken);
     }
 }

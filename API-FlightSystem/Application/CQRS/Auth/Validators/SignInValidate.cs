@@ -7,11 +7,11 @@ namespace Application.CQRS.Auth.Validators
     {
         public SignInValidate()
         {
-            RuleFor(x => x.LoginId)
-                .NotEmpty().WithMessage("Email hoặc tên đăng nhập không được để trống.");
+            RuleFor(x => x.Username)
+                .NotEmpty().WithMessage("Tên đăng nhập không được để trống");
 
             RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("Mật khẩu không được để trống.");
+                .NotEmpty().WithMessage("Mật khẩu không được để trống");
         }
     }
 }

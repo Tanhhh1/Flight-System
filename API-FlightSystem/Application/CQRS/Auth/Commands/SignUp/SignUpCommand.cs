@@ -1,10 +1,9 @@
 ﻿using Application.Common;
-using Application.CQRS.Auth.DTOs;
 using MediatR;
 
 namespace Application.CQRS.Auth.Commands.SignUp
 {
-    public class SignUpCommand : IRequest<ApiResult<string>>
+    public class SignUpCommand : IRequest<ApiResult<bool>>
     {
         public string Fullname { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;

@@ -6,41 +6,42 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Application.CQRS.Auth.Commands.SignUp
 {
-    public class SignUpHandler : IRequestHandler<SignUpCommand, ApiResult<string>>
+    public class SignUpHandler : IRequestHandler<SignUpCommand, ApiResult<bool>>
     {
+        private const string DefaultRole = "User";
         private readonly UserManager<User> _userManager;
         public SignUpHandler(UserManager<User> userManager)
         {
             _userManager = userManager;
         }
 
-        public async Task<ApiResult<string>> Handle(SignUpCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResult<bool>> Handle(SignUpCommand request, CancellationToken cancellationToken)
         {
-            var existingEmail = await _userManager.FindByEmailAsync(request.Email);
-            if (existingEmail is not null)
-                return ApiResult<string>.Failure([new FieldError("Email", "Email đã được sử dụng")]);
+            var existingByUsername = await _userManager.FindByNameAsync(request.UserName);
+            if (existingByUsername is not null)
+                return ApiResult<bool>.Failure([new FieldError("Username", "Tên đăng nhập đã tồn tại")]);
 
-            var existingUsername = await _userManager.FindByNameAsync(request.UserName);
-            if (existingUsername is not null)
-                return ApiResult<string>.Failure([new FieldError("Username", "Username đã được sử dụng")]);
+            var existingByEmail = await _userManager.FindByEmailAsync(request.Email);
+            if (existingByEmail is not null)
+                return ApiResult<bool>.Failure([new FieldError("Email", "Email đã được sử dụng")]);
 
             var user = request.Adapt<User>();
 
-            var result = await _userManager.CreateAsync(user, request.Password);
-            if (!result.Succeeded)
+            var signUpResult = await _userManager.CreateAsync(user, request.Password);
+            if (!signUpResult.Succeeded)
             {
-                var errors = result.Errors.Select(e => new FieldError(null, e.Description));
-                return ApiResult<string>.Failure(errors);
+                var errors = signUpResult.Errors.Select(e => new FieldError(null, e.Description));
+                return ApiResult<bool>.Failure(errors);
             }
 
-            var addRoleResult = await _userManager.AddToRoleAsync(user, "User");
-            if (!addRoleResult.Succeeded)
+            var roleResult = await _userManager.AddToRoleAsync(user, DefaultRole);
+            if (!roleResult.Succeeded)
             {
-                var errors = addRoleResult.Errors.Select(e => new FieldError(null, e.Description));
-                return ApiResult<string>.Failure(errors);
+                var errors = roleResult.Errors.Select(e => new FieldError(null, e.Description));
+                return ApiResult<bool>.Failure(errors);
             }
 
-            return ApiResult<string>.Success("Đăng ký thành công.");
+            return ApiResult<bool>.Success(true);
         }
     }
 }

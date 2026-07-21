@@ -8,35 +8,28 @@ namespace Infrastructure.Persistences.Configuration
     {
         public void Configure(EntityTypeBuilder<RefreshToken> builder)
         {
-            builder.HasKey(x => x.Id);
+            builder.ToTable("RefreshTokens");
 
-            builder.Property(x => x.Token)
-                .HasMaxLength(500) 
+            builder.HasKey(rt => rt.Id);
+
+            builder.Property(rt => rt.Token)
+                .HasMaxLength(500)
                 .IsRequired();
 
-            builder.Property(x => x.JwtId)
-                .HasMaxLength(150) 
+            builder.Property(rt => rt.ExpiresAt)
                 .IsRequired();
 
-            builder.Property(x => x.ExpiryTime)
-                .IsRequired();
-
-            builder.Property(x => x.InRevoked)
+            builder.Property(rt => rt.IsRevoked)
                 .HasDefaultValue(false)
                 .IsRequired();
 
-            builder.Property(x => x.IsUsed)
-                .HasDefaultValue(false)
-                .IsRequired();
+            builder.HasIndex(rt => rt.Token)
+                .IsUnique();
 
-            builder.HasOne(x => x.User)
-                .WithMany(u => u.RefreshTokens) 
-                .HasForeignKey(x => x.UserId)
+            builder.HasOne(rt => rt.User)
+                .WithMany()
+                .HasForeignKey(rt => rt.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasIndex(x => x.Token)
-                .IsUnique()
-                .HasDatabaseName("UX_RefreshToken_Token");
         }
     }
 }

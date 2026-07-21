@@ -15,11 +15,10 @@ namespace Shared.Helpers
             var credentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSetting.SecretKey)), SecurityAlgorithms.HmacSha256Signature);
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub,        user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti,        Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email,      user.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
-                new Claim(JwtRegisteredClaimNames.Name,       user.Fullname),
+                new Claim(JwtRegisteredClaimNames.Name, user.Fullname),
             };
             claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r ?? "")));
 

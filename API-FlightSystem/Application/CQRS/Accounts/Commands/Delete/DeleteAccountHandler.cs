@@ -34,14 +34,14 @@ namespace Application.CQRS.Accounts.Commands.Delete
             if (user.IsActive)
             {
                 var activeTokens = await _unitOfWork.RefreshTokenRepository
-                    .GetByCondition(t => t.UserId == request.UserId && !t.InRevoked && !t.IsUsed)
+                    .GetByCondition(t => t.UserId == request.UserId && !t.IsRevoked)
                     .ToListAsync(cancellationToken);
 
                 if (activeTokens.Any())
                 {
                     foreach (var token in activeTokens)
                     {
-                        token.InRevoked = true;
+                        token.IsRevoked = true;
                         _unitOfWork.RefreshTokenRepository.Update(token);
                     }
                     await _unitOfWork.SaveChangesAsync();

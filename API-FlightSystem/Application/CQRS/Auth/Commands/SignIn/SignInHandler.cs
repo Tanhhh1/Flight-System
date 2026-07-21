@@ -1,22 +1,20 @@
 ﻿using Application.Common;
 using Application.CQRS.Auth.DTOs;
-using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Application.Interfaces.UnitOfWork;
 using Domain.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Shared.Identity;
 
 namespace Application.CQRS.Auth.Commands.SignIn
 {
     public class SignInHandler : IRequestHandler<SignInCommand, ApiResult<SignInDto>>
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;
         private readonly ITokenService _tokenService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public SignInHandler(UserManager<User> userManager, IUnitOfWork unitOfWork, ITokenService tokenService)
+        public SignInHandler(UserManager<User> userManager, ITokenService tokenService, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _tokenService = tokenService;
@@ -25,40 +23,29 @@ namespace Application.CQRS.Auth.Commands.SignIn
 
         public async Task<ApiResult<SignInDto>> Handle(SignInCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByNameAsync(request.LoginId);
+            var user = await _userManager.FindByNameAsync(request.Username);
             if (user is null)
-                user = await _userManager.FindByEmailAsync(request.LoginId);
-
-            if (user is null)
-                return ApiResult<SignInDto>.Failure("Email, tên đăng nhập hoặc mật khẩu không chính xác");
+                return ApiResult<SignInDto>.Failure("Tên đăng nhập hoặc mật khẩu không chính xác");
 
             if (!user.IsActive)
-                return ApiResult<SignInDto>.Failure("Tài khoản đã bị vô hiệu hóa");
+                return ApiResult<SignInDto>.Failure("Tài khoản của bạn đã bị khóa");
 
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
             if (!isPasswordValid)
-                return ApiResult<SignInDto>.Failure("Email, tên đăng nhập hoặc mật khẩu không chính xác");
+                return ApiResult<SignInDto>.Failure("Tên đăng nhập hoặc mật khẩu không chính xác");
 
-            var tokenResult = await _tokenService.GenerateAsync(user);
+            var signInResult = await _tokenService.GenerateAsync(user);
 
-            await _unitOfWork.RefreshTokenRepository.AddAsync(new Domain.Identity.RefreshToken
+            var refreshToken = new Domain.Identity.RefreshToken
             {
                 UserId = user.Id,
-                JwtId = tokenResult.JwtId,
-                Token = tokenResult.RefreshToken,
-                ExpiryTime = tokenResult.RefreshTokenExpires,
-                IsUsed = false,
-                InRevoked = false,
-                CreatedAt = DateTime.UtcNow,
-            });
+                Token = _tokenService.HashToken(signInResult.RefreshToken),
+                ExpiresAt = signInResult.RefreshTokenExpires,
+                IsRevoked = false
+            };
 
-            return ApiResult<SignInDto>.Success(new SignInDto
-            {
-                AccessToken = tokenResult.AccessToken,
-                RefreshToken = tokenResult.RefreshToken,
-                AccessTokenExpires = tokenResult.AccessTokenExpires,
-                RefreshTokenExpires = tokenResult.RefreshTokenExpires
-            });
+            await _unitOfWork.RefreshTokenRepository.AddAsync(refreshToken);
+            return ApiResult<SignInDto>.Success(signInResult);
         }
     }
 }

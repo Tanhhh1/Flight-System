@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Auth.Commands.RefreshToken
 {
-    public class RefreshTokenHandler : IRequestHandler<RefreshTokenCommand, ApiResult<RefreshTokenDto>>
+    public class RefreshTokenHandler : IRequestHandler<RefreshTokenCommand, ApiResult<SignInDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenService _tokenService;
@@ -22,62 +22,42 @@ namespace Application.CQRS.Auth.Commands.RefreshToken
             _userManager = userManager;
         }
 
-        public async Task<ApiResult<RefreshTokenDto>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResult<SignInDto>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            var jwtId = _tokenService.GetJwtId(request.AccessToken);
-            if (jwtId is null)
-                return ApiResult<RefreshTokenDto>.Failure("Access token không hợp lệ");
+            var hashedToken = _tokenService.HashToken(request.RefreshToken);
 
-            var refreshToken = await _unitOfWork.RefreshTokenRepository
-                .GetByCondition(x => x.Token == request.RefreshToken)
+            var existingToken = await _unitOfWork.RefreshTokenRepository
+                .GetByCondition(rt => rt.Token == hashedToken)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (refreshToken is null)
-                return ApiResult<RefreshTokenDto>.Failure("Refresh token không tồn tại");
+            if (existingToken is null)
+                return ApiResult<SignInDto>.Failure("Refresh token không hợp lệ hoặc đã hết hạn");
 
-            if (refreshToken.IsUsed)
-                return ApiResult<RefreshTokenDto>.Failure("Refresh token đã được sử dụng");
+            if (existingToken.IsRevoked)
+                return ApiResult<SignInDto>.Failure("Refresh token không hợp lệ hoặc đã hết hạn");
 
-            if (refreshToken.InRevoked)
-                return ApiResult<RefreshTokenDto>.Failure("Refresh token đã bị thu hồi");
+            if (existingToken.ExpiresAt <= DateTime.UtcNow)
+                return ApiResult<SignInDto>.Failure("Refresh token không hợp lệ hoặc đã hết hạn");
 
-            if (refreshToken.ExpiryTime < DateTime.UtcNow)
-                return ApiResult<RefreshTokenDto>.Failure("Refresh token đã hết hạn");
-
-            if (refreshToken.JwtId != jwtId)
-                return ApiResult<RefreshTokenDto>.Failure("Token không khớp");
-
-            refreshToken.IsUsed = true;
-            _unitOfWork.RefreshTokenRepository.Update(refreshToken);
-
-            var user = await _userManager.FindByIdAsync(refreshToken.UserId.ToString());
+            var user = await _userManager.FindByIdAsync(existingToken.UserId.ToString());
             if (user is null)
-                return ApiResult<RefreshTokenDto>.Failure("Người dùng không tồn tại");
+                return ApiResult<SignInDto>.Failure("Refresh token không hợp lệ hoặc đã hết hạn");
 
-            if (!user.IsActive)
-                return ApiResult<RefreshTokenDto>.Failure("Tài khoản đã bị vô hiệu hóa");
+            existingToken.IsRevoked = true;
+            _unitOfWork.RefreshTokenRepository.Update(existingToken);
 
-            var tokenResult = await _tokenService.GenerateAsync(user);
+            var signInResult = await _tokenService.GenerateAsync(user);
 
-            await _unitOfWork.RefreshTokenRepository.AddAsync(new Domain.Identity.RefreshToken
+            var newRefreshToken = new Domain.Identity.RefreshToken
             {
                 UserId = user.Id,
-                JwtId = tokenResult.JwtId,
-                Token = tokenResult.RefreshToken,
-                ExpiryTime = tokenResult.RefreshTokenExpires,
-                IsUsed = false,
-                InRevoked = false,
-                CreatedAt = DateTime.UtcNow,
-            });
+                Token = _tokenService.HashToken(signInResult.RefreshToken),
+                ExpiresAt = signInResult.RefreshTokenExpires,
+                IsRevoked = false
+            };
 
-            await _unitOfWork.SaveChangesAsync();
-
-            return ApiResult<RefreshTokenDto>.Success(new RefreshTokenDto
-            {
-                AccessToken = tokenResult.AccessToken,
-                RefreshToken = tokenResult.RefreshToken,
-                AccessTokenExpires = tokenResult.AccessTokenExpires
-            });
+            await _unitOfWork.RefreshTokenRepository.AddAsync(newRefreshToken);
+            return ApiResult<SignInDto>.Success(signInResult);
         }
     }
 }
