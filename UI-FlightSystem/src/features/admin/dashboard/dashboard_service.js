@@ -1,6 +1,6 @@
-import api from "@/configs/axios_config";
+import http from "@/api/http";
 
 export const dashboardService = {
-    getSummary: () => api.get("/admin/Dashboard/summary"),
-    getRevenue: (year) => api.get("/admin/Dashboard/revenue", { params: { year } }),
+    getSummary() {return http.get("/admin/Dashboard/summary")},
+    getRevenue(year) {return http.get("/admin/Dashboard/revenue", {params: { year }})},
 };
