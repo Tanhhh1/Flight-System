@@ -2,6 +2,8 @@
 using Application.CQRS.SeatReserve.DTOs;
 using Application.Interfaces.UnitOfWork;
 using Domain.Enums;
+using Mapster;
+using MapsterMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,59 +20,29 @@ namespace Application.CQRS.SeatReserve.Queries.Verify
 
         public async Task<ApiResult<VerifyBookingDto>> Handle(VerifyBookingQuery request, CancellationToken cancellationToken)
         {
-            var booking = await _unitOfWork.BookingRepository
+            var bookingValidation = await _unitOfWork.BookingRepository
                 .GetByCondition(b => b.BookingCode == request.BookingCode)
-                .Include(b => b.SeatClass)
-                .Include(b => b.BookingDetails).ThenInclude(bd => bd.Passenger)
-                .Include(b => b.BookingDetails).ThenInclude(bd => bd.Flight).ThenInclude(f => f.Route).ThenInclude(r => r.OriginAirport)
-                .Include(b => b.BookingDetails).ThenInclude(bd => bd.Flight).ThenInclude(f => f.Route).ThenInclude(r => r.DestinationAirport)
-                .Include(b => b.BookingDetails).ThenInclude(bd => bd.FlightSeat!).ThenInclude(fs => fs.SeatTemplate)
+                .AsNoTracking()
+                .Select(b => new { b.Status, HasInvalidFlight = b.BookingDetails.Any(bd => bd.Flight != null &&
+                        (bd.Flight.Status == FlightStatus.Completed || bd.Flight.Status == FlightStatus.Cancelled))})
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (booking is null)
-                return ApiResult<VerifyBookingDto>.Failure("Booking code không hợp lệ.");
-            if (booking.Status != BookingStatus.Confirmed)
-            {
-                return ApiResult<VerifyBookingDto>.Failure("Đơn đặt chỗ chưa được thanh toán hoặc đã bị hủy.");
-            }
+            if (bookingValidation is null)
+                return ApiResult<VerifyBookingDto>.Failure("Mã đơn vé không hợp lệ");
 
-            bool hasInvalidFlight = booking.BookingDetails
-                .Any(bd => bd.Flight is not null &&
-                          (bd.Flight.Status == FlightStatus.Completed || bd.Flight.Status == FlightStatus.Cancelled));
+            if (bookingValidation.Status != BookingStatus.Confirmed)
+                return ApiResult<VerifyBookingDto>.Failure("Đơn đặt chỗ chưa được thanh toán hoặc đã bị hủy");
 
-            if (hasInvalidFlight)
-            {
-                return ApiResult<VerifyBookingDto>.Failure("Chuyến bay đã hoàn thành hoặc đã bị hủy, không thể thực hiện đặt ghế.");
-            }
+            if (bookingValidation.HasInvalidFlight)
+                return ApiResult<VerifyBookingDto>.Failure("Chuyến bay đã hoàn thành hoặc đã bị hủy, không thể thực hiện đặt ghế");
 
-            var flightGroups = booking.BookingDetails
-                .GroupBy(bd => bd.BookingFlightId)
-                .Select(g => new VerifyBookingFlightDto
-                {
-                    FlightId = g.Key,
-                    OriginCode = g.First().Flight.Route.OriginAirport.AirportCode,
-                    DestinationCode = g.First().Flight.Route.DestinationAirport.AirportCode,
-                    DepartureTime = g.First().Flight.DepartureTime,
-                    Passengers = g.Select(bd => new BookingPassengerDto
-                    {
-                        BookingDetailId = bd.BookingDetailId,
-                        PassengerId = bd.PassengerId,
-                        FullName = bd.Passenger.FullName,
-                        Gender = bd.Passenger.Gender,
-                        FlightSeatId = bd.FlightSeatId,
-                        SeatNumber = bd.FlightSeat is not null ? bd.FlightSeat.SeatTemplate?.SeatNumber : null
-                    }).ToList() 
-                }).ToList();
+            var dto = await _unitOfWork.BookingRepository
+                .GetByCondition(b => b.BookingCode == request.BookingCode)
+                .AsNoTracking()
+                .ProjectToType<VerifyBookingDto>()
+                .FirstOrDefaultAsync(cancellationToken);
 
-            return ApiResult<VerifyBookingDto>.Success(new VerifyBookingDto
-            {
-                BookingId = booking.BookingId,
-                BookingCode = booking.BookingCode,
-                ClassId = booking.ClassId,
-                ClassName = booking.SeatClass.ClassName,
-                TripType = booking.TripType,
-                Flights = flightGroups
-            });
+            return ApiResult<VerifyBookingDto>.Success(dto!);
         }
     }
 }

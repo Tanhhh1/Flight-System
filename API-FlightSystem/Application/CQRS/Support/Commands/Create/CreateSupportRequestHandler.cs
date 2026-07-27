@@ -23,9 +23,6 @@ namespace Application.CQRS.Support.Commands.Create
 
         public async Task<ApiResult<SupportRequestDto>> Handle(CreateSupportRequestCommand request, CancellationToken cancellationToken)
         {
-            if (!_currentUser.IsAuthenticated || _currentUser.Id is null)
-                return ApiResult<SupportRequestDto>.Failure("Bạn cần đăng nhập");
-
             var booking = await _unitOfWork.BookingRepository
                 .GetByCondition(b => b.BookingId == request.BookingId && b.UserId == _currentUser.Id)
                 .Include(b => b.BookingDetails)

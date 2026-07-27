@@ -26,15 +26,13 @@ namespace Application.CQRS.Airlines.Commands.Delete
                 return ApiResult<AirlineDto>.Failure("Hãng bay đã bị vô hiệu hóa trước đó");
 
             bool activePlane = await _unitOfWork.PlaneRepository
-                .GetByCondition(p => p.AirlineId == request.AirlineId
-                                  && (p.Status == FlightStatus.Active || p.Status == FlightStatus.Suspended))
+                .GetByCondition(p => p.AirlineId == request.AirlineId && (p.Status == FlightStatus.Active || p.Status == FlightStatus.Suspended))
                 .AnyAsync(cancellationToken);
             if (activePlane)
                 return ApiResult<AirlineDto>.Failure("Không thể vô hiệu hóa vì hãng bay đang có máy bay hoạt động hoặc tạm ngưng");
 
             bool unfinishedFlight = await _unitOfWork.FlightRepository
-                .GetByCondition(f => f.Plane.AirlineId == request.AirlineId
-                                  && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
+                .GetByCondition(f => f.Plane.AirlineId == request.AirlineId && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
                 .AnyAsync(cancellationToken);
             if (unfinishedFlight)
                 return ApiResult<AirlineDto>.Failure("Không thể vô hiệu hóa vì hãng bay vẫn còn chuyến bay chưa hoàn thành");

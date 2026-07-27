@@ -19,7 +19,7 @@ namespace Application.CQRS.Accounts.Commands.Update
         {
             var user = await _userManager.FindByIdAsync(request.UserId.ToString());
             if (user is null)
-                return ApiResult<AccountDto>.Failure([new FieldError(null, "Tài khoản không tồn tại")]);
+                return ApiResult<AccountDto>.Failure("Tài khoản không tồn tại");
 
             var existingByEmail = await _userManager.FindByEmailAsync(request.Email);
             if (existingByEmail is not null && existingByEmail.Id != request.UserId)
@@ -36,7 +36,7 @@ namespace Application.CQRS.Accounts.Commands.Update
 
             var currentRoles = await _userManager.GetRolesAsync(user);
             if (currentRoles.Contains("user"))
-                return ApiResult<AccountDto>.Failure([new FieldError(null, "Không thể chỉnh sửa tài khoản người dùng thông thường.")]);
+                return ApiResult<AccountDto>.Failure("Không thể chỉnh sửa tài khoản người dùng thông thường");
 
             var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
             if (!removeResult.Succeeded)

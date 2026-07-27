@@ -28,9 +28,7 @@ namespace Application.CQRS.Airports.Commands.Delete
                 return ApiResult<AirportDto>.Failure("Sân bay đã bị vô hiệu hóa trước đó");
 
             var activeRoute = await _unitOfWork.RouteRepository
-                .GetByCondition(r => r.Status == FlightStatus.Active
-                                  && (r.OriginAirportId == request.AirportId
-                                   || r.DestinationAirportId == request.AirportId))
+                .GetByCondition(r => r.Status == FlightStatus.Active && (r.OriginAirportId == request.AirportId || r.DestinationAirportId == request.AirportId))
                 .AnyAsync(cancellationToken);
             if (activeRoute)
                 return ApiResult<AirportDto>.Failure("Sân bay đang được sử dụng trong tuyến bay hoạt động");

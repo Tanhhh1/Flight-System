@@ -20,9 +20,6 @@ namespace Application.CQRS.Profile.Commands.Update
 
         public async Task<ApiResult<UserProfileDto>> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
         {
-            if (!_currentUser.IsAuthenticated || _currentUser.Id is null)
-                return ApiResult<UserProfileDto>.Failure("Người dùng chưa đăng nhập");
-
             var user = await _userManager.FindByIdAsync(_currentUser.Id.ToString()!);
             if (user is null)
                 return ApiResult<UserProfileDto>.Failure("Không tìm thấy người dùng");

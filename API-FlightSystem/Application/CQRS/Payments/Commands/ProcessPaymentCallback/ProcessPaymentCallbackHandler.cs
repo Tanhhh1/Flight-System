@@ -16,11 +16,11 @@ namespace Application.CQRS.Payments.Commands.ProcessPaymentCallback
     public class ProcessPaymentCallbackHandler : IRequestHandler<ProcessPaymentCallbackCommand, ApiResult<ProcessCallbackDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IPaymentGateway _gateway;
+        private readonly IVNPayService _gateway;
         private readonly IEmailService _emailService;
         private readonly UserManager<User> _userManager;
 
-        public ProcessPaymentCallbackHandler(IUnitOfWork unitOfWork, IPaymentGateway gateway, IEmailService emailService, UserManager<User> userManager)
+        public ProcessPaymentCallbackHandler(IUnitOfWork unitOfWork, IVNPayService gateway, IEmailService emailService, UserManager<User> userManager)
         {
             _unitOfWork = unitOfWork;
             _gateway = gateway;
@@ -67,15 +67,18 @@ namespace Application.CQRS.Payments.Commands.ProcessPaymentCallback
             {
                 var flightPassengerCounts = booking.BookingDetails
                     .GroupBy(bd => bd.BookingFlightId)
-                    .Select(g => new { FlightId = g.Key, PassengerCount = g.Count() });
+                    .Select(g => new { FlightId = g.Key, PassengerCount = g.Count() })
+                    .ToList();
+
+                var flightIds = flightPassengerCounts.Select(x => x.FlightId).ToList();
+
+                var seatPrices = await _unitOfWork.FlightSeatPriceRepository
+                    .GetByCondition(p => flightIds.Contains(p.FlightId) && p.ClassId == booking.ClassId)
+                    .ToListAsync(cancellationToken);
 
                 foreach (var item in flightPassengerCounts)
                 {
-                    var seatPrice = await _unitOfWork.FlightSeatPriceRepository
-                        .GetByCondition(p => p.FlightId == item.FlightId
-                                         && p.ClassId == booking.ClassId)
-                        .FirstOrDefaultAsync(cancellationToken);
-
+                    var seatPrice = seatPrices.FirstOrDefault(p => p.FlightId == item.FlightId);
                     if (seatPrice is not null)
                     {
                         seatPrice.AvailableSeats = Math.Max(0, seatPrice.AvailableSeats - item.PassengerCount);
@@ -94,6 +97,8 @@ namespace Application.CQRS.Payments.Commands.ProcessPaymentCallback
                 {
                     var bookingDetail = await _unitOfWork.BookingRepository
                         .GetByCondition(b => b.BookingId == booking.BookingId)
+                        .AsNoTracking()
+                        .AsSplitQuery()
                         .Include(b => b.User)
                         .Include(b => b.SeatClass)
                         .Include(b => b.BookingDetails).ThenInclude(bd => bd.Flight).ThenInclude(f => f.Plane).ThenInclude(p => p.Airline)
@@ -106,44 +111,47 @@ namespace Application.CQRS.Payments.Commands.ProcessPaymentCallback
 
                     var bookingDto = bookingDetail!.Adapt<BookingByIdDto>();
 
-                    var flights = bookingDto.Flights.Select(f => new FlightEmailDto(
-                        OriginAirport: f.OriginAirport,
-                        OriginAirportName: f.OriginAirportName,
-                        DestinationAirport: f.DestinationAirport,
-                        DestinationAirportName: f.DestinationAirportName,
-                        DepartureTime: f.DepartureTime,
-                        ArrivalTime: f.ArrivalTime,
-                        AirlineName: f.AirlineName,
-                        PlaneModel: f.PlaneModel,
-                        Passengers: f.Passengers.Select(p => new PassengerEmailDto(
-                            FullName: p.FullName,
-                            Gender: p.Gender,
-                            UnitPrice: p.UnitPrice
-                        )).ToList()
-                    )).ToList();
+                    var flights = bookingDto.Flights.Select(f => new FlightEmailDto
+                    {
+                        OriginAirport = f.OriginAirport,
+                        OriginAirportName = f.OriginAirportName,
+                        DestinationAirport = f.DestinationAirport,
+                        DestinationAirportName = f.DestinationAirportName,
+                        DepartureTime = f.DepartureTime,
+                        ArrivalTime = f.ArrivalTime,
+                        AirlineName = f.AirlineName,
+                        PlaneModel = f.PlaneModel,
+                        Passengers = f.Passengers.Select(p => new PassengerEmailDto
+                        {
+                            FullName = p.FullName,
+                            Gender = p.Gender,
+                            UnitPrice = p.UnitPrice
+                        }).ToList()
+                    }).ToList();
 
-                    _ = _emailService.SendBookingConfirmationAsync(new BookingConfirmationEmailDto(
-                        ToEmail: user.Email!,
-                        CustomerName: user.Fullname,
-                        BookingCode: booking.BookingCode,
-                        TripType: booking.TripType switch
+                    _ = _emailService.SendBookingConfirmationAsync(new BookingConfirmationEmailDto
+                    {
+                        ToEmail = user.Email!,
+                        CustomerName = user.Fullname,
+                        BookingCode = booking.BookingCode,
+                        TripType = booking.TripType switch
                         {
                             TripType.OneWay => "Một chiều",
                             TripType.RoundTrip => "Khứ hồi",
                             TripType.MultiCity => "Nhiều điểm đến",
                             _ => booking.TripType.ToString()
                         },
-                        PaymentMethod: payment.Method switch
+                        PaymentMethod = payment.Method switch
                         {
                             PaymentMethod.DomesticCard => "Thẻ nội địa",
                             PaymentMethod.EWallet => "Ví điện tử",
                             PaymentMethod.InternationalCard => "Thẻ quốc tế",
                             _ => payment.Method.ToString()
                         },
-                        TotalPrice: booking.TotalPrice,
-                        BookingDate: booking.BookingDate,
-                        Flights: flights
-                    ));
+                        TotalPrice = booking.TotalPrice,
+                        BookingDate = booking.BookingDate,
+                        Flights = flights
+                    });
                 }
             }
 

@@ -27,12 +27,8 @@ namespace Application.CQRS.SeatReserve.Commands.HoldSeat
 
         public async Task<ApiResult<HoldSeatDto>> Handle(HoldSeatCommand request, CancellationToken cancellationToken)
         {
-            var userId = _currentUser.Id;
-            if (userId is null)
-                return ApiResult<HoldSeatDto>.Failure("Bạn chưa đăng nhập.");
-
             var booking = await _unitOfWork.BookingRepository
-                .GetByCondition(b => b.BookingId == request.BookingId && b.UserId == userId)
+                .GetByCondition(b => b.BookingId == request.BookingId && b.UserId == _currentUser.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (booking is null)

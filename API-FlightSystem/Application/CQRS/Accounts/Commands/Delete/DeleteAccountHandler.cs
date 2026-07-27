@@ -25,11 +25,11 @@ namespace Application.CQRS.Accounts.Commands.Delete
         public async Task<ApiResult<AccountDto>> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
         {
             if (_currentUser.IsAuthenticated && _currentUser.Id == request.UserId)
-                return ApiResult<AccountDto>.Failure([new FieldError(null, "Bạn không thể tự khóa tài khoản của chính mình")]);
+                return ApiResult<AccountDto>.Failure("Bạn không thể tự khóa tài khoản của chính mình");
 
             var user = await _userManager.FindByIdAsync(request.UserId.ToString());
             if (user is null)
-                return ApiResult<AccountDto>.Failure([new FieldError(null, "Tài khoản không tồn tại")]);
+                return ApiResult<AccountDto>.Failure("Tài khoản không tồn tại");
 
             if (user.IsActive)
             {

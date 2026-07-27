@@ -1,13 +1,11 @@
 ﻿using Application.Common;
 using Application.CQRS.Flights.DTOs;
-using Application.Interfaces.CQRS;
 using MediatR;
 
 namespace Application.CQRS.Flights.Commands.Create
 {
-    public class CreateFlightCommand : IRequest<ApiResult<FlightDto>>, ICommand, IInvalidateCache
+    public class CreateFlightCommand : IRequest<ApiResult<FlightDto>>
     {
-        public IEnumerable<string> InvalidatePrefixes => ["Flight"];
         public int PlaneId { get; set; }
         public int RouteId { get; set; }
         public bool IsRefund { get; set; }

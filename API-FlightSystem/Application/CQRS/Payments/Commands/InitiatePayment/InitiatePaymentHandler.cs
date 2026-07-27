@@ -11,9 +11,9 @@ namespace Application.CQRS.Payments.Commands.InitiatePayment
     public class InitiatePaymentHandler : IRequestHandler<InitiatePaymentCommand, ApiResult<InitiateDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IPaymentGateway _gateway;
+        private readonly IVNPayService _gateway;
 
-        public InitiatePaymentHandler(IUnitOfWork unitOfWork, IPaymentGateway gateway)
+        public InitiatePaymentHandler(IUnitOfWork unitOfWork, IVNPayService gateway)
         {
             _unitOfWork = unitOfWork;
             _gateway = gateway;
@@ -29,17 +29,18 @@ namespace Application.CQRS.Payments.Commands.InitiatePayment
             if (booking.Status != BookingStatus.Pending)
                 return ApiResult<InitiateDto>.Failure("Mã đơn đặt vé không ở trạng thái chờ thanh toán");
 
-            var result = await _gateway.CreatePaymentUrlAsync(new PaymentRequest(
-                BookingId: booking.BookingId,
-                BookingCode: booking.BookingCode,
-                Amount: booking.TotalPrice,
-                Description: $"Thanh toan booking {booking.BookingCode}",
-                ReturnUrl: request.ReturnUrl,
-                IpAddress: request.ClientIp,
-                Method: request.Method
-            ));
+            var result = await _gateway.CreatePaymentUrlAsync(new VNPayUrlRequest
+            {
+                BookingId = booking.BookingId,
+                BookingCode = booking.BookingCode,
+                Amount = booking.TotalPrice,
+                Description = $"Thanh toan booking {booking.BookingCode}",
+                ReturnUrl = request.ReturnUrl,
+                IpAddress = request.ClientIp,
+                Method = request.Method
+            });
 
-            if (!result.Success)
+            if (!result.IsSuccess)
                 return ApiResult<InitiateDto>.Failure(result.ErrorMessage!);
 
             await _unitOfWork.PaymentRepository.AddAsync(new Payment

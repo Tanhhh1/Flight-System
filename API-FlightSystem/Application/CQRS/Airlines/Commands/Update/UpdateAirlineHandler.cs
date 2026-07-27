@@ -23,8 +23,7 @@ namespace Application.CQRS.Airlines.Commands.Update
                 return ApiResult<AirlineDto>.Failure("Hãng bay không tồn tại");
 
             bool unfinishedFlightFlight = await _unitOfWork.FlightRepository
-                .GetByCondition(f => f.Plane.AirlineId == request.AirlineId
-                                  && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
+                .GetByCondition(f => f.Plane.AirlineId == request.AirlineId && (f.Status == FlightStatus.Active || f.Status == FlightStatus.Delayed))
                 .AnyAsync(cancellationToken);
             if (unfinishedFlightFlight)
                 return ApiResult<AirlineDto>.Failure("Không thể cập nhật thông tin vì hãng bay đang có chuyến bay chưa hoàn thành");

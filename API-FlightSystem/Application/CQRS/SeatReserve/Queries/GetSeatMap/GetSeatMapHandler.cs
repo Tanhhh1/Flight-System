@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.CQRS.SeatReserve.DTOs;
 using Application.Interfaces.UnitOfWork;
+using Domain.Entities;
 using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -18,30 +19,27 @@ namespace Application.CQRS.SeatReserve.Queries.GetSeatMap
 
         public async Task<ApiResult<SeatMapDto>> Handle(GetSeatMapQuery request, CancellationToken cancellationToken)
         {
-            var bookingDetails = await _unitOfWork.BookingDetailRepository
+            var isBookingValid = await _unitOfWork.BookingDetailRepository
                 .GetByCondition(bd => bd.BookingId == request.BookingId && bd.BookingFlightId == request.FlightId)
-                .ToListAsync(cancellationToken);
+                .AsNoTracking()
+                .AnyAsync(cancellationToken);
 
-            if (!bookingDetails.Any())
+            if (!isBookingValid)
                 return ApiResult<SeatMapDto>.Failure("Chuyến bay không thuộc đơn đặt vé này");
 
             var seatTemplates = await _unitOfWork.SeatTemplateRepository
                 .GetByCondition()
                 .Include(st => st.SeatClass)
+                .AsNoTracking()
                 .ToListAsync(cancellationToken);
 
-            var now = DateTime.UtcNow;
             var flightSeats = await _unitOfWork.FlightSeatRepository
                 .GetByCondition(fs => fs.FlightId == request.FlightId)
-                .Include(fs => fs.BookingDetail)
+                .AsNoTracking()
                 .ToListAsync(cancellationToken);
 
             var flightSeatBySeatId = flightSeats.ToDictionary(fs => fs.SeatId);
-
-            var bookingDetailIds = bookingDetails.Select(bd => bd.BookingDetailId).ToHashSet();
-            var seatToPassengerMap = bookingDetails
-                .Where(bd => bd.FlightSeatId.HasValue)
-                .ToDictionary(bd => bd.FlightSeatId!.Value, bd => bd.PassengerId);
+            var now = DateTime.UtcNow;
 
             var classGroups = seatTemplates
                 .GroupBy(st => st.ClassId)
@@ -58,42 +56,8 @@ namespace Application.CQRS.SeatReserve.Queries.GetSeatMap
                             RowIndex = rowGroup.Key,
                             Seats = rowGroup
                                 .OrderBy(st => st.ColIndex)
-                                .Select(st =>
-                                {
-                                    flightSeatBySeatId.TryGetValue(st.SeatId, out var fs);
-
-                                    SeatStatus displayStatus;
-                                    int? lockedByPassengerId = null;
-                                    int flightSeatId = fs?.FlightSeatId ?? 0;
-
-                                    if (fs is null)
-                                    {
-                                        displayStatus = SeatStatus.Available;
-                                    }
-                                    else if (fs.Status == SeatStatus.Booked)
-                                    {
-                                        displayStatus = SeatStatus.Booked;
-                                    }
-                                    else if (fs.Status == SeatStatus.Locked && fs.LockedUntil > now)
-                                    {
-                                        displayStatus = SeatStatus.Locked;
-                                        lockedByPassengerId = fs.LockedBy;
-                                    }
-                                    else
-                                    {
-                                        displayStatus = SeatStatus.Available;
-                                    }
-
-                                    return new SeatCellDto
-                                    {
-                                        FlightSeatId = flightSeatId,
-                                        SeatId = st.SeatId,
-                                        SeatNumber = st.SeatNumber,
-                                        ColIndex = st.ColIndex,
-                                        Status = displayStatus,
-                                        LockedByPassengerId = lockedByPassengerId
-                                    };
-                                }).ToList()
+                                .Select(st => BuildSeatCellDto(st, flightSeatBySeatId, now))
+                                .ToList()
                         }).ToList()
                 }).ToList();
 
@@ -102,6 +66,38 @@ namespace Application.CQRS.SeatReserve.Queries.GetSeatMap
                 FlightId = request.FlightId,
                 ClassGroups = classGroups
             });
+        }
+
+        private static SeatCellDto BuildSeatCellDto(SeatTemplate st, IReadOnlyDictionary<int, FlightSeat> flightSeatBySeatId, DateTime now)
+        {
+            flightSeatBySeatId.TryGetValue(st.SeatId, out var fs);
+
+            SeatStatus displayStatus = SeatStatus.Available;
+            int? lockedByPassengerId = null;
+            int flightSeatId = fs?.FlightSeatId ?? 0;
+
+            if (fs is not null)
+            {
+                if (fs.Status == SeatStatus.Booked)
+                {
+                    displayStatus = SeatStatus.Booked;
+                }
+                else if (fs.Status == SeatStatus.Locked && fs.LockedUntil > now)
+                {
+                    displayStatus = SeatStatus.Locked;
+                    lockedByPassengerId = fs.LockedBy;
+                }
+            }
+
+            return new SeatCellDto
+            {
+                FlightSeatId = flightSeatId,
+                SeatId = st.SeatId,
+                SeatNumber = st.SeatNumber,
+                ColIndex = st.ColIndex,
+                Status = displayStatus,
+                LockedByPassengerId = lockedByPassengerId
+            };
         }
     }
 }

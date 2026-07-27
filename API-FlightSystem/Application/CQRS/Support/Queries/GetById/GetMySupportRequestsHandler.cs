@@ -21,9 +21,6 @@ namespace Application.CQRS.Support.Queries.GetById
 
         public async Task<ApiResult<PageList<SupportRequestDto>>> Handle(GetMySupportRequestsQuery request, CancellationToken cancellationToken)
         {
-            if (!_currentUser.IsAuthenticated || _currentUser.Id is null)
-                return ApiResult<PageList<SupportRequestDto>>.Failure("Bạn cần đăng nhập");
-
             var query = _unitOfWork.SupportRequestRepository
                 .GetByCondition(sr => sr.Booking.UserId == _currentUser.Id)
                 .OrderByDescending(sr => sr.CreatedAt);

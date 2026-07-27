@@ -23,10 +23,6 @@ namespace Application.CQRS.SeatReserve.Commands.ReleaseSeat
 
         public async Task<ApiResult<bool>> Handle(ReleaseSeatCommand request, CancellationToken cancellationToken)
         {
-            var userId = _currentUser.Id;
-            if (userId is null)
-                return ApiResult<bool>.Failure("Bạn chưa đăng nhập");
-
             var flightSeat = await _unitOfWork.FlightSeatRepository
                 .GetByCondition(fs =>
                     fs.FlightSeatId == request.FlightSeatId &&

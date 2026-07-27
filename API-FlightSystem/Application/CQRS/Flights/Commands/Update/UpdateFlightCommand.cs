@@ -1,14 +1,12 @@
 ﻿using Application.Common;
 using Application.CQRS.Flights.DTOs;
-using Application.Interfaces.CQRS;
 using Domain.Enums;
 using MediatR;
 
 namespace Application.CQRS.Flights.Commands.Update
 {
-    public class UpdateFlightCommand : IRequest<ApiResult<FlightDto>>, ICommand, IInvalidateCache
+    public class UpdateFlightCommand : IRequest<ApiResult<FlightDto>>
     {
-        public IEnumerable<string> InvalidatePrefixes => ["Flight"];
         public int FlightId { get; set; }
         public int PlaneId { get; set; }
         public int RouteId { get; set; }

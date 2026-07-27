@@ -24,7 +24,7 @@ namespace Application.CQRS.Airlines.Commands.Create
                 .AnyAsync(cancellationToken);
 
             if (existingAirline)
-                return ApiResult<AirlineDto>.Failure($"Mã hãng hàng không '{request.AirlineCode}' đã tồn tại.");
+                return ApiResult<AirlineDto>.Failure($"Mã hãng hàng không '{request.AirlineCode}' đã tồn tại");
 
             var airline = request.Adapt<Airline>();
             airline.Status = FlightStatus.Active;

@@ -8,34 +8,34 @@ namespace Application.CQRS.Accounts.Validators
         public CreateAccountValidate()
         {
             RuleFor(x => x.UserName)
-                .NotEmpty().WithMessage("Username không được để trống.")
-                .Matches("^[a-zA-Z0-9_]+$").WithMessage("Username chỉ được chứa chữ cái, số và dấu gạch dưới.");
+                .NotEmpty().WithMessage("Username không được để trống")
+                .Matches("^[a-zA-Z0-9_]+$").WithMessage("Username chỉ được chứa chữ cái, số và dấu gạch dưới");
 
             RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("Email không được để trống.")
-                .EmailAddress().WithMessage("Email không đúng định dạng.");
+                .NotEmpty().WithMessage("Email không được để trống")
+                .EmailAddress().WithMessage("Email không đúng định dạng");
 
             RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("Mật khẩu không được để trống.")
-                .MinimumLength(8).WithMessage("Mật khẩu tối thiểu 8 ký tự.")
-                .Matches(@"[A-Z]").WithMessage("Mật khẩu phải có ít nhất 1 chữ hoa.")
-                .Matches(@"[a-z]").WithMessage("Mật khẩu phải có ít nhất 1 chữ thường.")
-                .Matches(@"[0-9]").WithMessage("Mật khẩu phải có ít nhất 1 chữ số.")
-                .Matches(@"[^a-zA-Z0-9]").WithMessage("Mật khẩu phải có ít nhất 1 ký tự đặc biệt.");
+                .NotEmpty().WithMessage("Mật khẩu không được để trống")
+                .MinimumLength(8).WithMessage("Mật khẩu tối thiểu 8 ký tự")
+                .Matches(@"[A-Z]").WithMessage("Mật khẩu phải có ít nhất 1 chữ hoa")
+                .Matches(@"[a-z]").WithMessage("Mật khẩu phải có ít nhất 1 chữ thường")
+                .Matches(@"[0-9]").WithMessage("Mật khẩu phải có ít nhất 1 chữ số")
+                .Matches(@"[^a-zA-Z0-9]").WithMessage("Mật khẩu phải có ít nhất 1 ký tự đặc biệt");
 
             RuleFor(x => x.Fullname)
-                .NotEmpty().WithMessage("Họ tên không được để trống.")
-                .Matches(@"^[\p{L}\s]+$").WithMessage("Họ tên chỉ được chứa chữ cái và khoảng trắng.");
+                .NotEmpty().WithMessage("Họ tên không được để trống")
+                .Matches(@"^[\p{L}\s]+$").WithMessage("Họ tên chỉ được chứa chữ cái và khoảng trắng");
 
             RuleFor(x => x.PhoneNumber)
-                .Matches(@"^0[0-9]{9}$").WithMessage("Số điện thoại phải bắt đầu bằng 0, gồm 10 chữ số.")
+                .Matches(@"^0[0-9]{9}$").WithMessage("Số điện thoại phải bắt đầu bằng 0, gồm 10 chữ số")
                 .When(x => !string.IsNullOrEmpty(x.PhoneNumber));
 
             RuleFor(x => x.Gender)
-                .NotEmpty().WithMessage("Giới tính không được để trống.");
+                .NotEmpty().WithMessage("Giới tính không được để trống");
 
             RuleFor(x => x.RoleNames)
-                .NotEmpty().WithMessage("Phải chọn ít nhất một vai trò.");
+                .NotEmpty().WithMessage("Phải chọn ít nhất một vai trò");
         }
     }
 }

@@ -22,9 +22,6 @@ namespace Application.CQRS.Reviews.Queries.GetById
         }
         public async Task<ApiResult<PageList<ReviewDto>>> Handle(GetReviewByUserQuery request, CancellationToken cancellationToken)
         {
-            if (!_currentUser.IsAuthenticated || _currentUser.Id is null)
-                return ApiResult<PageList<ReviewDto>>.Failure("Bạn cần đăng nhập để xem lịch sử đánh giá");
-
             var review = _unitOfWork.ReviewRepository
                 .GetByCondition(b => b.UserId == _currentUser.Id)
                 .OrderByDescending(b => b.CreatedAt)

@@ -12,10 +12,10 @@ namespace Application.CQRS.Payments.Commands.RetryPayment
     public class RetryPaymentHandler : IRequestHandler<RetryPaymentCommand, ApiResult<InitiateDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IPaymentGateway _gateway;
+        private readonly IVNPayService _gateway;
         private const int MaxRetryCount = 3;
 
-        public RetryPaymentHandler(IUnitOfWork unitOfWork, IPaymentGateway gateway)
+        public RetryPaymentHandler(IUnitOfWork unitOfWork, IVNPayService gateway)
         {
             _unitOfWork = unitOfWork;
             _gateway = gateway;
@@ -39,17 +39,18 @@ namespace Application.CQRS.Payments.Commands.RetryPayment
             if (failedCount >= MaxRetryCount)
                 return ApiResult<InitiateDto>.Failure($"Đã vượt quá số lần thanh toán tối đa ({MaxRetryCount} lần)");
 
-            var result = await _gateway.CreatePaymentUrlAsync(new PaymentRequest(
-                BookingId: booking.BookingId,
-                BookingCode: booking.BookingCode,
-                Amount: booking.TotalPrice,
-                Description: $"Thanh toan lai booking {booking.BookingCode}",
-                ReturnUrl: request.ReturnUrl,
-                IpAddress: request.ClientIp,
-                Method: request.Method
-            ));
+            var result = await _gateway.CreatePaymentUrlAsync(new VNPayUrlRequest
+            {
+                BookingId = booking.BookingId,
+                BookingCode = booking.BookingCode,
+                Amount = booking.TotalPrice,
+                Description = $"Thanh toan lai booking {booking.BookingCode}",
+                ReturnUrl = request.ReturnUrl,
+                IpAddress = request.ClientIp,
+                Method = request.Method
+            });
 
-            if (!result.Success)
+            if (!result.IsSuccess)
                 return ApiResult<InitiateDto>.Failure(result.ErrorMessage!);
 
             booking.Status = BookingStatus.Pending;
