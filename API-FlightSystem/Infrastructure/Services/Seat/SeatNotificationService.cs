@@ -3,7 +3,7 @@ using Application.Interfaces.Hubs;
 using Domain.Enums;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Infrastructure.Services
+namespace Infrastructure.Services.Seat
 {
     public class SeatNotificationService : ISeatNotificationService
     {
