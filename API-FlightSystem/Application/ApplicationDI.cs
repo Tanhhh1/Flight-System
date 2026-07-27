@@ -17,7 +17,6 @@ namespace Application
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidateBehavior<,>));
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
-                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(CacheBehavior<,>));
             });
 
             services.AddValidatorsFromAssembly(typeof(ApplicationDI).Assembly);

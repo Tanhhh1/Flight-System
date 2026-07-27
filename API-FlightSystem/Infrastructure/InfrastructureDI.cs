@@ -2,7 +2,6 @@
 using Application.Interfaces.UnitOfWork;
 using Application.Interfaces.Hubs;
 using Application.Services;
-using Infrastructure.Caching;
 using Infrastructure.Database;
 using Infrastructure.Persistences;
 using Infrastructure.Services;
@@ -10,6 +9,8 @@ using Infrastructure.Uow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Infrastructure.Services.Email;
+using Infrastructure.Services.Seat;
 
 namespace Infrastructure
 {
@@ -31,8 +32,7 @@ namespace Infrastructure
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ICurrentUser, CurrentUser>();
             services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IPaymentGateway, VNPayGateway>();
-            services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
+            services.AddScoped<IVNPayService, VNPayService>();
             services.AddScoped<ISeatNotificationService, SeatNotificationService>();
             services.AddHostedService<FlightStatusUpdateService>();
             services.AddHostedService<SeatLockExpiryService>();
