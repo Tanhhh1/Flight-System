@@ -3,9 +3,9 @@ import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
 import Header from "@/layouts/user/header";
 import Footer from "@/layouts/user/footer";
-import LoginModal from "@/features/user/authentication/login";
-import RegisterModal from "@/features/user/authentication/register";
-import { openLoginModal } from "@/features/shared/auth/auth_slice";
+import LoginModal from "@/features/client/auth/login_modal";
+import RegisterModal from "@/features/client/auth/register_modal";
+import { openLoginModal } from "@/features/auth/auth_slice";
 import "./layout.css";
 
 function ClientLayout() {

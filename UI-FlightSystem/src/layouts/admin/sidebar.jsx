@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "@/features/shared/auth/auth_slice";
-import { adminPaths } from "@/configs/admin_routes";
+import { logout } from "@/features/auth/auth_slice";
+import { PATHS } from "@/app/routes/paths";
 
 import "./layout.css";
-import "@/components/shared/list_shared.css";
-import "@/components/shared/form_shared.css";
-import "@/components/table/table.css";
+import "@/components/styles/list_shared.css";
+import "@/components/styles/form_shared.css";
+import "@/components/styles/table.css";
 import userImage from "@/assets/images/user.png";
 
 const ROLE_LABEL = {
@@ -35,11 +35,11 @@ function Sidebar() {
 
     const handleLogout = async () => {
         await dispatch(logout());
-        navigate("/admin/login", { replace: true });
+        navigate(PATHS.ADMIN.LOGIN, { replace: true });
     };
 
     const roleLabel = ROLE_LABEL[user?.roles?.[0]] ?? "Người dùng";
-    const { admin } = adminPaths;
+    const adminRoot = PATHS.ADMIN.ROOT;
 
     return (
         <div className={active ? "sidebar active" : "sidebar"}>
@@ -53,13 +53,13 @@ function Sidebar() {
 
             <ul className="nav_list">
                 <li>
-                    <Link to={`${admin.root}/${admin.dashboard}`}>
+                    <Link to={PATHS.ADMIN.DASHBOARD}>
                         <i className="bx bxs-dashboard" />
                         <span className="links_name">Bảng điều khiển</span>
                     </Link>
                 </li>
                 <li>
-                    <Link to={`${admin.root}/${admin.accounts}`}>
+                    <Link to={PATHS.ADMIN.ACCOUNTS}>
                         <i className="bx bxs-user-account" />
                         <span className="links_name">Quản lý Tài khoản</span>
                     </Link>
@@ -77,25 +77,25 @@ function Sidebar() {
                     {openMenu === "category" && active && (
                         <ul className="sidebar_dropdown_menu">
                             <li>
-                                <Link to={`${admin.root}/${admin.airlines}`}>
+                                <Link to={PATHS.ADMIN.AIRLINES}>
                                     <i className="bx bxs-plane-take-off" />
                                     <span className="links_name">Quản lý Hãng bay</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={`${admin.root}/${admin.airports}`}>
+                                <Link to={PATHS.ADMIN.AIRPORTS}>
                                     <i className="bx bx-buildings" />
                                     <span className="links_name">Quản lý Sân bay</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={`${admin.root}/${admin.planes}`}>
+                                <Link to={PATHS.ADMIN.PLANES}>
                                     <i className="bx bxs-plane" />
                                     <span className="links_name">Quản lý Máy bay</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={`${admin.root}/${admin.routes}`}>
+                                <Link to={PATHS.ADMIN.ROUTES}>
                                     <i className="bx bx-map-alt" />
                                     <span className="links_name">Quản lý Tuyến bay</span>
                                 </Link>
@@ -105,12 +105,13 @@ function Sidebar() {
                 </li>
 
                 <li>
-                    <Link to={`${admin.root}/${admin.flights}`}>
+                    <Link to={PATHS.ADMIN.FLIGHTS}>
                         <i className="bx bxs-plane-alt" />
                         <span className="links_name">Quản lý Chuyến bay</span>
                     </Link>
                 </li>
 
+                {/* Dropdown Đơn đặt vé */}
                 <li className={openMenu === "booking" ? "has_dropdown open" : "has_dropdown"}>
                     <div className="dropdown_btn" onClick={() => toggleMenu("booking")}>
                         <div className="dropdown_title">
@@ -122,13 +123,13 @@ function Sidebar() {
                     {openMenu === "booking" && active && (
                         <ul className="sidebar_dropdown_menu">
                             <li>
-                                <Link to={`${admin.root}/${admin.bookings}`}>
+                                <Link to={PATHS.ADMIN.BOOKINGS}>
                                     <i className="bx bxs-book-content" />
                                     <span className="links_name">Danh sách đơn</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={`${admin.root}/${admin.support}`}>
+                                <Link to={PATHS.ADMIN.SUPPORT}>
                                     <i className="bx bx-support" />
                                     <span className="links_name">Yêu cầu hỗ trợ</span>
                                 </Link>
@@ -138,13 +139,13 @@ function Sidebar() {
                 </li>
 
                 <li>
-                    <Link to={`${admin.root}/${admin.services}`}>
+                    <Link to={PATHS.ADMIN.SERVICES}>
                         <i className="bx bxs-cog" />
                         <span className="links_name">Quản lý Dịch vụ</span>
                     </Link>
                 </li>
                 <li>
-                    <Link to={`${admin.root}/${admin.reviews}`}>
+                    <Link to={PATHS.ADMIN.REVIEWS}>
                         <i className="bx bxs-message-dots" />
                         <span className="links_name">Quản lý Đánh giá</span>
                     </Link>
@@ -154,7 +155,7 @@ function Sidebar() {
             <div className="profile_content">
                 <div className="profile">
                     <div className="profile_details">
-                        <Link to={`${admin.root}/${admin.profile}`}>
+                        <Link to={PATHS.ADMIN.PROFILE}>
                             <img src={userImage} alt="user" className="user-avatar" />
                             <div className="name_job">
                                 <div className="name">{user?.fullName ?? "Admin"}</div>
