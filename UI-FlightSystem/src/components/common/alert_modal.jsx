@@ -1,5 +1,5 @@
 import React from "react";
-import "./error.css";
+import "../styles/error.css"
 
 export default function AlertModal({ type, message, onClose }) {
   if (!message) return null;

@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { isAdminRole } from "@/constants/auth";
+import { isAdminRole } from "@/features/auth/auth_constants";
 
 function AdminProtectedRoute() {
     const { user } = useSelector((state) => state.auth);

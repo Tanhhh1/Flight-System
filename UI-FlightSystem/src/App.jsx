@@ -4,16 +4,20 @@ import { Suspense } from "react";
 import AdminLayout from "@/layouts/admin/index";
 import ClientLayout from "@/layouts/user/index";
 
-import AdminProtectedRoute from "@/components/protected/admin_protected";
-import ClientProtectedRoute from "@/components/protected/client_protected";
-import AuthGuard from "@/components/protected/auth_guard";
+import AdminProtectedRoute from "@/components/guards/admin_guard";
+import ClientProtectedRoute from "@/components/guards/client_guard";
+import AuthGuard from "@/components/guards/auth_guard";
 
-import AdminLogin from "@/features/admin/authentication/login";
+import AdminLogin from "@/features/admin/auth/login_page";
 
-import { adminPrivateRoutes, adminPaths } from "./configs/admin_routes";
-import { clientPrivateRoutes, clientPublicRoutes } from "./configs/client_routes";
+import { 
+    PATHS, 
+    adminPrivateRoutes, 
+    clientPrivateRoutes, 
+    clientPublicRoutes 
+} from "@/app/routes/index";
 
-import "@/components/shared/page_load.css";
+import "@/components/styles/page_load.css";
 
 const PageLoading = () => (
     <div className="page-loading-container">
@@ -29,24 +33,36 @@ function App() {
         <BrowserRouter>
             <Suspense fallback={<PageLoading />}>
                 <Routes>
-                    <Route path={adminPaths.login} element={<AdminLogin />} />
+                    {/* Admin Routes */}
+                    <Route path={PATHS.ADMIN.LOGIN} element={<AdminLogin />} />
+                    
                     <Route element={<AdminProtectedRoute />}>
-                        <Route path={adminPaths.admin.root} element={<AdminLayout />}>
-                            <Route index element={<Navigate to={adminPaths.admin.dashboard} replace />} />
-                            {adminPrivateRoutes.map((route, index) => ( <Route key={index} path={route.path} element={route.element}/> ))}
+                        <Route path={PATHS.ADMIN.ROOT} element={<AdminLayout />}>
+                            <Route index element={<Navigate to={PATHS.ADMIN.DASHBOARD} replace />} />
+                            {adminPrivateRoutes.map((route, index) => (
+                                <Route key={index} path={route.path} element={route.element} />
+                            ))}
                         </Route>
                     </Route>
 
+                    {/* Client Routes */}
                     <Route path="/" element={<AuthGuard><ClientLayout /></AuthGuard>}>
+                        {/* Public Client Routes */}
                         {clientPublicRoutes.map((route, index) => (
                             <Route key={index} path={route.path} element={route.element}>
-                                {route.children?.map((subRoute, subIndex) => ( <Route key={subIndex} path={subRoute.path} element={subRoute.element}/> ))}
+                                {route.children?.map((subRoute, subIndex) => (
+                                    <Route key={subIndex} path={subRoute.path} element={subRoute.element} />
+                                ))}
                             </Route>
                         ))}
+
+                        {/* Private Client Routes */}
                         <Route element={<ClientProtectedRoute />}>
                             {clientPrivateRoutes.map((route, index) => (
                                 <Route key={index} path={route.path} element={route.element}>
-                                    {route.children?.map((subRoute, subIndex) => ( <Route key={subIndex} path={subRoute.path} element={subRoute.element}/> ))}
+                                    {route.children?.map((subRoute, subIndex) => (
+                                        <Route key={subIndex} path={subRoute.path} element={subRoute.element} />
+                                    ))}
                                 </Route>
                             ))}
                         </Route>

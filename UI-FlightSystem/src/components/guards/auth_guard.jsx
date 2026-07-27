@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCredentials } from "@/features/shared/auth/auth_slice";
-import { isAdminRole } from "@/constants/auth";
+import { clearCredentials } from "@/features/auth/auth_slice";
+import { isAdminRole } from "@/features/auth/auth_constants";
 
 function AuthGuard({ children }) {
     const dispatch = useDispatch();

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
+import "../styles/table.css"
 
 function Table({ heads, data, render, title, link }) {
     return (
