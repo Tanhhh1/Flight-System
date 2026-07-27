@@ -1,0 +1,86 @@
+.passenger_panel {
+    background: #ffffff;
+    border: 1px solid #dde5f0;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.passenger_panel_header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.25rem;
+    background: #edf2f8;
+    border-bottom: 1px solid #dde5f0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0f1a2e;
+}
+.passenger_panel_header i { font-size: 1.15rem; color: #5277b4; }
+
+.passenger_panel_list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0.5rem 0;
+}
+
+.passenger_card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 1.2rem 1.8rem;
+    border: none;
+    border-bottom: 1px solid #f0f4fa;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.18s ease;
+    text-align: left;
+    width: 100%;
+    position: relative;
+}
+.passenger_card:last-child { border-bottom: none; }
+.passenger_card:hover { background: #f5f8fd; }
+
+.passenger_card_active {
+    background: #edf2f8;
+    border-left: 3px solid #5277b4;
+}
+
+.passenger_card_info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.passenger_card_name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0f1a2e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.passenger_card_seat {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.78rem;
+    color: #8a9ab5;
+}
+.passenger_card_assigned .passenger_card_seat { color: #16a34a; }
+.passenger_card_seat i { font-size: 0.88rem; }
+
+.passenger_card_selecting_badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #5277b4;
+    background: #dde8f7;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}

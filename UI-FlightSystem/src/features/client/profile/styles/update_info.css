@@ -1,0 +1,35 @@
+.edit_info_wrapper {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.form_row_grid_2col {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.form_input_text, .form_select {
+    width: 100%;
+    border: 1px solid #dde5f0;
+    border-radius: 6px;
+    padding: 0.7rem 1rem;
+    font-size: 0.95rem;
+    color: #0f1a2e;
+    background-color: #ffffff;
+    font-family: inherit;
+    transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form_input_text:focus, .form_select:focus {
+    border-color: #5277b4;
+    box-shadow: 0 0 0 3px rgba(0, 87, 255, 0.1);
+    outline: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(15%) sepia(20%) saturate(1000%) hue-rotate(190deg) opacity(0.6);
+}

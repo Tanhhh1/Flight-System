@@ -1,0 +1,146 @@
+.selected_flights_bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.08);
+    padding: 0.875rem 1.5rem;
+}
+
+.selected_flights_bar_inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.selected_legs_list {
+    display: flex;
+    gap: 0.75rem;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.selected_leg_chip {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 0.5rem 0.875rem;
+    min-width: 200px;
+}
+
+.selected_leg_chip_info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.selected_leg_label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    font-weight: 700;
+}
+
+.selected_leg_route {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.selected_leg_detail {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.78rem;
+    color: #475569;
+}
+
+.selected_leg_detail i {
+    color: #5277b4;
+    font-size: 0.9rem;
+}
+
+.selected_leg_chip_empty {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+}
+
+.selected_leg_chip_empty i {
+    color: #94a3b8;
+    background: #e2e8f0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.selected_leg_chip_empty span {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.selected_leg_remove_btn {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 6px;
+    color: #ef4444;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    font-size: 1.1rem;
+}
+
+.selected_leg_remove_btn:hover {
+    background: #ef4444;
+    color: #fff;
+    border-color: #ef4444;
+}
+
+.btn_continue_booking {
+    height: 48px;
+    padding: 0 1.75rem;
+    border-radius: 10px;
+    border: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    background: #cbd5e1;
+    color: #64748b;
+    transition: all 0.25s ease;
+}
+
+.btn_continue_booking.ready {
+    background: #5277b4;
+    color: #ffffff;
+}
+
+.btn_continue_booking.ready:hover {
+    background: #3d5d93;
+}
+
+.btn_continue_booking i {
+    font-size: 1.25rem;
+}

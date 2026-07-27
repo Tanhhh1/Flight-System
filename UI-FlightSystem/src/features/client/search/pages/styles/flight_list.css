@@ -1,0 +1,181 @@
+.modify_search_bar {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.modify_search_bar_multi {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.modify_search_row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.modify_search_footer {
+    border-top: 1px solid #f3f4f6;
+    padding-top: 10px;
+    justify-content: flex-end;
+}
+
+.modify_leg_badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--primary, #2563eb);
+    background: #eff6ff;
+    padding: 2px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    align-self: center;
+}
+
+.search_mini_field {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.search_mini_field label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.search_mini_field input,
+.search_mini_field select {
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 13px;
+    outline: none;
+    background: #f9fafb;
+    min-width: 120px;
+    transition: border-color 0.15s;
+}
+
+.search_mini_field input:focus,
+.search_mini_field select:focus {
+    border-color: var(--primary, #2563eb);
+    background: #fff;
+}
+
+.search_swap_btn {
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: #374151;
+    transition: background 0.15s;
+    flex-shrink: 0;
+    margin-bottom: 1px;
+}
+
+.search_swap_btn:hover { background: #e5e7eb; }
+
+.btn_trigger_search {
+    background: var(--primary, #2563eb);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    height: 36px;
+    transition: opacity 0.15s;
+}
+
+.btn_trigger_search:hover { opacity: 0.88; }
+
+.direction_tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.direction_tab_btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.15s;
+}
+
+.direction_tab_btn.active {
+    background: var(--primary, #2563eb);
+    color: #fff;
+    border-color: var(--primary, #2563eb);
+}
+
+.active_leg_header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #374151;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin-bottom: 14px;
+}
+
+.active_leg_header i { color: var(--primary, #2563eb); font-size: 16px; }
+.active_leg_date {
+    margin-left: auto;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.flight_list_wrapper { display: flex; flex-direction: column; }
+
+.flight_cards_list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.list_state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 48px 24px;
+    color: #9ca3af;
+    font-size: 14px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px dashed #e5e7eb;
+}
+
+.list_error { color: #ef4444; }
+.list_empty i { font-size: 20px; }
+

@@ -1,0 +1,261 @@
+.booking_container {
+    width: 100%;
+    background-color: #f0f5fc;
+    min-height: calc(100vh - 70px);
+    padding: 2rem 1rem;
+}
+
+.booking_inner_layout {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 2rem;
+    align-items: start;
+}
+
+.booking_step_title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0f1a2e;
+    margin-bottom: 0.25rem;
+}
+
+.booking_step_subtitle {
+    font-size: 0.95rem;
+    color: #6b7d96;
+    margin-bottom: 2rem;
+}
+
+.passenger_card, .summary_panel {
+    border: 1px solid #dde5f0;
+    border-radius: 12px;
+    background-color: #ffffff;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 60, 180, 0.08);
+    margin-bottom: 1.5rem;
+}
+
+.panel_header {
+    background-color: #edf2f8;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dde5f0;
+}
+
+.panel_header h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f1a2e;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.panel_body, .summary_body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.summary_body {
+    gap: 1rem;
+}
+
+.passenger_form_grid_row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    width: 100%;
+}
+
+.form_group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    width: 100%;
+}
+
+.form_label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #3a4a60;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.form_input_text, .form_select {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #dde5f0;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-size: 0.95rem;
+    color: #0f1a2e;
+    background-color: #ffffff;
+    font-family: inherit;
+    height: 43px;
+    transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form_input_text:focus, .form_select:focus {
+    border-color: #5277b4;
+    box-shadow: 0 0 0 3px rgba(0, 87, 255, 0.1);
+    outline: none;
+}
+
+.form_input_text.input_readonly_price {
+    background-color: #edf2f8; 
+    color: #0f1a2e;
+    font-weight: 700;
+    border-color: #dde5f0;
+    cursor: not-allowed;
+    opacity: 1;
+    -webkit-text-fill-color: #0f1a2e;
+}
+
+.passenger_header, .summary-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn_delete_passenger {
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn_delete_passenger:hover {
+    background-color: #fef2f2;
+}
+
+.btn_add_passenger {
+    width: 100%;
+    background-color: #ffffff;
+    border: 2px dashed #5277b4;
+    color: #5277b4;
+    padding: 0.85rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 2rem;
+}
+
+.btn_add_passenger:hover {
+    background-color: #e8efff;
+}
+
+.form_submit_row {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn_submit_booking {
+    background-color: #ff6b2b;
+    color: #ffffff;
+    padding: 0.85rem 2.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(255, 107, 43, 0.25);
+    transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn_submit_booking:hover {
+    background-color: #e05020;
+    transform: translateY(-1px);
+}
+
+.booking_summary_sidebar {
+    position: sticky;
+    top: 90px;
+}
+
+.summary_flight_label {
+    font-size: 0.8rem;
+    color: #6b7d96;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.summary_flight_route {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f1a2e;
+    margin-top: 0.15rem;
+}
+
+.summary_divider {
+    height: 1px;
+    background-color: #edf2f8;
+    margin: 0.25rem 0;
+}
+
+.summary_price_breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.breakdown_title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b7d96;
+}
+
+.price_row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.92rem;
+    color: #0f1a2e;
+}
+
+.total_label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0f1a2e;
+}
+
+.total_value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #ff6b2b;
+}
+
+@media (max-width: 960px) {
+    .booking_inner_layout {
+        grid-template-columns: 1fr;
+    }
+    .booking_summary_sidebar {
+        position: static;
+    }
+}
+
+@media (max-width: 600px) {
+    .passenger_form_grid_row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}

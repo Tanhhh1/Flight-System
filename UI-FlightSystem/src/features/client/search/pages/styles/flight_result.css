@@ -1,0 +1,35 @@
+.flight_result_layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 1.25rem;
+    align-items: start;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 24px 16px;
+}
+
+.flight_result_left_col {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: sticky;
+    top: 16px;
+}
+
+.flight_result_list_col {
+    min-width: 0;
+}
+
+@media (max-width: 900px) {
+    .flight_result_layout {
+        grid-template-columns: 1fr;
+    }
+
+    .flight_result_left_col {
+        position: static;
+    }
+
+    .flight_result_left_col > :last-child {
+        display: none;
+    }
+}

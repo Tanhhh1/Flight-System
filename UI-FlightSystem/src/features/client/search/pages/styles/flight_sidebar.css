@@ -1,0 +1,227 @@
+.filter_sidebar {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .05);
+    position: sticky;
+    top: 1rem;
+}
+
+.filter_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1rem;
+    margin-bottom: .25rem;
+}
+
+.filter_header h3 {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.filter_active_badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #5277b4;
+    color: #fff;
+    font-size: .72rem;
+    font-weight: 700;
+}
+
+.btn_reset_filter {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    background: none;
+    border: none;
+    color: #5277b4;
+    font-size: .85rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0;
+    transition: opacity .15s;
+}
+
+.btn_reset_filter:hover {
+    opacity: .7;
+}
+
+.filter_section {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.filter_section:last-child {
+    border-bottom: none;
+}
+
+.filter_section_title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .9rem 0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.filter_section_title h4 {
+    font-size: .9rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+    transition: color .15s;
+}
+
+.filter_section_title i {
+    font-size: 1.15rem;
+    color: #94a3b8;
+    transition: color .15s;
+}
+
+.filter_section_title:hover h4,
+.filter_section_title:hover i {
+    color: #5277b4;
+}
+
+.collapsible {
+    overflow: hidden;
+    max-height: 600px;
+    opacity: 1;
+    transition: max-height .25s ease, opacity .2s ease, margin .2s ease;
+    margin-bottom: 1rem;
+}
+
+.collapsible.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-bottom: 0;
+}
+
+.filter_options_list {
+    display: flex;
+    flex-direction: column;
+    gap: .7rem;
+}
+
+.radio_label,
+.checkbox_label {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    cursor: pointer;
+    font-size: .87rem;
+    color: #334155;
+    line-height: 1.4;
+}
+
+.radio_label input,
+.checkbox_label input {
+    width: 15px;
+    height: 15px;
+    accent-color: #5277b4;
+    flex-shrink: 0;
+    cursor: pointer;
+    margin: 0;
+}
+
+.option_text {
+    flex: 1;
+}
+
+.radio_label input[type="radio"] {
+    width: 16px;
+    height: 16px;
+}
+
+.radio_label.disabled,
+.checkbox_label.disabled {
+    color: #cbd5e1;
+    cursor: not-allowed;
+}
+
+.radio_label.disabled input,
+.checkbox_label.disabled input {
+    cursor: not-allowed;
+}
+
+.filter_time_block {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter_time_block h5 {
+    font-size: .75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin: .75rem 0 .5rem;
+}
+
+.filter_time_block h5:first-child {
+    margin-top: 0;
+}
+
+.time_grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: .45rem;
+}
+
+.time_btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .1rem;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: .5rem .4rem;
+    font-size: .77rem;
+    font-weight: 500;
+    color: #334155;
+    cursor: pointer;
+    line-height: 1.4;
+    transition: border-color .15s, background .15s, color .15s;
+}
+
+.time_btn .time_range {
+    font-size: .7rem;
+    color: #5277b4;
+    font-weight: 600;
+}
+
+.time_btn:hover {
+    background: #f0f7ff;
+    border-color: #93c5fd;
+}
+
+.time_btn.active {
+    background: #eff6ff;
+    border-color: #5277b4;
+    color: #5277b4;
+}
+
+.time_btn.active .time_range {
+    color: #3b5ea6;
+}
+
+.filter_state_txt {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .82rem;
+    color: #94a3b8;
+    font-style: italic;
+}
