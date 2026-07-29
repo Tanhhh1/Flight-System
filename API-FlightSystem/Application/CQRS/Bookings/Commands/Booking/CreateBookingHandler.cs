@@ -23,9 +23,6 @@ namespace Application.CQRS.Bookings.Commands.Booking
 
         public async Task<ApiResult<BookingDto>> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
         {
-            if (!_currentUser.IsAuthenticated || _currentUser.Id is null)
-                return ApiResult<BookingDto>.Failure("Bạn cần đăng nhập để đặt vé");
-
             var flightIds = request.FlightIds.Distinct().ToList();
 
             var existingFlightIds = await _unitOfWork.FlightRepository

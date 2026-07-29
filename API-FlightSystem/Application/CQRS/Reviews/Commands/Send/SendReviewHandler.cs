@@ -19,11 +19,8 @@ namespace Application.CQRS.Reviews.Commands.Send
         }
         public async Task<ApiResult<ReviewDto>> Handle(SendReviewCommand request, CancellationToken cancellationToken)
         {
-            if (!_currentUser.IsAuthenticated || _currentUser.Id is null)
-                return ApiResult<ReviewDto>.Failure("Bạn cần đăng nhập để thực hiện chức năng này");
-
             var review = request.Adapt<Review>();
-            review.UserId = _currentUser.Id.Value;
+            review.UserId = _currentUser.Id!.Value;
             review.IsHidden = false;
 
             await _unitOfWork.ReviewRepository.AddAsync(review);

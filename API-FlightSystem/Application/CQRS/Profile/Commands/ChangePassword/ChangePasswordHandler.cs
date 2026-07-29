@@ -20,9 +20,6 @@ namespace Application.CQRS.Profile.Commands.ChangePassword
 
         public async Task<ApiResult<string>> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
         {
-            if (!_currentUser.IsAuthenticated || _currentUser.Id is null)
-                return ApiResult<string>.Failure("Người dùng chưa đăng nhập");
-
             var user = await _userManager.FindByIdAsync(_currentUser.Id.ToString()!);
             if (user is null)
                 return ApiResult<string>.Failure("Không tìm thấy người dùng");
