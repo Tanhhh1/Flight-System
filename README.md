@@ -13,9 +13,7 @@ A modern full-stack flight booking platform built with ASP.NET Core, React, Clea
 - Project Structure
 - Installation
 - Configuration
-- Running with Docker
 - Authentication & Authorization
-- Roles & Permissions
 - Realtime Features
 - Future Improvements
 
@@ -151,4 +149,109 @@ FlightSystem/
 │   │   ├── utils/                     # Helper functions
 │   ├── public/
 ```
+---
+
+## Installation
+
+### Prerequisites
+
+Before running the project, make sure the following tools are installed:
+- .NET 8 SDK
+- Node.js (v20 or later)
+- PostgreSQL
+
+### 1. Clone the reponsitory
+
+```bash
+git clone https://github.com/Tanhhh1/Flight-System.git
+cd flight-system-main
+```
+
+### 2. Backend Setup
+
+```bash
+cd API-FlightSystem
+dotnet restore
+dotnet ef database update
+dotnet run
+```
+
+### 3. Frontend Setup
+
+```bash
+cd UI-FlightSystem
+npm install
+npm run dev
+```
+
+---
+
+## Configuation
+
+Before starting the application, configure the required settings in appsettings.json (or environment variables)
+```
+"Database": {
+  "Main": ""
+},
+"JwtConfiguration": {
+  "SecretKey": "",
+  "ValidAudience": "",
+  "ValidIssuer": "",
+  "TokenValidityInMinutes": ,
+  "RefreshTokenValidityInDays": 
+},
+"VNPay": {
+  "TmnCode": "",
+  "HashSecret": "",
+  "BaseUrl": "",
+  "Version": "",
+  "Command": "",
+  "CurrCode": "",
+  "Locale": ""
+},
+"Email": {
+  "Host": "",
+  "Port": "",
+  "From": "",
+  "Username": "",
+  "Password": ""
+}
+```
+---
+
+## Authentication & Authorization
+
+The application implements a secure authentication and authorization mechanism using **ASP.NET Core Identity** and **JWT (JSON Web Token)**
+
+### Authentication
+
+- **User Registration** — create a new account
+- **User Login** — authenticate users and issue JWT access tokens
+- **JWT Authentication** — secure API endpoints using bearer token authentication
+- **Refresh Token** — obtain a new access token without requiring users to log in again
+- **Logout** — revoke refresh tokens to prevent unauthorized reuse
+
+### Authorize
+
+Role-based authorization is applied throughout the system to restrict access to protected resources
+
+| Role | Permissions |
+| ----------------- | ------------------------------------------------------------------------------------------ |
+| **Customer** | Search flights, book tickets, make payments, manage bookings, and update personal profile |
+| **Staff** | Manage operational data such as bookings, services, and customer requests |
+| **Administrator** | Full access to all management modules, user administration, and system configuration |
+
+Protected endpoints require a valid JWT access token, while administrative operations are restricted using role-based authorization policies.
+
+---
+
+## Realtime Features
+
+The application leverages SignalR to provide real-time communication between clients and the server, ensuring a consistent booking experience for all users
+
+- **Live Seat Synchronization** — instantly update seat availability across all connected users
+- **Duplicate Booking Prevention** — prevent multiple users from reserving the same seat simultaneously
+- **Real-time Booking Status** — broadcast seat reservation and booking updates without requiring page refreshes
+- **Automatic Seat Release** — release reserved seats when bookings expire or are cancelled, keeping availability up to date
+
 ---
