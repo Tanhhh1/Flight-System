@@ -18,4 +18,5 @@ WORKDIR /app
 COPY --from=build /out .
 
 EXPOSE 6789
+ENV ASPNETCORE_URLS=http://+:6789
 ENTRYPOINT ["dotnet", "API-FlightSystem.dll"]

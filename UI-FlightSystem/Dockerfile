@@ -6,8 +6,8 @@ RUN npm install
 
 COPY . .
 
-ARG VITE_API_URL=http://localhost/api/v1
-ARG VITE_HUB_URL=http://localhost
+ARG VITE_API_URL=http://localhost:6789/api/v1
+ARG VITE_HUB_URL=http://localhost:6789
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_HUB_URL=$VITE_HUB_URL
 
@@ -15,4 +15,5 @@ RUN npm run build
 
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
