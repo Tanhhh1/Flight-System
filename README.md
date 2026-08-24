@@ -84,16 +84,17 @@ graph TD
 
 | Category | Technologies |
 |-----------|-------|
-| **Frontend** | React, JavaScript, Vite |
-| **Backend** | ASP.NET Core 8 Web API, C#, Clean Architecture, CQRS, MediatR |
+| **Frontend** | ReactJS, JavaScript, Vite |
+| **Backend** | ASP.NET Core 8 Web API, C# |
 | **Database** | PostgreSQL, Entity Framework Core |
 | **Authentication** | ASP.NET Core Identity, JWT Authentication |
 | **Real-time Communication** | SignalR |
+| **Background Processing** | ASP.NET Core Background Service |
 | **Payment Gateway** | VNPay (Sandbox) |
 | **Validation & Mapping** | FluentValidation, Mapster |
-| **Logging** | Serilog |
-| **Serilog** | Structured logging (Console + File sinks) |
+| **Logging** | Serilog, Structured logging (Console + File sinks) |
 | **Containerization** | Docker, Docker Compose, Nginx |
+| **API Security** | CORS, Rate Limiting |
 | **API Documentation** | Swagger / Swashbuckle  |
 | **Asp.Versioning** | API versioning |
 
